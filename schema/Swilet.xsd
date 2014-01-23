@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="SwiletDef"> <!-- Information about the application - "Swilet" -->
+		<xs:complexType>
+			<xs:attribute name="appName" type="xs:string" use="required" />
+			<xs:attribute name="appVer" type="xs:string" use="required" />
+			<xs:attribute name="appId" type="xs:string" use="required" />
+			<xs:attribute name="defBilling" type="Billing" /> <!-- Default billing criteria -->
+			<xs:attribute name="billPeriod" type="xs:integer" /> <!-- Number of hours if billing is periodic -->
+			<xs:sequence>
+				<xs:element name="rolesNeeded" type="RoleType" maxOccurs="3">
+					<xs:annotation>
+						<xs:documentation>
+							Types of roles supported by EUA
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="action" minOccurs="0" type="Operations" maxOccurs="unbounded" />
+				<xs:element name="notification" minOccurs="0" type="Operations" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="roleVisibility" type="Visibility" />
+			<xs:attribute name="logVisibility" type="Visibility" />
+		</xs:complexType>
+	</xs:element> <!-- name="SwiletDef" -->
+
+	<xs:simpleType name="RoleType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Admin" /> <!-- TODO XXX Annotate actually the SWiFiIC Operator -->
+			<xs:enumeration value="AppOperator" /> <!-- App specific service provider (Business logic) - e.g. school / board -->
+			<xs:enumeration value="Provider" /> <!-- Service provider in app's context - Teacher -->
+			<xs:enumeration value="User" /> <!-- Service consumer - e.g. Student -->
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="Billing">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Periodic" /> <!--  periodicty in a config file on  -->
+			<xs:enumeration value="None" /> <!-- aka free -->
+			<xs:enumeration value="PerEvent" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="Visibility">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Admin" />       <!-- Who runs SWiFiIC - default -->
+			<xs:enumeration value="AppOperator" /> <!-- Application Operator will see : data mining / analytics -->
+			<xs:enumeration value="Public" />      <!-- Both Admin & AppOperator -->
+		</xs:restriction>
+	</xs:simpleType>
+
+<!-- Jan 16 Make Ack Binary for the Action / Notification
+	<xs:simpleType name="OperationMode">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="AsyncNotifyAndAck" /> 
+			<xs:enumeration value="AsyncNotifyNoAck" />  
+		</xs:restriction>
+	</xs:simpleType>  -->
+
+	<xs:simpleType name="Priority">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Critical" />
+			<xs:enumeration value="HiPri" />
+			<xs:enumeration value="MedPri" />
+			<xs:enumeration value="LowPri" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="DiscardType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OnlyOnDeliveryOrTimeout" /> <!-- or ack of delivery -->
+			<xs:enumeration value="OnLowSpaceWarnThreshold" />
+			<xs:enumeration value="OnLowCriticalThreshold" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="UIElementType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Text" /> <!-- WChar or similar -->
+			<xs:enumeration value="Image" />
+			<xs:enumeration value="Video" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="Operations">
+		<xs:sequence>
+			<xs:element name="argument" minOccurs="0" maxOccurs="1024">
+				<xs:complexType>
+					<xs:attribute name="argName" type="xs:string" />
+					<xs:attribute name="argValue" type="xs:string" />
+					<xs:attribute name="optional" type="xs:boolean" />
+					<xs:attribute name="index" type="xs:integer" /> <!-- for array elements to be returned -->
+					<xs:attribute name="uiDisplayElementId" type="xs:string" /> <!-- text area etc. -->
+					<xs:attribute name="uiElementType" type="UIElementType" />
+					<xs:attribute name="uiTriggerElementId" type="xs:string" /> <!-- button, menu option etc. -->
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="priority" type="Priority" />
+		<xs:attribute name="discradPolicy" type="DiscardType" />
+		<xs:attribute name="logVisibility" type="Visibility" />
+		<xs:attribute name="actionAccess" type="RoleType" />
+		<xs:attribute name="billing" type="Billing" />
+		<xs:attribute name="coupledOperations" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>
+					Pseudo code for default Hublet behaviour for simple relay. 
+					Identifies what notification to emit for received action.
+					Filed translation metadata included in pseudo code.
+					Hublet Code uses this for reference by default.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="hubletCodePtr" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>
+					Class name and index to invocation list for processing 
+					the action. Invoked for complicated scenarios.
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+
+	<xs:element name="DPDU"> <!-- if coming in to hublet its action else notification -->
+		<xs:complexType>   <!-- is it really needed? -->
+			<xs:sequence>
+				<xs:element name="argument" minOccurs="0" maxOccurs="32">
+					<xs:complexType>
+						<xs:attribute type="xs:string" name="argName" />
+						<xs:attribute type="xs:string" name="argValue" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="fileData" type="xs:base64Binary" minOccurs="0" maxOccurs="1" />
+			</xs:sequence>
+			<!-- We may have to add an attribute to denote if its Action or Notification 
+				when talking Hublet to Hublet -->
+			<xs:attribute name="name" type="xs:string" use="required" />
+			<xs:attribute name="priority" type="Priority" />
+			<xs:attribute name="version" type="xs:string" use="required" />
+			<xs:attribute name="userId" type="xs:string" use="required" />
+			<xs:attribute name="deviceId" type="xs:string" use="required" />
+			<xs:attribute name="appId" type="xs:string" use="required" />
+			<xs:attribute name="appVer" type="xs:string" use="required" />
+			<xs:attribute name="billing" type="Billing" />
+			<xs:attribute name="pduLogVisibility" type="Visibility" />
+		</xs:complexType>
+	</xs:element> <!-- name="DPDU" -->
+
+</xs:schema>

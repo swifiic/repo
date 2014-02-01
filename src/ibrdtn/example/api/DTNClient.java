@@ -4,6 +4,8 @@ import ibrdtn.api.APIException;
 import ibrdtn.api.EventClient;
 import ibrdtn.api.ExtendedClient;
 import ibrdtn.api.object.Bundle;
+import in.swifiic.hub.lib.SwifiicHandler;
+
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,14 +34,14 @@ public class DTNClient {
      * @param endpoint the application's primary EID
      * @param type the expected payload format
      */
-    public DTNClient(String endpoint) {
+    public DTNClient(String endpoint, SwifiicHandler hndlr) {
         executor = Executors.newSingleThreadExecutor();
 
         this.endpoint = endpoint;
 
         exClient = new ExtendedClient();
 
-        sabHandler = new AbstractAPIHandler(exClient, executor);    
+        sabHandler = new AbstractAPIHandler(exClient, executor, hndlr);    
         exClient.setHandler(sabHandler);
         exClient.setHost(Constants.HOST);
         exClient.setPort(Constants.PORT);

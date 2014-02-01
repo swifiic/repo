@@ -8,6 +8,8 @@ import ibrdtn.api.object.BundleID;
 import ibrdtn.api.sab.Custody;
 import ibrdtn.api.sab.StatusReport;
 import ibrdtn.example.data.Envelope;
+import in.swifiic.hub.lib.SwifiicHandler;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,14 +33,16 @@ public class AbstractAPIHandler implements ibrdtn.api.sab.CallbackHandler {
     protected PipedOutputStream os;
     protected ExtendedClient client;
     protected ExecutorService executor;
+    protected SwifiicHandler hndlr;
     protected Bundle bundle = null;
     protected Thread t;
     protected Envelope envelope;
     protected byte[] bytes;
 
-    public AbstractAPIHandler(ExtendedClient exClient, ExecutorService executor) {
+    public AbstractAPIHandler(ExtendedClient exClient, ExecutorService executor, SwifiicHandler hndlr) {
 		this.client = exClient;
 		this.executor = executor;
+		this.hndlr = hndlr;
 	}
 
 	/**
@@ -262,6 +266,9 @@ public class AbstractAPIHandler implements ibrdtn.api.sab.CallbackHandler {
          */
         markDelivered();
 
+        logger.log(Level.SEVERE, "Handling bundle received from {0}", bundle.getSource());
+        
+        hndlr.handlePayload(bytes.toString());
         //TODO: Need a processor to process the messages...
         //executor.execute(new Processor(envelope, client, executor));
     }

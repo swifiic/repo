@@ -3,6 +3,10 @@ package in.swifiic.android.app.lib.xml;
 
 public class Notification extends Operation{
 	
+	public Notification(){
+		super();
+	}
+	
 	public String getNotificationName() {
 		return opName;
 	}

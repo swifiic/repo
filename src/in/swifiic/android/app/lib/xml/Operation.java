@@ -2,6 +2,7 @@ package in.swifiic.android.app.lib.xml;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.simpleframework.xml.Attribute;
@@ -38,11 +39,17 @@ public class Operation {
 	
 	
 	@ElementList
-	public List<Argument> arguments;
+	public List<Argument> arguments=new ArrayList<Argument>();
 	
 	@Element(required=false)
 	String fileData;
 
+	public Operation() {
+		
+	}
+	
+	
+	
 	public String getAppName()
 	{
 		return appName;

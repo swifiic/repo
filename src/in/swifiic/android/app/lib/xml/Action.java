@@ -7,6 +7,10 @@ import in.swifiic.android.app.lib.xml.Argument;
 public class Action extends Operation{
 	static final String TAG = "XML:Operation";
 
+	public Action(){
+		super();
+	}
+	
 	public Action(String name, AppEndpointContext apCtx){
 		super();
 		opName = name;
@@ -25,6 +29,9 @@ public class Action extends Operation{
 		arg.argName = argName;
 		arg.argValue= argVal;
 		int length = arguments.size();
+		if(null == arguments){
+			
+		}
 		arguments.add(arg);
 		Log.d(TAG, "added argument " + argName + " after" + length + "entries");
 		return true;

@@ -18,5 +18,11 @@ public class Argument {
 	
 	@Attribute
 	protected String argValue;
+	
+	
+	public Argument() {
+		
+	}
+
 }
 

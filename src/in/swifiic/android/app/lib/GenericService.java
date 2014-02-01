@@ -83,7 +83,7 @@ public class GenericService extends IntentService {
     private void sendToHub(String message) {
         // create a new bundle
         Bundle b = new Bundle();
-        SingletonEndpoint destination = new SingletonEndpoint("dtn://atop9kx.bits.dtn/apphub"); // from Preferences + App Name
+        SingletonEndpoint destination = new SingletonEndpoint("dtn://atop9kx.bits.dtn/messenger"); // TODO from Preferences + App Name
         
         // set the destination of the bundle
         b.setDestination(destination);
@@ -266,7 +266,7 @@ public class GenericService extends IntentService {
                 Serializer serializer = new Persister();
                 @SuppressWarnings("unused")  // this is checking that XML is fine
 				Notification notif = serializer.read(Notification.class,msg);
-	            updatedIntent.putExtra("message", msg);
+	            updatedIntent.putExtra("notification", msg);
 	            sendBroadcast(updatedIntent);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

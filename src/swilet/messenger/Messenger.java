@@ -7,21 +7,30 @@ import ibrdtn.api.object.SingletonEndpoint;
 
 import ibrdtn.example.api.Constants;
 import ibrdtn.example.api.DTNClient;
+
+import in.swifiic.hub.lib.Helper;
+import in.swifiic.hub.lib.SwifiicHandler;
+import in.swifiic.hub.lib.xml.Action;
+import in.swifiic.hub.lib.xml.Notification;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-public class Messenger {
+
+public class Messenger implements SwifiicHandler {
 	private static final Logger logger = LogManager.getLogManager().getLogger("");
     private DTNClient dtnClient;
     protected String PRIMARY_EID = "messenger";
     
     public Messenger() {
         // Initialize connection to daemon
-        dtnClient = new DTNClient(PRIMARY_EID);
+        dtnClient = new DTNClient(PRIMARY_EID, this);
         logger.log(Level.INFO, dtnClient.getConfiguration());
     }
     
@@ -61,4 +70,32 @@ public class Messenger {
 	    }
     	//messenger.exit();
     }
+
+    protected ExecutorService executor = Executors.newCachedThreadPool();
+	@Override
+	public void handlePayload(String payload) {
+		final String message = payload;
+		System.out.println("Got Message:" + payload);
+		executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                	Action action = Helper.parseAction(message);
+                	Notification notif = new Notification(action);
+                	notif.updateNotificatioName("DeliverMessage");
+                	// TODO extract the destination users
+                	// TODO map to their devices
+                	// TODO send it out to all devices for that user
+                	// library should provide something like List<String> getDestinations(String username, String app, String role)
+                	
+                	send("dtn://shivam/in.swifiic.android.app.msngr", Helper.serializeNotification(notif));
+                    // Mark bundle as delivered...                    
+                    logger.log(Level.SEVERE, "Attempted to send: to dtn://atgrnd.dtn/in.swifiic.android.app.msngr, had received {0}", message);
+                } catch (Exception e) {
+                    logger.log(Level.SEVERE, "Unable to mark bundle as delivered.", e);
+                }
+            }
+        });
+		
+	}
 }

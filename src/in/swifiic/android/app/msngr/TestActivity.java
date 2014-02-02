@@ -23,6 +23,7 @@ import android.os.IBinder;
 import android.support.v4.view.MenuCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +31,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class TestActivity extends Activity {
     
@@ -38,18 +40,16 @@ public class TestActivity extends Activity {
     private GenericService mService = null;
     private boolean mBound = false;
     
-    private EditText mTextUserList = null;
+    private TextView mTextUserList = null;
     private EditText mTextMsgToSend = null;
-    private TextView mResult = null;
+    // private TextView mResult = null;
     private TextView mTextFromOthers=null;
     
     private AppEndpointContext aeCtx = new AppEndpointContext("Messenger", "0.1", "1");
     
-    @SuppressWarnings("deprecation")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.test_main, menu);
-        MenuCompat.setShowAsAction(menu.findItem(R.id.itemSelectUser), MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -71,7 +71,7 @@ public class TestActivity extends Activity {
             if ((data != null)){
             	String name = "none";
             	if (data.hasExtra("name") && data.hasExtra("id")) {
-            		name = data.getStringExtra("name") + "|" + data.getStringExtra("id");
+            		name = data.getStringExtra("name") + " | " + data.getStringExtra("id");
             	} else if(data.hasExtra("name")) {
             		name = "*";
             	}
@@ -79,7 +79,6 @@ public class TestActivity extends Activity {
             }
             return;
         }
-        
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -90,8 +89,9 @@ public class TestActivity extends Activity {
         setContentView(R.layout.test_activity_msngr);
         
         mTextMsgToSend = (EditText)findViewById(R.id.msgTextToSend);
-        mTextUserList = (EditText)findViewById(R.id.usrListToSend);
-        mResult = (TextView)findViewById(R.id.textResult);
+        mTextUserList = (TextView)findViewById(R.id.usrListToSend);
+        // mResult = (TextView)findViewById(R.id.textResult); TODO - Cange scroll view to a list view for incoming messages
+        // and then use this for "tick" etc.
         mTextFromOthers=(TextView)findViewById(R.id.textMessages);
         
         // assign an action to the ping button
@@ -99,7 +99,15 @@ public class TestActivity extends Activity {
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendMsg();
+            	if(mTextUserList.getText().equals("Select User")) {
+            		Context context = getApplicationContext();
+            		Toast toast = Toast.makeText(context, "Select a user first!", Toast.LENGTH_SHORT);
+            		toast.setGravity(Gravity.TOP, 0, 50);
+            		toast.show();
+            	}
+            	else {
+            		sendMsg();            		
+            	}
             }
         });
     }
@@ -139,7 +147,7 @@ public class TestActivity extends Activity {
         registerReceiver(mDataReceiver, filter);
         
         // update the displayed result
-        updateResult();
+        // updateResult(); - XXX
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -172,21 +180,20 @@ public class TestActivity extends Activity {
         if(null != msg) startService(i);
     }
     
-    /** this is a ack for delivery of msg to appHub TBD - add logic for tick etc.**/
-    private void updateResult() {
-        runOnUiThread(new Runnable() {
-            public void run()
-            {
-                if (mService != null) {
-                    //Resources res = getResources();
-                    String text = mService.getLastMessage(); // TBD XXX
-                    if(null != text)
-                    	mResult.setText(text); // TBD XXX the UI is not correctly organized for now
-                }
-            }
-        });
-    }
-    
+//    /** this is a ack for delivery of msg to appHub TBD - add logic for tick etc.**/
+//    private void updateResult() {
+//        runOnUiThread(new Runnable() {
+//            public void run()
+//            {
+//                if (mService != null) {
+//                    String text = mService.getLastMessage(); // TBD XXX
+//                    if(null != text)
+//                    	mResult.setText("D"); // TBD XXX the UI is not correctly organized for now
+//                }
+//            }
+//        });
+//    }
+//    
     private BroadcastReceiver mDataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -199,7 +206,7 @@ public class TestActivity extends Activity {
                 mTextFromOthers.append(textToUpdate);
             } else {
                 // update the displayed result
-                updateResult();
+                //updateResult(); TODO - Update result ui
             }
         }
     };

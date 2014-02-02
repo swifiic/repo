@@ -14,13 +14,12 @@ public class Action extends Operation{
 	public Action(String name, AppEndpointContext apCtx){
 		super();
 		opName = name;
-		appName=apCtx.appName;
+		appName = apCtx.appName;
 		appId = apCtx.appId;
 		appVer = apCtx.appVer;
 		deviceId = "TODO"; // TODO - get from runtime context
 		userId = "TODO"; // TODO - get from runtime context
 		version = "0.1"; // in future handle backward compatability - Move to constants
-		
 	}
 	
 	public boolean addArgument(String argName, String argVal){

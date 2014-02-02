@@ -24,7 +24,6 @@ public class Notification extends Operation{
 				return arguments.get(i).argValue;
 		}
 		return null;
-		
 	}
 
 }

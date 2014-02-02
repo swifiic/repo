@@ -14,7 +14,7 @@ public class Action extends Operation{
 	public Action(String name, AppEndpointContext apCtx){
 		super();
 		opName = name;
-		appName=apCtx.appName;
+		appName = apCtx.appName;
 		appId = apCtx.appId;
 		appVer = apCtx.appVer;
 		deviceId = "TODO"; // TODO - get from runtime context

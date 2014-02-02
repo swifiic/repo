@@ -23,6 +23,5 @@ public class Argument {
 	public Argument() {
 		
 	}
-
 }
 

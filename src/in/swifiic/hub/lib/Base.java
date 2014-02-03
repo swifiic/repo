@@ -20,7 +20,7 @@ public class Base {
         this.dtnClient = client;
     }
     
-    private void exit() {
+    protected void exit() {
         dtnClient.shutdown();
         System.exit(0);
     }

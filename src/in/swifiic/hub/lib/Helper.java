@@ -16,7 +16,7 @@ public class Helper {
         	Action action = serializer.read(Action.class,str);
         	return action;
         } catch(Exception e) {
-        	// This shoulod not happen unless APP tries a random string 
+        	// This should not happen unless APP tries a random string 
         	// String given from Generic Service was already tested for success
         }
         return null;

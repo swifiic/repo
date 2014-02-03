@@ -7,9 +7,10 @@ import java.io.Serializable;
  *
  * @author Julian Timpner <timpner@ibr.cs.tu-bs.de>
  */
+@SuppressWarnings("serial")
 public class MessageData implements Serializable {
 
-    private String id;
+	private String id;
     private String correlationId;
     private String text;
 

@@ -101,7 +101,7 @@ public class TestActivity extends Activity {
             	if(mTextUserList.getText().equals("Select User")) {
             		Context context = getApplicationContext();
             		Toast toast = Toast.makeText(context, "Select a user first!", Toast.LENGTH_SHORT);
-            		toast.setGravity(Gravity.TOP, 0, 50);
+            		toast.setGravity(Gravity.TOP, 0, 100);
             		toast.show();
             	}
             	else {
@@ -174,6 +174,8 @@ public class TestActivity extends Activity {
         act.addArgument("userList", mTextUserList.getText().toString()); // TODO - may need to convert user name to userId for uniqueness
                                                               // SUTA implementation + Library will help solve it
         String msg = Helper.serializeAction(act);
+        
+        Log.d("MAIN", msg);
         		
         i.putExtra("action", msg); // msgTextToSend
         if(null != msg) startService(i);

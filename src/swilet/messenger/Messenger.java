@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 public class Messenger implements SwifiicHandler {
 	private static final Logger logger = LogManager.getLogManager().getLogger("");
     private DTNClient dtnClient;
+    // Following is the name of the endpoint to register with
     protected String PRIMARY_EID = "messenger";
     
     public Messenger() {

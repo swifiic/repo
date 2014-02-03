@@ -19,7 +19,8 @@ public class UserListAdapter extends BaseAdapter {
     private List<User> mList = new LinkedList<User>();
 
     private class ViewHolder {
-        public ImageView imageIcon; // TBD XXX integrate user PNG here - for their avatar / image
+        @SuppressWarnings("unused")
+		public ImageView imageIcon; // TBD XXX integrate user PNG here - for their avatar / image
         public TextView textName;
         public User user;
     }

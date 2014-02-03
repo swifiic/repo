@@ -1,16 +1,10 @@
 package swilet.messenger;
 
-import ibrdtn.api.object.Bundle;
-import ibrdtn.api.object.EID;
-import ibrdtn.api.object.PayloadBlock;
-import ibrdtn.api.object.SingletonEndpoint;
-
-import ibrdtn.example.api.Constants;
 import ibrdtn.example.api.DTNClient;
 
+import in.swifiic.hub.lib.Base;
 import in.swifiic.hub.lib.Helper;
 import in.swifiic.hub.lib.SwifiicHandler;
-import in.swifiic.hub.lib.SwifiicHandler.Context;
 import in.swifiic.hub.lib.xml.Action;
 import in.swifiic.hub.lib.xml.Notification;
 
@@ -24,42 +18,20 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 
-public class Messenger implements SwifiicHandler {
+public class Messenger extends Base implements SwifiicHandler {
+	
 	private static final Logger logger = LogManager.getLogManager().getLogger("");
     private DTNClient dtnClient;
+    
+    protected ExecutorService executor = Executors.newCachedThreadPool();
+    
     // Following is the name of the endpoint to register with
     protected String PRIMARY_EID = "messenger";
     
     public Messenger() {
         // Initialize connection to daemon
-        dtnClient = new DTNClient(PRIMARY_EID, this);
+        dtnClient = getDtnClient(PRIMARY_EID, this);
         logger.log(Level.INFO, dtnClient.getConfiguration());
-    }
-    
-    public DTNClient getDtnClient() {
-        return dtnClient;
-    }
-
-    public void setDtnClient(DTNClient client) {
-        this.dtnClient = client;
-    }
-    
-    private void exit() {
-        dtnClient.shutdown();
-        System.exit(0);
-    }
-    
-    private void send(String destinationAddress, String message) {
-        EID destination = new SingletonEndpoint(destinationAddress);
-
-        // Create bundle to send
-        Bundle bundle = new Bundle(destination, Constants.LIFETIME);
-        bundle.setPriority(Bundle.Priority.NORMAL);
-        bundle.appendBlock(new PayloadBlock(message.getBytes()));
-
-        final Bundle finalBundle = bundle;
-        
-        dtnClient.send(finalBundle);    	
     }
     
     public static void main(String args[]) throws IOException {
@@ -76,7 +48,6 @@ public class Messenger implements SwifiicHandler {
     	//messenger.exit();
     }
 
-    protected ExecutorService executor = Executors.newCachedThreadPool();
 	@Override
 	public void handlePayload(String payload, final Context ctx) {
 		final String message = payload;

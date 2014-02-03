@@ -9,6 +9,7 @@ import ibrdtn.api.sab.Custody;
 import ibrdtn.api.sab.StatusReport;
 import ibrdtn.example.data.Envelope;
 import in.swifiic.hub.lib.SwifiicHandler;
+import in.swifiic.hub.lib.SwifiicHandler.Context;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -268,7 +269,10 @@ public class AbstractAPIHandler implements ibrdtn.api.sab.CallbackHandler {
 
         logger.log(Level.SEVERE, "Handling bundle received from {0}", bundle.getSource());
         
-        hndlr.handlePayload(bytes.toString());
+        String data = new String(bytes);
+        Context ctx = new Context();
+        ctx.srcUrl = bundle.getSource().toString();
+        hndlr.handlePayload(data, ctx);
         //TODO: Need a processor to process the messages...
         //executor.execute(new Processor(envelope, client, executor));
     }

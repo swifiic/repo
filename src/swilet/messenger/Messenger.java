@@ -10,6 +10,7 @@ import ibrdtn.example.api.DTNClient;
 
 import in.swifiic.hub.lib.Helper;
 import in.swifiic.hub.lib.SwifiicHandler;
+import in.swifiic.hub.lib.SwifiicHandler.Context;
 import in.swifiic.hub.lib.xml.Action;
 import in.swifiic.hub.lib.xml.Notification;
 
@@ -54,7 +55,10 @@ public class Messenger implements SwifiicHandler {
         Bundle bundle = new Bundle(destination, Constants.LIFETIME);
         bundle.setPriority(Bundle.Priority.NORMAL);
         bundle.appendBlock(new PayloadBlock(message.getBytes()));
-        dtnClient.send(bundle);    	
+
+        final Bundle finalBundle = bundle;
+        
+        dtnClient.send(finalBundle);    	
     }
     
     public static void main(String args[]) throws IOException {
@@ -73,13 +77,15 @@ public class Messenger implements SwifiicHandler {
 
     protected ExecutorService executor = Executors.newCachedThreadPool();
 	@Override
-	public void handlePayload(String payload) {
+	public void handlePayload(String payload, final Context ctx) {
 		final String message = payload;
 		System.out.println("Got Message:" + payload);
 		executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
+                	String destURL = "dtn://atgrnd.dtn/" + "in.swifiic.android.app.msngr";
+                	
                 	Action action = Helper.parseAction(message);
                 	Notification notif = new Notification(action);
                 	notif.updateNotificatioName("DeliverMessage");
@@ -88,11 +94,14 @@ public class Messenger implements SwifiicHandler {
                 	// TODO send it out to all devices for that user
                 	// library should provide something like List<String> getDestinations(String username, String app, String role)
                 	
-                	send("dtn://shivam/in.swifiic.android.app.msngr", Helper.serializeNotification(notif));
+                	// send("dtn://shivam/in.swifiic.android.app.msngr", Helper.serializeNotification(notif));
+                	String response = Helper.serializeNotification(notif);
+                    send(ctx.srcUrl, response);
                     // Mark bundle as delivered...                    
-                    logger.log(Level.SEVERE, "Attempted to send: to dtn://atgrnd.dtn/in.swifiic.android.app.msngr, had received {0}", message);
+                    logger.log(Level.SEVERE, "Attempted to send: to {1}, had received \n{0}\n and responsed with \n {2}", 
+                    				new Object[] {message, destURL, response});
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, "Unable to mark bundle as delivered.", e);
+                    logger.log(Level.SEVERE, "Unable to process message and send response\n" +message, e);
                 }
             }
         });

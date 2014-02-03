@@ -37,13 +37,13 @@ public class Messenger extends Base implements SwifiicHandler {
     public static void main(String args[]) throws IOException {
     	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     	Messenger messenger = new Messenger();
-    	String destination, message;
+    	String input;
     	while(true) {
-		    System.out.print("Enter destination: ");
-	    	destination = br.readLine();
-	    	System.out.print("Enter message: ");
-	    	message = br.readLine();
-	    	messenger.send(destination, message);
+		    System.out.print("Enter \"exit\" to exit application: ");
+	    	input = br.readLine();
+	    	if(input.equalsIgnoreCase("exit")) {
+	    		messenger.exit();
+	    	}
 	    }
     	//messenger.exit();
     }

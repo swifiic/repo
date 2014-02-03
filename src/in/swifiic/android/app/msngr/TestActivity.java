@@ -20,8 +20,6 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.view.MenuCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -37,7 +35,8 @@ public class TestActivity extends Activity {
     
     private static final int SELECT_USER = 1;
 	
-    private GenericService mService = null;
+    @SuppressWarnings("unused")
+	private GenericService mService = null;
     private boolean mBound = false;
     
     private TextView mTextUserList = null;
@@ -90,7 +89,7 @@ public class TestActivity extends Activity {
         
         mTextMsgToSend = (EditText)findViewById(R.id.msgTextToSend);
         mTextUserList = (TextView)findViewById(R.id.usrListToSend);
-        // mResult = (TextView)findViewById(R.id.textResult); TODO - Cange scroll view to a list view for incoming messages
+        // mResult = (TextView)findViewById(R.id.textResult); TODO - Change scroll view to a list view for incoming messages
         // and then use this for "tick" etc.
         mTextFromOthers=(TextView)findViewById(R.id.textMessages);
         
@@ -172,7 +171,7 @@ public class TestActivity extends Activity {
         i.setAction(Constants.SEND_MSG_INTENT);
         Action act = new Action("SendMessage", aeCtx);
         act.addArgument("message", mTextMsgToSend.getText().toString());
-        act.addArgument("userList", mTextUserList.getText().toString()); // may need to convert user name to userId for uniqueness
+        act.addArgument("userList", mTextUserList.getText().toString()); // TODO - may need to convert user name to userId for uniqueness
                                                               // SUTA implementation + Library will help solve it
         String msg = Helper.serializeAction(act);
         		

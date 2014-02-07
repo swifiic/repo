@@ -83,7 +83,7 @@ public class GenericService extends IntentService {
     private void sendToHub(String message) {
         // create a new bundle
         Bundle b = new Bundle();
-        SingletonEndpoint destination = new SingletonEndpoint("dtn://atop9kx.bits.dtn/messenger"); // TODO from Preferences + App Name
+        SingletonEndpoint destination = new SingletonEndpoint("dtn://shivam-laptop/messenger"); // TODO from Preferences + App Name
         
         // set the destination of the bundle
         b.setDestination(destination);

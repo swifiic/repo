@@ -16,7 +16,7 @@ public class Helper {
         	Notification notif = serializer.read(Notification.class,str);
         	return notif;
         } catch(Exception e) {
-        	// This shoulod not happen unless APP tries a random string 
+        	// This should not happen unless APP tries a random string 
         	// String given from Generic Service was already tested for success
         }
         return null;

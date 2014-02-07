@@ -80,10 +80,11 @@ public class GenericService extends IntentService {
 
   
     
-    private void sendToHub(String message) {
+    private void sendToHub(String message, String hubAddress) {
         // create a new bundle
         Bundle b = new Bundle();
-        SingletonEndpoint destination = new SingletonEndpoint("dtn://shivam-laptop/messenger"); // TODO from Preferences + App Name
+
+        SingletonEndpoint destination = new SingletonEndpoint(hubAddress); // TODO from Preferences + App Name
         
         // set the destination of the bundle
         b.setDestination(destination);
@@ -169,12 +170,13 @@ public class GenericService extends IntentService {
         {
             // retrieve the Action object message
         	String msg = intent.getStringExtra("action");
+        	String hubAddress = intent.getStringExtra("hub_address");
         	
             try {
                 Serializer serializer = new Persister();
                 @SuppressWarnings("unused")  // this is checking that XML is fine
 				Action req = serializer.read(Action.class,msg);
-                sendToHub(msg);
+                sendToHub(msg, hubAddress);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -267,7 +267,7 @@ public class AbstractAPIHandler implements ibrdtn.api.sab.CallbackHandler {
          */
         markDelivered();
 
-        logger.log(Level.SEVERE, "Handling bundle received from {0}", bundle.getSource());
+        logger.log(Level.INFO, "Handling bundle received from {0}", bundle.getSource());
         
         String data = new String(bytes);
         Context ctx = new Context();

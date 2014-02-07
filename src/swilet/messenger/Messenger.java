@@ -45,7 +45,6 @@ public class Messenger extends Base implements SwifiicHandler {
 	    		messenger.exit();
 	    	}
 	    }
-    	//messenger.exit();
     }
 
 	@Override
@@ -56,7 +55,7 @@ public class Messenger extends Base implements SwifiicHandler {
             @Override
             public void run() {
                 try {
-                	String destURL = "dtn://atgrnd.dtn/" + "in.swifiic.android.app.msngr";
+                	String destURL = "dtn://shivam-nexus/" + "in.swifiic.android.app.msngr";
                 	
                 	Action action = Helper.parseAction(message);
                 	Notification notif = new Notification(action);
@@ -70,7 +69,7 @@ public class Messenger extends Base implements SwifiicHandler {
                 	String response = Helper.serializeNotification(notif);
                     send(ctx.srcUrl, response);
                     // Mark bundle as delivered...                    
-                    logger.log(Level.SEVERE, "Attempted to send: to {1}, had received \n{0}\n and responsed with \n {2}", 
+                    logger.log(Level.INFO, "Attempted to send: to {1}, had received \n{0}\n and responsed with \n {2}", 
                     				new Object[] {message, destURL, response});
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, "Unable to process message and send response\n" +message, e);

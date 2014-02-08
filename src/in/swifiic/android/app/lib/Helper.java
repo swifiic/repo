@@ -45,6 +45,7 @@ public class Helper {
             i.setAction(Constants.SEND_MSG_INTENT);
             i.putExtra("action", msg); // msgTextToSend
             i.putExtra("hub_address", hubAddress);
+            Log.d("Helper", "Sending: " + msg + "To: " + hubAddress);
             c.startService(i);
         } catch(Exception e) {
         	Log.e("sendAction", "Something goofy:" + e.getMessage());

@@ -84,7 +84,7 @@ public class GenericService extends IntentService {
         // create a new bundle
         Bundle b = new Bundle();
 
-        SingletonEndpoint destination = new SingletonEndpoint(hubAddress); // TODO from Preferences + App Name
+        SingletonEndpoint destination = new SingletonEndpoint(hubAddress);
         
         // set the destination of the bundle
         b.setDestination(destination);
@@ -183,7 +183,7 @@ public class GenericService extends IntentService {
             try {
                 Serializer serializer = new Persister();
                 @SuppressWarnings("unused")  // this is checking that XML is fine
-				Action req = serializer.read(Action.class,msg);
+				Action req = serializer.read(Action.class, msg);
                 sendToHub(msg, hubAddress);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

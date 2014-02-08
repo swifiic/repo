@@ -31,9 +31,9 @@ public class UserChooserFragment extends ListFragment implements
     private Boolean mBound = false;
     
     private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName name, IBinder service) {
+        
+    	public void onServiceConnected(ComponentName name, IBinder service) {
             mService = ((GenericService.LocalBinder)service).getService();
-            
             // initialize the loaders
             getLoaderManager().initLoader(LOADER_ID,  null, UserChooserFragment.this);
         }
@@ -46,15 +46,14 @@ public class UserChooserFragment extends ListFragment implements
     
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        UserListAdapter nla = (UserListAdapter)this.getListAdapter();
-        User n = (User)nla.getItem(position);
+        UserListAdapter nla = (UserListAdapter) this.getListAdapter();
+        User n = (User) nla.getItem(position);
         
         Intent data = new Intent();
-        data.putExtra("name", n.name);
-        data.putExtra("id", n.id);
+        data.putExtra("userName", n.name);
         
         // select the item
-        getActivity().setResult(0, data);
+        getActivity().setResult(1, data);
         getActivity().finish();
         
         // call super-method

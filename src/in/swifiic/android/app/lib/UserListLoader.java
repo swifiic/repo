@@ -78,8 +78,8 @@ public class UserListLoader extends AsyncTaskLoader<List<User>> {
 		User usr2 = new User();
 		usr1.id = "1";
 		usr2.id= "2";
-		usr1.name = "Some User One";
-		usr2.name = "Some user Two";
+		usr1.name = "shivam";
+		usr2.name = "abhishek";
 		usr1.imageArray = usr2.imageArray = new byte[0];
 		List<User> list = new ArrayList<User>();
 		list.add(usr1); list.add(usr2);

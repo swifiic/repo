@@ -11,6 +11,7 @@ import in.swifiic.hub.lib.xml.Notification;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -55,24 +56,23 @@ public class Messenger extends Base implements SwifiicHandler {
             @Override
             public void run() {
                 try {
-                	String destURL = "dtn://shivam-nexus/" + "in.swifiic.android.app.msngr";
-                	
                 	Action action = Helper.parseAction(message);
                 	Notification notif = new Notification(action);
                 	notif.updateNotificatioName("DeliverMessage");
-                	// TODO extract the destination users
-                	// TODO map to their devices
-                	// TODO send it out to all devices for that user
-                	// library should provide something like List<String> getDestinations(String username, String app, String role)
                 	
-                	// send("dtn://shivam/in.swifiic.android.app.msngr", Helper.serializeNotification(notif));
+                	String toUser = action.getArgument("toUser");
+                	
+                	List<String> deviceList = Helper.getDevicesForUser(toUser, ctx); 
+                 	
                 	String response = Helper.serializeNotification(notif);
-                    send(ctx.srcUrl, response);
-                    // Mark bundle as delivered...                    
-                    logger.log(Level.INFO, "Attempted to send: to {1}, had received \n{0}\n and responsed with \n {2}", 
-                    				new Object[] {message, destURL, response});
+                	for(int i = deviceList.size()-1; i >= 0; --i) {
+                		send(deviceList.get(i) + "/in.swifiic.android.app.msngr", response);
+                		// Mark bundle as delivered...                    
+                        logger.log(Level.INFO, "Attempted to send to {1}, had received \n{0}\n and responsed with \n {2}", 
+                        				new Object[] {message, deviceList.get(i) + "/in.swifiic.android.app.msngr", response});
+                	}
                 } catch (Exception e) {
-                    logger.log(Level.SEVERE, "Unable to process message and send response\n" +message, e);
+                    logger.log(Level.SEVERE, "Unable to process message and send response\n" + e.getMessage());
                 }
             }
         });

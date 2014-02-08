@@ -1,9 +1,12 @@
 package in.swifiic.hub.lib;
 
+import in.swifiic.hub.lib.SwifiicHandler.Context;
 import in.swifiic.hub.lib.xml.Action;
 import in.swifiic.hub.lib.xml.Notification;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -33,5 +36,21 @@ public class Helper {
         	// This should not happen since Action is a XML serializable object
         }
         return null;
+	}
+
+	public static List<String> getDevicesForUser(String user, Context ctx) {
+		// TODO - Get this mapping from a Database for the specific app using the context
+		// Hardcoding for now
+		List<String> deviceList = new ArrayList<String>();
+		switch(user) {
+		case "shivam":
+			deviceList.add("dtn://shivam-nexus");
+			return deviceList;
+		case "abhishek":
+			deviceList.add("dtn://abhishek-grand");
+			return deviceList;
+		default:
+			return null;
+		}
 	}
 }

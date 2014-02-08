@@ -8,6 +8,10 @@ import in.swifiic.android.app.lib.xml.Action;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
+import android.content.Intent;
+import android.content.Context;
+import android.util.Log;
+
 public class Helper {
 
 	public static Notification parseNotification(String str) {
@@ -31,6 +35,18 @@ public class Helper {
         	 return writer.getBuffer().toString();
         } catch(Exception e) {
         	// This should not happen since Action is a XML serializable object
+        }
+        return null;
+	}
+	public static String sendAction(Action act, Context c) {
+        try {
+        	String msg = serializeAction(act);
+            Intent i = new Intent(c, GenericService.class);
+            i.setAction(Constants.SEND_MSG_INTENT);
+            i.putExtra("action", msg); // msgTextToSend
+            c.startService(i);
+        } catch(Exception e) {
+        	Log.e("sendAction", "Something goofy:" + e.getMessage());
         }
         return null;
 	}

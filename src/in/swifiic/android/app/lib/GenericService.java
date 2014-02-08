@@ -125,7 +125,15 @@ public class GenericService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        if(null==intent) {
+        	Log.e(TAG, "Received Null Intent - ignoring");
+        	return;
+        }
         String action = intent.getAction();
+        if(null==action) {
+        	Log.e(TAG, "Received Null action - ignoring");
+        	return;
+        }
         Log.d(TAG, "Handling Intent:"+ action);
         if (de.tubs.ibr.dtn.Intent.RECEIVE.equals(action))
         {

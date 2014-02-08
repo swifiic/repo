@@ -38,12 +38,13 @@ public class Helper {
         }
         return null;
 	}
-	public static String sendAction(Action act, Context c) {
+	public static String sendAction(Action act, String hubAddress, Context c) {
         try {
         	String msg = serializeAction(act);
             Intent i = new Intent(c, GenericService.class);
             i.setAction(Constants.SEND_MSG_INTENT);
             i.putExtra("action", msg); // msgTextToSend
+            i.putExtra("hub_address", hubAddress);
             c.startService(i);
         } catch(Exception e) {
         	Log.e("sendAction", "Something goofy:" + e.getMessage());

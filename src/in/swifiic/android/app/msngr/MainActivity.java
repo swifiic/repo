@@ -1,14 +1,11 @@
 package in.swifiic.android.app.msngr;
 
-
 import in.swifiic.android.app.lib.AppEndpointContext;
 import in.swifiic.android.app.lib.Helper;
 import in.swifiic.android.app.lib.ui.SwifiicActivity;
 import in.swifiic.android.app.lib.ui.UserChooserActivity;
 import in.swifiic.android.app.lib.xml.Action;
 import in.swifiic.android.app.lib.xml.Notification;
-
-
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -30,7 +27,8 @@ import android.widget.Toast;
 public class MainActivity extends SwifiicActivity {
     
     private static final int SELECT_USER = 1;
-    private static final String TAG ="TestActivity";
+    
+    private static final String TAG ="MainActivity";
 	
     private TextView mTextUserList = null;
     private EditText mTextMsgToSend = null;
@@ -63,23 +61,23 @@ public class MainActivity extends SwifiicActivity {
             }
         };
     }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.test_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
 		if (itemId == R.id.itemSelectUser) {
-			Intent select_neighbor = new Intent(this, UserChooserActivity.class);
-			startActivityForResult(select_neighbor, SELECT_USER);
+			Intent selectNeighbor = new Intent(this, UserChooserActivity.class);
+			startActivityForResult(selectNeighbor, SELECT_USER);
 			return true;
 		} else if (itemId == R.id.settings) {
 			Intent selectedSettings = new Intent(this, SettingsActivity.class);
-			startActivityForResult(selectedSettings, SELECT_USER);
+			startActivity(selectedSettings);
 			return true;
 		}
 		else {
@@ -87,28 +85,27 @@ public class MainActivity extends SwifiicActivity {
 		}
     }
 
-    
+    /**
+     * Called when activity exits from "startActivityForResult"
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (SELECT_USER == requestCode) {
             if ((data != null)){
-            	String name = "none";
-            	if (data.hasExtra("name") && data.hasExtra("id")) {
-            		name = data.getStringExtra("name") + " | " + data.getStringExtra("id");
-            	} else if(data.hasExtra("name")) {
-            		name = "*";
+            	String userName = "";
+            	if (data.hasExtra("userName")) {
+            		userName = data.getStringExtra("userName");
             	}
-            	mTextUserList.setText(name);
+            	mTextUserList.setText(userName);
             }
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
     
-    
-    
-    /** Called when the activity is first created. */
+    /** 
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,11 +113,9 @@ public class MainActivity extends SwifiicActivity {
         
         mTextMsgToSend = (EditText)findViewById(R.id.msgTextToSend);
         mTextUserList = (TextView)findViewById(R.id.usrListToSend);
-        // mResult = (TextView)findViewById(R.id.textResult); TODO - Change scroll view to a list view for incoming messages
-        // and then use this for "tick" etc.
-        mTextFromOthers=(TextView)findViewById(R.id.textMessages);
+        mTextFromOthers = (TextView)findViewById(R.id.textMessages);
         
-        // assign an action to the ping button
+        // Assign an action to the send button
         Button b = (Button)findViewById(R.id.buttonSendMsg);
         b.setOnClickListener(new OnClickListener() {
             @Override
@@ -134,15 +129,16 @@ public class MainActivity extends SwifiicActivity {
             	else {
                     Action act = new Action("SendMessage", aeCtx);
                     act.addArgument("message", mTextMsgToSend.getText().toString());
-                    act.addArgument("userList", mTextUserList.getText().toString()); 
+                    act.addArgument("toUser", mTextUserList.getText().toString());
+                    
+                    // Loading hub address from preferences
                     SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(v.getContext());
                     String hubAddress = sharedPref.getString("hub_address", "");
-                    // TODO - may need to convert user name to userId for uniqueness
-                    Helper.sendAction(act, hubAddress + "/messenger",v.getContext());
+                    
+                    // TODO - Need to convert user name to userId for uniqueness
+                    Helper.sendAction(act, hubAddress + "/messenger", v.getContext());
             	}
             }
         });
     }
-    
-
 }

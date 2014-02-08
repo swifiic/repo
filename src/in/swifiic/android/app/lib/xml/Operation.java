@@ -1,17 +1,11 @@
 package in.swifiic.android.app.lib.xml;
 
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
-import org.simpleframework.xml.Serializer;
-import org.simpleframework.xml.core.Persister;
-
-import android.util.Log;
 
 public class Operation {
 	static final String TAG="XmlParser:Operation";
@@ -37,7 +31,6 @@ public class Operation {
 	@Attribute
 	String appId;     // optional for now
 	
-	
 	@ElementList
 	public List<Argument> arguments=new ArrayList<Argument>();
 	
@@ -45,18 +38,10 @@ public class Operation {
 	String fileData;
 
 	public Operation() {
-		
+		super();
 	}
 	
-	
-	
-	public String getAppName()
-	{
+	public String getAppName() {
 		return appName;
 	}
-	
-	/**
-	 * For constructing the Action PDU
-	 * @param Name
-	 */
 }

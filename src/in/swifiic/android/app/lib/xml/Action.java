@@ -18,7 +18,7 @@ public class Action extends Operation{
 		appId = apCtx.appId;
 		appVer = apCtx.appVer;
 		deviceId = "TODO"; // TODO - get from runtime context
-		userId = "TODO"; // TODO - get from runtime context
+		origUsr = "shivam"; // TODO - get from runtime context
 		version = "0.1"; // in future handle backward compatability - Move to constants
 	}
 	

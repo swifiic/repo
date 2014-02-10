@@ -20,7 +20,7 @@ public class Operation {
 	String version = "0.1";  // SWiFiIC version "0.1"
 
 	@Attribute
-	String userId;   // endpoint user id
+	String origUsr;   // endpoint user id
 
 	@Attribute(required=false)
 	String appVer = "0.1";    // TODO - partially implemented now

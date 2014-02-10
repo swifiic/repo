@@ -21,7 +21,7 @@ public class Notification extends Operation {
 		appVer = action.appVer;
 		arguments = action.arguments;
 		deviceId = "TODO"; // TODO - get from runtime context
-		userId = "TODO"; // TODO - get from runtime context
+		origUsr = action.origUsr;
 		version = "0.1"; // in future handle backward compatability - Move to constants		
 	}
 	

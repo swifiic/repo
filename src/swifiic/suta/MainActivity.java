@@ -1,28 +1,22 @@
-package swifiic.suta.ui;
+package swifiic.suta;
 
-import in.swifiic.android.app.lib.AppEndpointContext;
 import in.swifiic.android.app.lib.Helper;
 import in.swifiic.android.app.lib.ui.SwifiicActivity;
 import in.swifiic.android.app.lib.xml.Notification;
-import swifiic.suta.R;
 import swifiic.suta.provider.Provider;
 import android.os.Bundle;
-import android.app.ActionBar.Tab;
-import android.app.ActionBar;
-import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.TextView;
 
 public class MainActivity extends SwifiicActivity {
 
     private final String TAG="SUTA-MainAct";
     
- 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,12 +35,25 @@ public class MainActivity extends SwifiicActivity {
                 }
             }
         };
-
+        
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+		if (itemId == R.id.settings) {
+			Intent selectedSettings = new Intent(this, SettingsActivity.class);
+			startActivity(selectedSettings);
+			return true;
+		}
+		else {
+			return super.onOptionsItemSelected(item);
+		}
     }
 
-    private AppEndpointContext aeCtx = new AppEndpointContext("Messenger", "0.1", "1");
+    //private AppEndpointContext aeCtx = new AppEndpointContext("Messenger", "0.1", "1");
 
-    void handleNotification(Notification notif){
+    protected void handleNotification(Notification notif){
     	// TODO if(notif.getNotificationName().equals("SyncToDevice")) { }
     	// we need these arguments
 
@@ -81,7 +88,4 @@ public class MainActivity extends SwifiicActivity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
-
-
 }

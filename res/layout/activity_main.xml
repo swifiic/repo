@@ -11,7 +11,8 @@
         android:layout_marginTop="100sp"
         android:src="@drawable/userimg"
         android:scaleX="2"
-        android:scaleY="2" />
+        android:scaleY="2"
+        android:contentDescription="SWiFiIC Logo" />
     
     <TextView 
         android:id="@+id/appname"

@@ -7,15 +7,15 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
-import android.database.SQLException;
+//import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteQueryBuilder;
+//import android.database.sqlite.SQLiteQueryBuilder;
 
 /***
  * 
  * @author abhishek
- * Note: 3rd Jan 2013 - This class needs significant rework - for now limiting it to 
+ * Note: 3rd Jan r file generated 2013 - This class needs significant rework - for now limiting it to 
  * Just provide list of users
  * 
  * Update to the schema will happen based on addition of users or addition of 
@@ -30,7 +30,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 public class Provider extends ContentProvider {
 
 	private static final String AUTHORITY = "swifiic.suta";
-	private static final String USR_BASE_PATH = "users";
+	//private static final String USR_BASE_PATH = "users";
 	private static final String APP_BASE_PATH = "apps";
 	private static final int USERS = 10;
 	public static Provider providerInstance=null;
@@ -126,25 +126,25 @@ public class Provider extends ContentProvider {
 	}
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-		SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
-		int uriType = sURIMatcher.match(uri);
-		if(USERS == uriType || USER_ID==uriType) {
-			sqlBuilder.setTables(DB_USR_TABLE);
-			if(USER_ID==uriType)
-				sqlBuilder.appendWhere("user_id = " + uri.getPathSegments().get(1));
-			if (sortOrder==null || sortOrder=="")
-	            sortOrder = "alias";
-			Cursor c = sqlBuilder.query(
-	                sutaDB, 
-	                projection, 
-	                selection, 
-	                selectionArgs, 
-	                null, 
-	                null, 
-	                sortOrder);
-			c.setNotificationUri(getContext().getContentResolver(), uri);
-			return c;
-		}
+//		SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
+//		int uriType = sURIMatcher.match(uri);
+//		if(USERS == uriType || USER_ID==uriType) {
+//			sqlBuilder.setTables(DB_USR_TABLE);
+//			if(USER_ID==uriType)
+//				sqlBuilder.appendWhere("user_id = " + uri.getPathSegments().get(1));
+//			if (sortOrder==null || sortOrder=="")
+//	            sortOrder = "alias";
+//			Cursor c = sqlBuilder.query(
+//	                sutaDB, 
+//	                projection, 
+//	                selection, 
+//	                selectionArgs, 
+//	                null, 
+//	                null, 
+//	                sortOrder);
+//			c.setNotificationUri(getContext().getContentResolver(), uri);
+//			return c;
+//		}
         return null;
 	}
 

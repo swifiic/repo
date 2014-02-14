@@ -28,15 +28,9 @@ public class SettingsActivity extends PreferenceActivity {
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-
 		setupSimplePreferencesScreen();
 	}
 
-	/**
-	 * Shows the simplified settings UI if the device configuration if the
-	 * device configuration dictates that a simplified, single-pane UI should be
-	 * shown.
-	 */
 	@SuppressWarnings("deprecation")
 	private void setupSimplePreferencesScreen() {
 		// Add 'general' preferences.
@@ -54,7 +48,7 @@ public class SettingsActivity extends PreferenceActivity {
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object value) {
 			String stringValue = value.toString();
-			preference.setSummary(stringValue);
+			preference.setSummary(stringValue + " - Set from SUTA");
 			return true;
 		}
 	};
@@ -75,7 +69,8 @@ public class SettingsActivity extends PreferenceActivity {
 		// Trigger the listener immediately with the preference's
 		// current value.
 		sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, 
-				PreferenceManager
-				.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), ""));
+				PreferenceManager.getDefaultSharedPreferences
+				(preference.getContext())
+				.getString(preference.getKey(), ""));
 	}
 }

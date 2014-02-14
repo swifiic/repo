@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>in.swifiic.android.app.Msngr</name>
+	<name>msngr-andi</name>
 	<comment></comment>
 	<projects>
 		<project>in.swifiic.android.app.lib</project>

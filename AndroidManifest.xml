@@ -58,8 +58,15 @@
             android:parentActivityName="in.swifiic.android.app.msngr.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.swifiic.android.app.msngr.TestActivity" />
+                android:value="in.swifiic.android.app.msngr.MainActivity" />
         </activity>
+        
+        <receiver android:name="in.swifiic.android.app.lib.HubAddressReceiver" >
+            <intent-filter>
+                <action android:name="swifiic.suta.hubAddressUpdate" />
+            </intent-filter>
+        </receiver>
+        
     </application>
 
 </manifest>

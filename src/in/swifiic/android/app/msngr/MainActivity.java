@@ -6,7 +6,6 @@ import in.swifiic.android.app.lib.ui.SwifiicActivity;
 import in.swifiic.android.app.lib.ui.UserChooserActivity;
 import in.swifiic.android.app.lib.xml.Action;
 import in.swifiic.android.app.lib.xml.Notification;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -60,6 +59,7 @@ public class MainActivity extends SwifiicActivity {
                 }
             }
         };
+        
     }
     
     @Override
@@ -115,6 +115,10 @@ public class MainActivity extends SwifiicActivity {
         mTextUserList = (TextView)findViewById(R.id.usrListToSend);
         mTextFromOthers = (TextView)findViewById(R.id.textMessages);
         
+        TextView viewHubAddress = (TextView) findViewById(R.id.hubAddress);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        viewHubAddress.setText(prefs.getString("hub_address", "Hub broadcast not yet received"));
+        
         // Assign an action to the send button
         Button b = (Button)findViewById(R.id.buttonSendMsg);
         b.setOnClickListener(new OnClickListener() {
@@ -140,5 +144,12 @@ public class MainActivity extends SwifiicActivity {
             	}
             }
         });
+    }
+
+    public void onResume() {
+        super.onResume();
+        TextView viewHubAddress = (TextView) findViewById(R.id.hubAddress);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        viewHubAddress.setText(prefs.getString("hub_address", "Hub broadcast not yet received"));   
     }
 }

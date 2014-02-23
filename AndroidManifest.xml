@@ -33,6 +33,12 @@
 	            <!--  possibly not needed - disabled Jan 29th <category android:name="swifiic.sae.Msngr" />  -->
 	        </intent-filter>
 	    </receiver>
+	    
+   	    <receiver android:name="HubAddressReceiver" >
+            <intent-filter>
+                <action android:name="swifiic.suta.hubAddressUpdate" />
+            </intent-filter>
+        </receiver>
         
     </application>
    	    

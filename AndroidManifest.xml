@@ -7,6 +7,8 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
+    
+    <permission android:name="swifiic.suta.USER" ></permission>
 
     <uses-permission android:name="de.tubs.ibr.dtn.permission.DTN_COMMUNICATION" />
 
@@ -37,7 +39,7 @@
             android:name="swifiic.suta.provider.Provider"
             android:authorities="swifiic.suta"
             android:exported="true"
-            android:readPermission="swifiic.suta.SUTA" >
+            android:permission="swifiic.suta.USER" >
         </provider>
      
     </application>

@@ -51,7 +51,7 @@ public class UserChooserFragment extends ListFragment implements
         
         Intent data = new Intent();
         data.putExtra("userName", n.name);
-        
+        data.putExtra("alias", n.id);
         // select the item
         getActivity().setResult(1, data);
         getActivity().finish();

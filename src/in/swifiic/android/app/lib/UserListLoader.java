@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.content.AsyncTaskLoader;
+import android.util.Log;
 
 
 public class UserListLoader extends AsyncTaskLoader<List<User>> {
@@ -87,7 +88,7 @@ public class UserListLoader extends AsyncTaskLoader<List<User>> {
 //		usr1.imageArray = usr2.imageArray = new byte[0];
 		List<User> list = new ArrayList<User>();
 //		list.add(usr1);
-//		list.add(usr2);
+//				cursor.	list.add(usr2);
 
 		Cursor cursor = getUsers();
 
@@ -106,14 +107,19 @@ public class UserListLoader extends AsyncTaskLoader<List<User>> {
 
 	private Cursor getUsers() {
 		Uri uri = Uri.parse("content://swifiic.suta/users/msngr");
-		String[] projection = new String[] {"name", "alias"};
+//		String[] projection = new String[] {"name", "alias"};
+		String[] projection = null;
 		String selection = null;
 		String[] selectionArgs = null;
 		String sortOrder = null;
 		
 		ContentResolver cr = this.getContext().getContentResolver();
 		
-		return cr.query(uri, projection, selection, selectionArgs, sortOrder);
+		Log.d("UserListLoader getUsers()", "Content resolver: " + cr.getType(uri));
+		
+		Cursor c = cr.query(uri, projection, selection, selectionArgs, sortOrder);
+		Log.d("UserListLoader getUsers()", "" + c.getCount());
+		return c;
 	}
 
 	@SuppressWarnings("unused")

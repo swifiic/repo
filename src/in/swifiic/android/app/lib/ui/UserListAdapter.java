@@ -22,6 +22,7 @@ public class UserListAdapter extends BaseAdapter {
         @SuppressWarnings("unused")
 		public ImageView imageIcon; // TBD XXX integrate user PNG here - for their avatar / image
         public TextView textName;
+        public TextView textAlias;
         public User user;
     }
 
@@ -66,6 +67,7 @@ public class UserListAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.imageIcon = (ImageView) convertView.findViewById(R.id.imageIcon);
             holder.textName = (TextView) convertView.findViewById(R.id.textName);
+            holder.textAlias = (TextView) convertView.findViewById(R.id.textAlias);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -74,6 +76,7 @@ public class UserListAdapter extends BaseAdapter {
         holder.user = mList.get(position);
 
         holder.textName.setText(holder.user.name);
+        holder.textAlias.setText(holder.user.id);
 
         return convertView;
     }  

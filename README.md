@@ -1,4 +1,4 @@
-in-swifiic-hub
-==============
+SWiFiIC Application Hub Library Project
 
-Library for SWiFiIC Hublets
+This project contains library files.
+// TODO - Make README proper.

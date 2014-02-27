@@ -62,6 +62,7 @@ public class Messenger extends Base implements SwifiicHandler {
                 	
                 	String toUser = action.getArgument("toUser");
                 	
+                	// A user may have multiple devices
                 	List<String> deviceList = Helper.getDevicesForUser(toUser, ctx); 
                  	
                 	String response = Helper.serializeNotification(notif);

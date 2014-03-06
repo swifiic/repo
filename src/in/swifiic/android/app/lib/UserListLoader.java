@@ -77,48 +77,30 @@ public class UserListLoader extends AsyncTaskLoader<List<User>> {
 
 	@Override
 	public List<User> loadInBackground() {
-		// For now use a hard coded list - later fetch it from Preferences or
-		// using DTN
-//		User usr1 = new User();
-//		User usr2 = new User();
-//		usr1.id = "1";
-//		usr2.id = "2";
-//		usr1.name = "shivam";
-//		usr2.name = "abhishek";
-//		usr1.imageArray = usr2.imageArray = new byte[0];
 		List<User> list = new ArrayList<User>();
-//		list.add(usr1);
-//				cursor.	list.add(usr2);
-
 		Cursor cursor = getUsers();
-
-		User user = new User();
-
+		Log.d("UserListLoader", "Cursor position: " + cursor.getPosition());
 		while (cursor.moveToNext()) {
+			User user = new User();
 			String name = cursor.getString(cursor.getColumnIndex("name"));
 			String alias = cursor.getString(cursor.getColumnIndex("alias"));
-			user.id = alias;
-			user.name = name;
+			user.userName = name;
+			user.alias = alias;
 			list.add(user);
 		}
-
 		return list;
 	}
 
 	private Cursor getUsers() {
 		Uri uri = Uri.parse("content://swifiic.suta/users/msngr");
-//		String[] projection = new String[] {"name", "alias"};
 		String[] projection = null;
 		String selection = null;
 		String[] selectionArgs = null;
 		String sortOrder = null;
 		
-		ContentResolver cr = this.getContext().getContentResolver();
-		
-		Log.d("UserListLoader getUsers()", "Content resolver: " + cr.getType(uri));
-		
+		ContentResolver cr = this.getContext().getContentResolver();		
 		Cursor c = cr.query(uri, projection, selection, selectionArgs, sortOrder);
-		Log.d("UserListLoader getUsers()", "" + c.getCount());
+		Log.d("UserListLoader getUsers()", "Got users: " + c.getCount());
 		return c;
 	}
 

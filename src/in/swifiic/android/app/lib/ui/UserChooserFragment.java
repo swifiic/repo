@@ -50,8 +50,8 @@ public class UserChooserFragment extends ListFragment implements
         User n = (User) nla.getItem(position);
         
         Intent data = new Intent();
-        data.putExtra("userName", n.name);
-        data.putExtra("alias", n.id);
+        data.putExtra("userName", n.alias);
+        data.putExtra("alias", n.userName);
         // select the item
         getActivity().setResult(1, data);
         getActivity().finish();

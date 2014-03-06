@@ -63,7 +63,7 @@ public class UserListAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (convertView == null) {
-            convertView = this.mInflater.inflate(R.layout.userlist_item, null, true);
+            convertView = this.mInflater.inflate(R.layout.userlist_item_lib, null, true);
             holder = new ViewHolder();
             holder.imageIcon = (ImageView) convertView.findViewById(R.id.imageIcon);
             holder.textName = (TextView) convertView.findViewById(R.id.textName);
@@ -75,8 +75,8 @@ public class UserListAdapter extends BaseAdapter {
 
         holder.user = mList.get(position);
 
-        holder.textName.setText(holder.user.name);
-        holder.textAlias.setText(holder.user.id);
+        holder.textName.setText(holder.user.alias);
+        holder.textAlias.setText(holder.user.userName);
 
         return convertView;
     }  

@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -61,14 +62,8 @@ public class Provider extends ContentProvider {
           									 + "user_id INTEGER NOT NULL, "
           									 + "FOREIGN KEY (app_id) REFERENCES " + DB_APP_TABLE + "(_id), "
           									 + "FOREIGN KEY (user_id) REFERENCES " + DB_USR_TABLE + "(_id));";
-    
-    private static final String CREATE_MAP_VIEW = "CREATE VIEW users_of_app AS "
-    										    + "SELECT " + DB_MAP_TABLE + ".*, " + DB_USR_TABLE + ".*, " + DB_APP_TABLE +"._id AS appId, " + DB_APP_TABLE + ".app_name as app_name "
-    										    + "FROM " + DB_MAP_TABLE + " LEFT JOIN apps ON uamaps.app_id=appId LEFT JOIN users ON uamaps.user_id=users._id;";
-    		
-    
-    private static class DatabaseHelper extends SQLiteOpenHelper 
-    {
+   
+    private static class DatabaseHelper extends SQLiteOpenHelper {
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
@@ -82,8 +77,6 @@ public class Provider extends ContentProvider {
             db.execSQL(CREATE_TABLE_APP);
             Log.d("onCreate Provider", "Creating table with: " + CREATE_TABLE_MAP);
             db.execSQL(CREATE_TABLE_MAP);
-            Log.d("onCreate Provider", "Creating view with: " + CREATE_MAP_VIEW);
-            db.execSQL(CREATE_MAP_VIEW);
             
             ContentValues v = new ContentValues();
             
@@ -125,7 +118,7 @@ public class Provider extends ContentProvider {
             db.execSQL("DROP TABLE IF EXISTS " + DB_USR_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + DB_APP_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + DB_MAP_TABLE);
-            // add devices and roles table as well
+            // TODO add devices and roles table as well
             
             onCreate(db);
         }
@@ -173,17 +166,29 @@ public class Provider extends ContentProvider {
 		SQLiteQueryBuilder sqlBuilder = new SQLiteQueryBuilder();
 		
 		int uriType = sURIMatcher.match(uri);
+		String app = uri.getLastPathSegment();
 		
-		if(USERS == uriType) {			
-			sqlBuilder.setTables("users_of_app");
+		if(USERS == uriType) {	
 			
-			String app = uri.getLastPathSegment();
+			sqlBuilder.setTables("apps");
+			projection = new String[]{"app_id"};
+			selection = "app_name=\'" + app +"\'";
+			Log.d("Provider query", "Querying for app_id of app: " + app);			
+			Cursor c1 = sqlBuilder.query(
+		                sutaDB, 
+		                projection, 
+		                selection, 
+		                selectionArgs, 
+		                null, 
+		                null, 
+		                null);
+			c1.moveToFirst();
+			String app_id = c1.getString(0);
 			
-			if (sortOrder==null || sortOrder=="")
-	            sortOrder = "alias";
-		
-			selection = "app_name=\'" + app + "\'";
-			
+			sqlBuilder.setTables("uamaps INNER JOIN users ON uamaps.user_id=users.user_id");			
+			projection = new String[]{"name", "alias"};
+			selection = "app_id=\'" + app_id +"\'";
+			Log.d("Provider query", "Querying for users of app: " + app);			
 			Cursor c = sqlBuilder.query(
 		                sutaDB, 
 		                projection, 
@@ -192,7 +197,8 @@ public class Provider extends ContentProvider {
 		                null, 
 		                null, 
 		                sortOrder);
-			
+			Log.d("Provider query", "Dumping cursor: " + DatabaseUtils.dumpCursorToString(c));
+
 			c.setNotificationUri(getContext().getContentResolver(), uri);
 			return c;
 		}

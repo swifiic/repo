@@ -8,7 +8,7 @@
         android:minSdkVersion="15"
         android:targetSdkVersion="18" />
     <uses-permission android:name="de.tubs.ibr.dtn.permission.DTN_COMMUNICATION"/>
-    <uses-permission android:name="swifiic.suta.SUTA"/>
+    <uses-permission android:name="swifiic.suta.USER"/>
     
     <application>
         <activity android:label="Select User"
@@ -37,6 +37,12 @@
    	    <receiver android:name="HubAddressReceiver" >
             <intent-filter>
                 <action android:name="swifiic.suta.hubAddressUpdate" />
+            </intent-filter>
+        </receiver>
+        
+        <receiver android:name="IdentityReceiver" >
+            <intent-filter>
+                <action android:name="swifiic.suta.myIdentityUpdate" />
             </intent-filter>
         </receiver>
         

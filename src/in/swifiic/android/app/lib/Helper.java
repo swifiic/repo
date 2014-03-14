@@ -10,6 +10,8 @@ import org.simpleframework.xml.core.Persister;
 
 import android.content.Intent;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class Helper {
@@ -40,12 +42,21 @@ public class Helper {
 	}
 	public static String sendAction(Action act, String hubAddress, Context c) {
         try {
+        	// Loading my identity from preferences
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(c);
+            String myIdentity = sharedPref.getString("my_identity", "");
+        	act.addArgument("fromUser", myIdentity);
+        	
         	String msg = serializeAction(act);
-            Intent i = new Intent(c, GenericService.class);
+            
+        	Intent i = new Intent(c, GenericService.class);
+            
             i.setAction(Constants.SEND_MSG_INTENT);
             i.putExtra("action", msg); // msgTextToSend
             i.putExtra("hub_address", hubAddress);
+            
             Log.d("Helper", "Sending: " + msg + "To: " + hubAddress);
+            
             c.startService(i);
         } catch(Exception e) {
         	Log.e("sendAction", "Something goofy:" + e.getMessage());

@@ -1,11 +1,17 @@
 package in.swifiic.android.app.msngr;
 
+import java.util.Date;
+import java.util.List;
+
 import in.swifiic.android.app.lib.AppEndpointContext;
 import in.swifiic.android.app.lib.Helper;
 import in.swifiic.android.app.lib.ui.SwifiicActivity;
 import in.swifiic.android.app.lib.ui.UserChooserActivity;
 import in.swifiic.android.app.lib.xml.Action;
 import in.swifiic.android.app.lib.xml.Notification;
+
+import in.swifiic.android.app.msngr.DatabaseHelper;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -35,25 +41,29 @@ public class MainActivity extends SwifiicActivity {
     
     private AppEndpointContext aeCtx = new AppEndpointContext("Messenger", "0.1", "1");
     
+    DatabaseHelper db;
+    
     /**
      * Mandatory implementation to receive swifiic notifications
      */
     public MainActivity() {
     	super();
-    	mDataReceiver= new BroadcastReceiver() {  // this is a must for all applications - hook to get notification from GenericService
+    	// This is a must for all applications - hook to get notification from GenericService
+    	mDataReceiver= new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.hasExtra("notification")) {
                 	String message= intent.getStringExtra("notification");
                 	
-                    Log.d("MAIN", "TBD XXX -  handle incoming messages" + message);
+                    Log.d("MAIN", "Handling incoming message: " + message);
                     Notification notif = Helper.parseNotification(message);
-                	// TODO check opName / Notification name
-                    // notif.getNotificationName()
-
-                    String textToUpdate = notif.getArgument("message");
-                  
-                    mTextFromOthers.append(textToUpdate);
+                	// Checking for opName of Notification
+                    if(notif.getNotificationName() == "DeliverMessage") {
+                    	Msg msg = new Msg(notif);
+                    	db = new DatabaseHelper(getApplicationContext());
+                    	db.addMessage(msg);
+                        mTextFromOthers.append(msg.getPrintableMessage());                	
+                    }
                 } else {
                     Log.d(TAG, "Broadcast Receiver ignoring message - no notification found");
                 }
@@ -97,6 +107,17 @@ public class MainActivity extends SwifiicActivity {
             		userName = data.getStringExtra("userName");
             	}
             	mTextUserList.setText(userName);
+            	Log.d("ActivityResult", "Got user: " + userName);
+            	mTextFromOthers = (TextView)findViewById(R.id.textMessages);
+            	mTextFromOthers.setText("");
+            	db = new DatabaseHelper(getApplicationContext());
+            	List<Msg> msgs = db.getMessagesForUser(userName);
+            	if(msgs != null) {
+	            	int size = msgs.size();
+	            	for(int i=0; i<size; ++i) {
+	            		mTextFromOthers.append(msgs.get(i).getPrintableMessage());
+	            	}
+            	}
             }
             return;
         }
@@ -134,13 +155,23 @@ public class MainActivity extends SwifiicActivity {
                     Action act = new Action("SendMessage", aeCtx);
                     act.addArgument("message", mTextMsgToSend.getText().toString());
                     act.addArgument("toUser", mTextUserList.getText().toString());
+                    Date date = new Date();
+                    act.addArgument("sentAt", "" + date.getTime());
+                    
                     
                     // Loading hub address from preferences
                     SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(v.getContext());
                     String hubAddress = sharedPref.getString("hub_address", "");
                     
-                    // TODO - Need to convert user name to userId for uniqueness
                     Helper.sendAction(act, hubAddress + "/messenger", v.getContext());
+                    Notification ntf = Helper.parseNotification(Helper.serializeAction(act));
+                    Msg msg = new Msg(ntf);
+                    db = new DatabaseHelper(v.getContext());
+                    db.addMessage(msg);
+                    EditText msgInput = (EditText) findViewById(R.id.msgTextToSend);
+                    msgInput.setText("");
+                    mTextFromOthers = (TextView) findViewById(R.id.textMessages);
+                    mTextFromOthers.append(msg.getPrintableMessage());
             	}
             }
         });

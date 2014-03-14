@@ -38,6 +38,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 		// Bind the summaries of EditText to their values.
 		bindPreferenceSummaryToValue(findPreference("hub_address"));
+		bindPreferenceSummaryToValue(findPreference("my_identity"));
 	}
 
 	/**

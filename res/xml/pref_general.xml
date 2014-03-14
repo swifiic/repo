@@ -20,6 +20,15 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="@string/pref_title_hub_address" />
+	
+	<Preference
+        android:defaultValue="@string/pref_default_my_identity"
+        android:key="my_identity"
+        android:maxLines="1"
+        android:selectable="false"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_my_identity" />
     
 	</PreferenceCategory>
 </PreferenceScreen>

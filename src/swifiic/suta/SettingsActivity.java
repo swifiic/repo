@@ -46,6 +46,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 		// Bind the summaries of EditText to their values.
 		bindPreferenceSummaryToValue(findPreference("hub_address"));
+		bindPreferenceSummaryToValue(findPreference("my_identity"));
 	}
 
 	/**
@@ -58,10 +59,18 @@ public class SettingsActivity extends PreferenceActivity {
 			String stringValue = value.toString();
 			preference.setSummary(stringValue);
 			Intent intent = new Intent();
-			intent.setAction("swifiic.suta.hubAddressUpdate");
-			intent.putExtra("hubAddress", stringValue);
+			Log.d("Settings SUTA", "Preference key: " + preference.getKey() + " with value: " + stringValue);
+			if(preference.getKey().equals("hub_address")) {
+				intent.setAction("swifiic.suta.hubAddressUpdate");
+				intent.putExtra("hubAddress", stringValue);
+				Log.d("Settings SUTA", "Setting hub address in intent as: " + stringValue);
+			} else if(preference.getKey().equals("my_identity")) {
+				intent.setAction("swifiic.suta.myIdentityUpdate");
+				intent.putExtra("myIdentity", stringValue);
+				Log.d("Settings SUTA", "Setting identity in intent as: " + stringValue);
+			}
 			preference.getContext().sendBroadcast(intent);
-			Log.d("SUTA", "Sent broadcast with intent: " + intent.toString());
+			Log.d("SUTA", "Sent broadcast with intent: " + intent.toString() + " Extras: " + intent.getExtras());
 			return true;
 		}
 	};

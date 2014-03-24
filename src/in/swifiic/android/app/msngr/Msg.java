@@ -25,7 +25,7 @@ public class Msg {
 	public String getPrintableMessage() {
     	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM HH:mm:ss");
     	Date date = new Date(Long.parseLong(this.getSentAtTime()));
-		return "[" + sdf.format(date) + "]\n" + this.getFrom() + ": " + this.getMsg() + "\n";
+		return "<small>[" + sdf.format(date) + "]</small><br><strong>" + this.getFrom() + ":</strong> " + this.getMsg() + "<br>";
     }
     
     /*

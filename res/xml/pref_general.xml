@@ -31,4 +31,13 @@
         android:title="@string/pref_title_my_identity" />
     
 	</PreferenceCategory>
+	
+    <Preference
+        android:defaultValue="delete"
+        android:key="delete_all_messages"
+        android:selectable="true"
+        android:singleLine="true"
+        android:title="Delete all messages?"
+        android:summary="WARNING: Can't be undone. No confimation dialog." />
+
 </PreferenceScreen>

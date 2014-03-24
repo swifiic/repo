@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:layout_marginTop="@dimen/activity_horizontal_margin"
     android:layout_marginLeft="@dimen/activity_vertical_margin"
     android:layout_marginBottom="@dimen/activity_horizontal_margin"
-    android:layout_marginRight="@dimen/activity_vertical_margin" >
+    android:layout_marginRight="@dimen/activity_vertical_margin"
+    android:isScrollContainer="true" >
     
     <TextView android:id="@+id/hubAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Hub not yet set"
-        android:textSize="12sp"/>
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/usrListToSend"
@@ -20,21 +21,17 @@
         android:layout_height="wrap_content"
         android:text="Select User"
         android:textColor="@android:color/darker_gray"
-        android:textSize="24sp" />
-<!--
-    <TextView
-        android:id="@+id/textResult"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:text="Text View for Test" />
--->
+        android:textSize="24sp"
+        android:includeFontPadding="true"
+        android:layout_below="@id/hubAddress" />
+
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" >
-        
+        android:layout_height="fill_parent" 
+         
+        android:layout_below="@id/usrListToSend"
+        android:layout_above="@+id/bottomRow" >             
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -43,15 +40,16 @@
             <TextView
                 android:id="@+id/textMessages"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Text View for Result"/>
+                android:layout_height="wrap_content" />
             
         </LinearLayout>
         
     </ScrollView>
 
-    <LinearLayout android:layout_width="fill_parent"
+    <LinearLayout android:id="@+id/bottomRow"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal" >
         
         <EditText
@@ -69,4 +67,4 @@
 	    
     </LinearLayout>
     
-</LinearLayout>
+</RelativeLayout>

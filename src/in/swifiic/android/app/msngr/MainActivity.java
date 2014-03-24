@@ -9,15 +9,14 @@ import in.swifiic.android.app.lib.ui.SwifiicActivity;
 import in.swifiic.android.app.lib.ui.UserChooserActivity;
 import in.swifiic.android.app.lib.xml.Action;
 import in.swifiic.android.app.lib.xml.Notification;
-
 import in.swifiic.android.app.msngr.DatabaseHelper;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -26,6 +25,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,7 +37,7 @@ public class MainActivity extends SwifiicActivity {
 	
     private TextView mTextUserList = null;
     private EditText mTextMsgToSend = null;
-    private TextView mTextFromOthers=null;
+    private TextView mTextFromOthers = null;
     
     private AppEndpointContext aeCtx = new AppEndpointContext("Messenger", "0.1", "1");
     
@@ -62,7 +62,14 @@ public class MainActivity extends SwifiicActivity {
                     	Msg msg = new Msg(notif);
                     	db = new DatabaseHelper(getApplicationContext());
                     	db.addMessage(msg);
-                        mTextFromOthers.append(msg.getPrintableMessage());                	
+                        mTextFromOthers.append(Html.fromHtml(msg.getPrintableMessage()));
+                        final ScrollView mScrollView = (ScrollView)findViewById(R.id.scrollView1);        
+                        mScrollView.post(new Runnable() {			
+                			@Override
+                			public void run() {
+                				mScrollView.fullScroll(View.FOCUS_DOWN);
+                			}
+                		});
                     }
                 } else {
                     Log.d(TAG, "Broadcast Receiver ignoring message - no notification found");
@@ -115,9 +122,16 @@ public class MainActivity extends SwifiicActivity {
             	if(msgs != null) {
 	            	int size = msgs.size();
 	            	for(int i=0; i<size; ++i) {
-	            		mTextFromOthers.append(msgs.get(i).getPrintableMessage());
+	            		mTextFromOthers.append(Html.fromHtml(msgs.get(i).getPrintableMessage()));
 	            	}
             	}
+            	final ScrollView mScrollView = (ScrollView)findViewById(R.id.scrollView1);        
+                mScrollView.post(new Runnable() {			
+        			@Override
+        			public void run() {
+        				mScrollView.fullScroll(View.FOCUS_DOWN);
+        			}
+        		});
             }
             return;
         }
@@ -130,15 +144,15 @@ public class MainActivity extends SwifiicActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.test_activity_msngr);
+        setContentView(R.layout.main_activity_msngr);
         
         mTextMsgToSend = (EditText)findViewById(R.id.msgTextToSend);
         mTextUserList = (TextView)findViewById(R.id.usrListToSend);
-        mTextFromOthers = (TextView)findViewById(R.id.textMessages);
+        mTextFromOthers = (TextView)findViewById(R.id.textMessages);        
         
         TextView viewHubAddress = (TextView) findViewById(R.id.hubAddress);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        viewHubAddress.setText(prefs.getString("hub_address", "Hub broadcast not yet received"));
+        viewHubAddress.setText("Configured Hub: " + prefs.getString("hub_address", "Hub broadcast not yet received"));
         
         // Assign an action to the send button
         Button b = (Button)findViewById(R.id.buttonSendMsg);
@@ -150,6 +164,9 @@ public class MainActivity extends SwifiicActivity {
             		Toast toast = Toast.makeText(context, "Select a user first!", Toast.LENGTH_SHORT);
             		toast.setGravity(Gravity.TOP, 0, 100);
             		toast.show();
+            	}
+            	else if (mTextMsgToSend.getText().toString().equals("")){
+            		// Do nothing
             	}
             	else {
                     Action act = new Action("SendMessage", aeCtx);
@@ -171,7 +188,14 @@ public class MainActivity extends SwifiicActivity {
                     EditText msgInput = (EditText) findViewById(R.id.msgTextToSend);
                     msgInput.setText("");
                     mTextFromOthers = (TextView) findViewById(R.id.textMessages);
-                    mTextFromOthers.append(msg.getPrintableMessage());
+                    mTextFromOthers.append(Html.fromHtml(msg.getPrintableMessage()));
+                    final ScrollView mScrollView = (ScrollView)findViewById(R.id.scrollView1);        
+                    mScrollView.post(new Runnable() {			
+            			@Override
+            			public void run() {
+            				mScrollView.fullScroll(View.FOCUS_DOWN);
+            			}
+            		});
             	}
             }
         });
@@ -181,6 +205,6 @@ public class MainActivity extends SwifiicActivity {
         super.onResume();
         TextView viewHubAddress = (TextView) findViewById(R.id.hubAddress);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        viewHubAddress.setText(prefs.getString("hub_address", "Hub broadcast not yet received"));   
+        viewHubAddress.setText("Configured Hub: " + prefs.getString("hub_address", "Hub broadcast not yet received"));   
     }
 }

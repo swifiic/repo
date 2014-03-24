@@ -48,9 +48,16 @@ public class SettingsActivity extends PreferenceActivity {
 	private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
 		@Override
 		public boolean onPreferenceChange(Preference preference, Object value) {
-			String stringValue = value.toString();
-			preference.setSummary(stringValue + " - Set from SUTA");
-			return true;
+			if(preference.getKey().equals("hub_address")) {
+				String stringValue = value.toString();
+				preference.setSummary(stringValue + " - Set from SUTA");
+				return true;
+			}
+			else if(preference.getKey().equals("delete_all_messages")) {
+				return true;
+				// TODO add delete message functionality
+			}
+			return false;
 		}
 	};
 

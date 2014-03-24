@@ -127,6 +127,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return msgs;
     }
     
+    public void deleteAll() {
+    	// TODO add delete message functionality
+    }
+    
     // Closing database
     public void closeDB() {
         SQLiteDatabase db = this.getReadableDatabase();

@@ -18,10 +18,11 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="in.swifiic.android.app.msngr.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:windowSoftInputMode="stateVisible|adjustResize"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -30,7 +31,8 @@
 
         <activity
             android:name="in.swifiic.android.app.lib.ui.UserChooserActivity"
-            android:label="Select User" />
+            android:label="Select User"
+            android:screenOrientation="portrait" />
 
         <receiver
             android:name="in.swifiic.android.app.lib.IBRDtnReceiver"
@@ -55,7 +57,8 @@
         <activity
             android:name="in.swifiic.android.app.msngr.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="in.swifiic.android.app.msngr.MainActivity" >
+            android:parentActivityName="in.swifiic.android.app.msngr.MainActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="in.swifiic.android.app.msngr.MainActivity" />

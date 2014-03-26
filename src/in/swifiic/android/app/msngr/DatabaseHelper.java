@@ -48,7 +48,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // creating required tables
         db.execSQL(CREATE_TABLE_MSGS);
-        ContentValues v = new ContentValues();
+        populateSampleMessages(db);
+    }
+    
+    protected void populateSampleMessages(SQLiteDatabase db) {
+    	ContentValues v = new ContentValues();
         Date date = new Date();
         v.put(KEY_MESSAGE, "Sample message from abhishek to shivam");
         v.put(KEY_FROM, "abhishek");
@@ -127,8 +131,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return msgs;
     }
     
-    public void deleteAll() {
-    	// TODO add delete message functionality
+    public void deleteAll() {    	
+    	SQLiteDatabase db = this.getWritableDatabase();
+    	db.execSQL("DROP TABLE IF EXISTS " + TABLE_MSGS);
+    	db.execSQL(CREATE_TABLE_MSGS);
     }
     
     // Closing database

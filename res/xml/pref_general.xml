@@ -32,12 +32,21 @@
     
 	</PreferenceCategory>
 	
-    <Preference
+    <CheckBoxPreference
         android:defaultValue="delete"
         android:key="delete_all_messages"
         android:selectable="true"
         android:singleLine="true"
         android:title="Delete all messages?"
         android:summary="WARNING: Can't be undone. No confimation dialog." />
+    
+    <CheckBoxPreference
+        android:defaultValue="populate"
+        android:key="populate_sample"
+        android:selectable="true"
+        android:enabled="true"
+        android:singleLine="true"
+        android:title="Populates a few sample messages"
+        android:summary="WARNING: No confimation dialog." />
 
 </PreferenceScreen>

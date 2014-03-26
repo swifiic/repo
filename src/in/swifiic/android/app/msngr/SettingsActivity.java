@@ -53,9 +53,14 @@ public class SettingsActivity extends PreferenceActivity {
 				preference.setSummary(stringValue + " - Set from SUTA");
 				return true;
 			}
-			else if(preference.getKey().equals("delete_all_messages")) {
+			else if(preference.getKey().equals("my_identity")) {
+				String stringValue = value.toString();
+				preference.setSummary(stringValue + " - Set from SUTA");
 				return true;
-				// TODO add delete message functionality
+			}
+			else if(preference.getKey().equals("delete_all_messages")) {
+				DatabaseHelper db = new DatabaseHelper(preference.getContext());
+				return true;
 			}
 			return false;
 		}

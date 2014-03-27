@@ -3,7 +3,6 @@
 	<name>msngr-andi</name>
 	<comment></comment>
 	<projects>
-		<project>in.swifiic.android.app.lib</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_MSGS = "messages";
  
     // Column names
-    private static final String KEY_ID = "id";
+    private static final String KEY_ID = "_id";
     private static final String KEY_MESSAGE = "message";
     private static final String KEY_FROM = "fromUser";
     private static final String KEY_TO = "toUser";
@@ -101,9 +101,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /*
      * Get messages for a particular contact
      */
-    public List<Msg> getMessagesForUser(String userName) {
+    public Cursor getMessagesForUser(String userName) {
     	Log.d(TAG, "Getting messages for user: " + userName);
-    	List<Msg> msgs = new ArrayList<Msg>();
     	 
     	String selectQuery = "SELECT * FROM " + TABLE_MSGS + " WHERE "
     			+ KEY_FROM + "=\'" + userName + "\'" 
@@ -114,22 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
-     
-        // looping through all rows and adding to list
-        if (c.moveToFirst()) {
-            do {
-                Msg msg = new Msg();
-                msg.setMsg(c.getString((c.getColumnIndex(KEY_MESSAGE))));
-                msg.setTo((c.getString(c.getColumnIndex(KEY_TO))));
-                msg.setFrom(c.getString(c.getColumnIndex(KEY_FROM)));
-                msg.setSentAtTime(c.getString(c.getColumnIndex(KEY_SENTAT)));
-     
-                // adding to msg list
-                msgs.add(msg);
-            } while (c.moveToNext());
-        }
-     
-        return msgs;
+        return c;
     }
     
     public void deleteAll() {    	

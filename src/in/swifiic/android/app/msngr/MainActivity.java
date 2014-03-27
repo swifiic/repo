@@ -23,8 +23,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -155,7 +155,7 @@ public class MainActivity extends SwifiicActivity {
         viewHubAddress.setText("Configured Hub: " + prefs.getString("hub_address", "Hub broadcast not yet received"));
         
         // Assign an action to the send button
-        Button b = (Button)findViewById(R.id.buttonSendMsg);
+        ImageButton b = (ImageButton)findViewById(R.id.buttonSendMsg);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,6 +205,6 @@ public class MainActivity extends SwifiicActivity {
         super.onResume();
         TextView viewHubAddress = (TextView) findViewById(R.id.hubAddress);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        viewHubAddress.setText("Configured Hub: " + prefs.getString("hub_address", "Hub broadcast not yet received"));   
+        viewHubAddress.setText("Configured Hub: " + prefs.getString("hub_address", "Hub broadcast not yet received"));
     }
 }

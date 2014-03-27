@@ -52,12 +52,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     
     protected void populateSampleMessages(SQLiteDatabase db) {
+    	Log.d("PopulateMessages", "Populating table: " + TABLE_MSGS);
     	ContentValues v = new ContentValues();
         Date date = new Date();
         v.put(KEY_MESSAGE, "Sample message from abhishek to shivam");
         v.put(KEY_FROM, "abhishek");
         v.put(KEY_TO, "shivam");
-        v.put(KEY_ID, "1");
+        //v.put(KEY_ID, "1");
         v.put(KEY_SENTAT, date.getTime());
         db.insert(TABLE_MSGS, null, v);
         
@@ -65,7 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         v.put(KEY_MESSAGE, "Sample message from shivam to abhishek");
         v.put(KEY_FROM, "shivam");
         v.put(KEY_TO, "abhishek");
-        v.put(KEY_ID, "2");
+        //v.put(KEY_ID, "2");
         v.put(KEY_SENTAT, date.getTime());
         db.insert(TABLE_MSGS, null, v);
     }
@@ -133,6 +134,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     
     public void deleteAll() {    	
     	SQLiteDatabase db = this.getWritableDatabase();
+    	Log.d("DeleteAllMessage", "Dropping table: " + TABLE_MSGS);
     	db.execSQL("DROP TABLE IF EXISTS " + TABLE_MSGS);
     	db.execSQL(CREATE_TABLE_MSGS);
     }

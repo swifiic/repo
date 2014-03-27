@@ -59,11 +59,15 @@
             android:layout_weight="1"
             android:inputType="text" />
 	    
-	    <Button
+	    <ImageButton
 	        android:id="@+id/buttonSendMsg"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="Send" />
+	        android:src="@drawable/ic_action_name"
+	        android:scaleType="fitCenter"
+	        android:layout_width="50dp"
+	        android:layout_height="match_parent"
+	        android:background="@color/send_button"
+	        android:text="Send"
+	        android:contentDescription="Send" />
 	    
     </LinearLayout>
     

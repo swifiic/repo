@@ -33,7 +33,7 @@
 	</PreferenceCategory>
 	
     <CheckBoxPreference
-        android:defaultValue="delete"
+        android:defaultValue="false"
         android:key="delete_all_messages"
         android:selectable="true"
         android:singleLine="true"
@@ -41,7 +41,7 @@
         android:summary="WARNING: Can't be undone. No confimation dialog." />
     
     <CheckBoxPreference
-        android:defaultValue="populate"
+        android:defaultValue="false"
         android:key="populate_sample"
         android:selectable="true"
         android:enabled="true"

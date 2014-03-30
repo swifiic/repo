@@ -2,35 +2,28 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
     android:layout_marginTop="@dimen/activity_horizontal_margin"
     android:layout_marginLeft="@dimen/activity_vertical_margin"
     android:layout_marginBottom="@dimen/activity_horizontal_margin"
     android:layout_marginRight="@dimen/activity_vertical_margin"
     android:isScrollContainer="true" >
     
-    <TextView android:id="@+id/hubAddress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Hub not yet set"
-        android:textSize="12sp" />
-
     <TextView
         android:id="@+id/usrListToSend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select User"
+        android:text="@string/select_user"
         android:textColor="@android:color/darker_gray"
         android:textSize="24sp"
-        android:includeFontPadding="true"
-        android:layout_below="@id/hubAddress" />
+        android:includeFontPadding="true" />
 
     <ListView
         android:id="@+id/conversation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/usrListToSend"
-        android:layout_above="@+id/bottomRow" >
+        android:layout_above="@+id/bottomRow"
+        android:transcriptMode="alwaysScroll" >
         
     </ListView>
 
@@ -45,8 +38,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="text" />
-	    
+            android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
+            android:maxLines="2" />
+            
 	    <ImageButton
 	        android:id="@+id/buttonSendMsg"
 	        android:src="@drawable/ic_action_name"
@@ -54,8 +48,8 @@
 	        android:layout_width="50dp"
 	        android:layout_height="match_parent"
 	        android:background="@color/send_button"
-	        android:text="Send"
-	        android:contentDescription="Send" />
+	        android:text="@string/send"
+	        android:contentDescription="@string/send" />
 	    
     </LinearLayout>
     

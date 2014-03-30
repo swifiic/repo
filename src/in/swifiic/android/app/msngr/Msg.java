@@ -2,43 +2,41 @@ package in.swifiic.android.app.msngr;
 
 import in.swifiic.android.app.lib.xml.Notification;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
+/*
+ * Model class for messages
+ */
 public class Msg {
 	 
     private String msg;
-    private String from, to;
+    private String user;
+    private int isInbound;
     private Date sentAt;
- 
-    public Msg(Notification notif) {
-        this.msg = notif.getArgument("message");
-        this.from = notif.getArgument("fromUser");
-        this.to = notif.getArgument("toUser");
-        this.sentAt = new Date(Long.parseLong(notif.getArgument("sentAt")));
-    }
     
-    public Msg() {
+    public Msg(Notification notif) {
+		this.msg = notif.getArgument("message");
+		this.user = notif.getArgument("fromUser");
+		this.isInbound = 1;
+		this.sentAt = new Date(Long.parseLong(notif.getArgument("sentAt")));
+	}
+    
+	public Msg() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public String getPrintableMessage() {
-    	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM HH:mm:ss");
-    	Date date = new Date(Long.parseLong(this.getSentAtTime()));
-		return "<small>[" + sdf.format(date) + "]</small><br><strong>" + this.getFrom() + ":</strong> " + this.getMsg() + "<br>";
-    }
-    
-    /*
+	/*
      * Setters
      */
     public void setMsg(String msg) {
     	this.msg = msg;
     }
-    public void setFrom(String from) {
-    	this.from = from;
+    public void setUser(String user) {
+    	this.user = user;
     }
-    public void setTo(String to) {
-    	this.to = to;
+    public void setIsInbound(int isInbound) {
+    	this.isInbound = isInbound;
     }
     public void setSentAtTime(String time) {
     	this.sentAt = new Date(Long.parseLong(time));
@@ -46,16 +44,15 @@ public class Msg {
     
     /*
      * Getters
-     */
-    
+     */ 
     public String getMsg() {
     	return this.msg;
     }
-    public String getFrom() {
-    	return this.from;
+    public String getUser() {
+    	return this.user;
     }
-    public String getTo() {
-    	return this.to;
+    public int getIsInbound() {
+    	return this.isInbound;
     }
     public String getSentAtTime() {
     	return "" + this.sentAt.getTime();

@@ -36,11 +36,11 @@ public class MainActivity extends SwifiicActivity {
     
     private static final String TAG ="MainActivity";
 	
-    private TextView toUser = null;
-    private EditText message = null;
+    private TextView user = null;
+    private EditText messageToSend = null;
     private ListView conversation = null;
     
-    private AppEndpointContext aeCtx = new AppEndpointContext("Messenger", "0.1", "1");
+    private AppEndpointContext aeCtx = new AppEndpointContext("Msngr", "0.1", "1");
     
     DatabaseHelper db;
     CustomCursorAdapter customAdapter;
@@ -51,19 +51,20 @@ public class MainActivity extends SwifiicActivity {
     public MainActivity() {
     	super();
     	// This is a must for all applications - hook to get notification from GenericService
-    	mDataReceiver= new BroadcastReceiver() {
+    	mDataReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.hasExtra("notification")) {
-                	String message= intent.getStringExtra("notification");
+                	String payload= intent.getStringExtra("notification");
                 	
-                    Log.d("MAIN", "Handling incoming message: " + message);
-                    Notification notif = Helper.parseNotification(message);
+                    Log.d(TAG, "Handling incoming message: " + payload);
+                    Notification notif = Helper.parseNotification(payload);
                 	// Checking for opName of Notification
                     if(notif.getNotificationName() == "DeliverMessage") {
                     	Msg msg = new Msg(notif);
                     	db = new DatabaseHelper(getApplicationContext());
                     	db.addMessage(msg);
+                    	db.closeDB();
                     }
                 } else {
                     Log.d(TAG, "Broadcast Receiver ignoring message - no notification found");
@@ -75,7 +76,7 @@ public class MainActivity extends SwifiicActivity {
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.test_main, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
     }
     
@@ -107,7 +108,7 @@ public class MainActivity extends SwifiicActivity {
             	if (data.hasExtra("userName")) {
             		userName = data.getStringExtra("userName");
             	}
-            	toUser.setText(userName);
+            	user.setText(userName);
             	Log.d("ActivityResult", "Got user: " + userName);
             }
             return;
@@ -122,51 +123,64 @@ public class MainActivity extends SwifiicActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_msngr);
+         
+        messageToSend = (EditText)findViewById(R.id.msgTextToSend);
+        user = (TextView)findViewById(R.id.usrListToSend);
+        conversation = (ListView)findViewById(R.id.conversation);
         
-        message = (EditText)findViewById(R.id.msgTextToSend);
-        toUser = (TextView)findViewById(R.id.usrListToSend);
-        conversation = (ListView)findViewById(R.id.conversation);        
-        
-        TextView viewHubAddress = (TextView) findViewById(R.id.hubAddress);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        viewHubAddress.setText("Configured Hub: " + prefs.getString("hub_address", "Hub broadcast not yet received"));
-        
-        // Assign an action to the send button
+        // Assigning an action to the send button
         ImageButton b = (ImageButton)findViewById(R.id.buttonSendMsg);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-            	if(toUser.getText().equals("Select User")) {
+            	if(user.getText().equals("Select User")) {
             		Context context = getApplicationContext();
             		Toast toast = Toast.makeText(context, "Select a user first!", Toast.LENGTH_SHORT);
-            		toast.setGravity(Gravity.TOP, 0, 100);
+            		toast.setGravity(Gravity.TOP, 0, 150);
             		toast.show();
             	}
-            	else if (message.getText().toString().equals("")){
-            		// Do nothing
+            	else if (messageToSend.getText().toString().equals("")){
+            		// Do nothing if the message is empty
             	}
             	else {
-                    Action act = new Action("SendMessage", aeCtx);
-                    act.addArgument("message", message.getText().toString());
-                    act.addArgument("toUser", toUser.getText().toString());
-                    Date date = new Date();
-                    act.addArgument("sentAt", "" + date.getTime());
+            		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(v.getContext());
+            		String message = messageToSend.getText().toString();
+            		String toUser = user.getText().toString();
+            		String fromUser = sharedPref.getString("my_identity", "UnknownUser");
+            		Date date = new Date();
+            		String sentAt = "" + date.getTime();
                     
+            		Action act = new Action("SendMessage", aeCtx);
+                    act.addArgument("message", message);
+                    act.addArgument("toUser", toUser);
+                    act.addArgument("fromUser", fromUser);
+                    act.addArgument("sentAt", "" + sentAt);   
                     
                     // Loading hub address from preferences
-                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(v.getContext());
                     String hubAddress = sharedPref.getString("hub_address", "");
                     
                     Helper.sendAction(act, hubAddress + "/messenger", v.getContext());
-                    Notification ntf = Helper.parseNotification(Helper.serializeAction(act));
-                    Msg msg = new Msg(ntf);
+                    
+                    Msg msg = new Msg();
+                    msg.setMsg(message);
+                    msg.setUser(toUser);
+                    msg.setIsInbound(0);
+                    msg.setSentAtTime(sentAt);
+                    
                     db = new DatabaseHelper(v.getContext());
                     db.addMessage(msg);
+                    Log.d(TAG, "Inserted a row: " + msg.getMsg());
+                    db.closeDB();
                     EditText msgInput = (EditText) findViewById(R.id.msgTextToSend);
                     msgInput.setText("");
-                    if(!toUser.getText().toString().equals("Select User")) {
-                    	customAdapter.changeCursor(db.getMessagesForUser(toUser.getText().toString()));
-                    }
+                    customAdapter.changeCursor(db.getMessagesForUser(user.getText().toString()));
+                    conversation.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            conversation.setSelection(conversation.getCount());
+                            conversation.smoothScrollToPosition(conversation.getCount());
+                        }
+                    }, 100);
             	}
             }
         });
@@ -174,9 +188,6 @@ public class MainActivity extends SwifiicActivity {
 
     public void onResume() {
         super.onResume();
-        TextView viewHubAddress = (TextView) findViewById(R.id.hubAddress);
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        viewHubAddress.setText("Configured Hub: " + prefs.getString("hub_address", "Hub broadcast not yet received"));
         
         conversation.setOnItemClickListener(new OnItemClickListener() {
         	@Override
@@ -184,20 +195,24 @@ public class MainActivity extends SwifiicActivity {
 				Log.d("MainActivity", "User clicked on item!");
 			}
         });
-			
-        	// Database query can be a time consuming task ..
-	        // so its safe to call database query in another thread
-	        // Handler, will handle this stuff for you 
-			  
-        if(!toUser.getText().toString().equals("Select User")) {
+        
+        if(!user.getText().toString().equals("Select User")) {
         	final DatabaseHelper dbh = new DatabaseHelper(this);
         	new Handler().post(new Runnable() {
 	        	@Override
 	            public void run() {
-	        		customAdapter = new CustomCursorAdapter(MainActivity.this, dbh.getMessagesForUser(toUser.getText().toString()));
+	        		customAdapter = new CustomCursorAdapter(MainActivity.this, dbh.getMessagesForUser(user.getText().toString()));
 	                conversation.setAdapter(customAdapter);
 	            }
         	});
         }
+        
+        conversation.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                conversation.setSelection(conversation.getCount());
+                conversation.smoothScrollToPosition(conversation.getCount());
+            }
+        }, 100);
     }
 }

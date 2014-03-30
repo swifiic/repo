@@ -1,8 +1,6 @@
 package in.swifiic.android.app.msngr;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -28,17 +26,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Column names
     private static final String KEY_ID = "_id";
     private static final String KEY_MESSAGE = "message";
-    private static final String KEY_FROM = "fromUser";
-    private static final String KEY_TO = "toUser";
-    private static final String KEY_SENTAT = "sentat";
+    private static final String KEY_USER = "user";
+    private static final String KEY_IS_INBOUND = "isInbound";	// This key is: 1 for incoming message 0 for outgoing message    
+    private static final String KEY_SENTAT = "sentAt";
   
     // Table Create Statement
     private static final String CREATE_TABLE_MSGS = "CREATE TABLE " + TABLE_MSGS + "(" 
-    		+ KEY_ID + " INTEGER PRIMARY KEY," 
-    		+ KEY_MESSAGE + " TEXT," 
-            + KEY_FROM + " TEXT," 
-    		+ KEY_TO + " TEXT," 
-            + KEY_SENTAT + " TEXT" + ")";
+    		+ KEY_ID + " INTEGER PRIMARY KEY, " 
+    		+ KEY_MESSAGE + " TEXT, "
+    		+ KEY_USER + " TEXT, "
+            + KEY_IS_INBOUND + " INTEGER, " 
+            + KEY_SENTAT + " TEXT)";
  
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -46,9 +44,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
  
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // creating required tables
+        // Creating required tables
         db.execSQL(CREATE_TABLE_MSGS);
-        populateSampleMessages(db);
+    }
+    
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // On upgrade drop older tables
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MSGS);
+ 
+        // Create new tables
+        onCreate(db);
     }
     
     protected void populateSampleMessages(SQLiteDatabase db) {
@@ -56,44 +62,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     	ContentValues v = new ContentValues();
         Date date = new Date();
         v.put(KEY_MESSAGE, "Sample message from abhishek to shivam");
-        v.put(KEY_FROM, "abhishek");
-        v.put(KEY_TO, "shivam");
-        //v.put(KEY_ID, "1");
+        v.put(KEY_USER, "abhishek");
+        v.put(KEY_IS_INBOUND, 1);
         v.put(KEY_SENTAT, date.getTime());
         db.insert(TABLE_MSGS, null, v);
         
         v = new ContentValues();
         v.put(KEY_MESSAGE, "Sample message from shivam to abhishek");
-        v.put(KEY_FROM, "shivam");
-        v.put(KEY_TO, "abhishek");
-        //v.put(KEY_ID, "2");
-        v.put(KEY_SENTAT, date.getTime());
+        v.put(KEY_USER, "abhishek");
+        v.put(KEY_IS_INBOUND, 0);
+        v.put(KEY_SENTAT, date.getTime() + 1000);
         db.insert(TABLE_MSGS, null, v);
     }
- 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // on upgrade drop older tables
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MSGS);
- 
-        // create new tables
-        onCreate(db);
-    }
+    
+    // THE "CRUD"
     
     /*
      * Adding a message
      */
     public long addMessage(Msg msg) {
         SQLiteDatabase db = this.getWritableDatabase();
-     
+        
         ContentValues values = new ContentValues();
         values.put(KEY_MESSAGE, msg.getMsg());
-        values.put(KEY_FROM, msg.getFrom());
-        values.put(KEY_TO, msg.getTo());
+        values.put(KEY_USER, msg.getUser());
+        values.put(KEY_IS_INBOUND, msg.getIsInbound());
         values.put(KEY_SENTAT, msg.getSentAtTime());
      
-        // insert row
+        // Insert row
         long msg_id = db.insert(TABLE_MSGS, null, values);
+        if(msg_id==-1) {
+    		Log.e(TAG, "Error inserting row!");
+    	}
      
         return msg_id;
     }
@@ -101,24 +101,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /*
      * Get messages for a particular contact
      */
-    public Cursor getMessagesForUser(String userName) {
-    	Log.d(TAG, "Getting messages for user: " + userName);
-    	 
+    public Cursor getMessagesForUser(String userName) {        
+        Log.d(TAG, "Getting messages for user: " + userName);
+   	 
     	String selectQuery = "SELECT * FROM " + TABLE_MSGS + " WHERE "
-    			+ KEY_FROM + "=\'" + userName + "\'" 
-    			+ " OR " 
-    			+ KEY_TO + "=\'" + userName + "\' ORDER BY " + KEY_SENTAT;
+    			+ KEY_USER + "=\'" + userName + "\' " 
+    			+ "ORDER BY " + KEY_SENTAT;
      
         Log.d(TAG, selectQuery);
      
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
+        Log.d(TAG, "Got" + c.getCount() + " messages.");
         return c;
     }
     
     public void deleteAll() {    	
     	SQLiteDatabase db = this.getWritableDatabase();
-    	Log.d("DeleteAllMessage", "Dropping table: " + TABLE_MSGS);
+    	Log.d(TAG, "Dropping table: " + TABLE_MSGS);
     	db.execSQL("DROP TABLE IF EXISTS " + TABLE_MSGS);
     	db.execSQL(CREATE_TABLE_MSGS);
     }

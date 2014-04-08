@@ -1,4 +1,4 @@
-package swifiic.suta.provider;
+package in.swifiic.android.app.suta.provider;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;

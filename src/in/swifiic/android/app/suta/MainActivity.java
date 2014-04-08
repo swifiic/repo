@@ -1,13 +1,13 @@
-package swifiic.suta;
+package in.swifiic.android.app.suta;
 
 import in.swifiic.android.app.lib.Helper;
 import in.swifiic.android.app.lib.ui.SwifiicActivity;
 import in.swifiic.android.app.lib.xml.Notification;
-import swifiic.suta.provider.Provider;
-import android.os.Bundle;
+import in.swifiic.android.app.suta.provider.Provider;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;

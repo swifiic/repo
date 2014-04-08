@@ -1,4 +1,4 @@
-package swifiic.suta;
+package in.swifiic.android.app.suta;
 
 import android.content.Intent;
 import android.os.Bundle;

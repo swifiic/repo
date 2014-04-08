@@ -5,6 +5,10 @@ import in.swifiic.hub.lib.xml.Action;
 import in.swifiic.hub.lib.xml.Notification;
 
 import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,18 +43,34 @@ public class Helper {
 	}
 
 	public static List<String> getDevicesForUser(String user, Context ctx) {
-		// TODO - Get this mapping from a Database for the specific app using the context
-		// Hardcoding for now
 		List<String> deviceList = new ArrayList<String>();
-		switch(user) {
-		case "shivam":
-			deviceList.add("dtn://shivam-nexus");
-			return deviceList;
-		case "abhishek":
-			deviceList.add("dtn://abhishek-grand");
-			return deviceList;
-		default:
-			return null;
+		Connection connection = DatabaseHelper.connectToDB();
+		Statement statement;
+		String sql;
+		ResultSet result;
+		try {
+			statement = connection.createStatement();
+			sql = "SELECT dtn_id FROM Users WHERE username=\'" + user + "\'";
+			result = statement.executeQuery(sql);
+			// Extract data from result set
+			while(result.next()) {
+				// Retrieve by column name
+				String dtnId = result.getString("dtn_id");
+				deviceList.add(dtnId);
+			}
+			result.close();
+			statement.close();
+			DatabaseHelper.closeDB(connection);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+		return deviceList;
+	}
+	
+	public static List<String> getDevicesForAllUsers() {
+		List<String> deviceList = new ArrayList<String>();
+		deviceList.add("dtn://shivam-nexus");
+		deviceList.add("dtn://abhishek-grand");
+		return deviceList;
 	}
 }

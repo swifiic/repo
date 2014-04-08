@@ -1,4 +1,4 @@
-package swilet.messenger;
+package in.swifiic.hub.app.messenger;
 
 import ibrdtn.example.api.DTNClient;
 

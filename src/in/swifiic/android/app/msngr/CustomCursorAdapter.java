@@ -12,7 +12,7 @@ public class CustomCursorAdapter extends CursorAdapter {
 
 	@SuppressWarnings("deprecation")
 	public CustomCursorAdapter(Context context, Cursor c) {
-		super(context, c);
+		super(context, c, FLAG_AUTO_REQUERY);
 	}
 	
 	@Override

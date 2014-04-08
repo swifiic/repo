@@ -9,6 +9,7 @@ import in.swifiic.android.app.lib.xml.Notification;
 
 import java.util.Date;
 
+import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +18,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,18 +27,16 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends SwifiicActivity {
     
     private static final int SELECT_USER = 1;
     
-    private static final String TAG ="MainActivity";
+    private static final String TAG = "MainActivity";
 	
-    private TextView user = null;
     private EditText messageToSend = null;
     private ListView conversation = null;
+    private ImageButton b = null;
     
     private AppEndpointContext aeCtx = new AppEndpointContext("Msngr", "0.1", "1");
     
@@ -50,6 +48,7 @@ public class MainActivity extends SwifiicActivity {
      */
     public MainActivity() {
     	super();
+    	
     	// This is a must for all applications - hook to get notification from GenericService
     	mDataReceiver = new BroadcastReceiver() {
             @Override
@@ -70,8 +69,7 @@ public class MainActivity extends SwifiicActivity {
                     Log.d(TAG, "Broadcast Receiver ignoring message - no notification found");
                 }
             }
-        };
-        
+        };      
     }
     
     @Override
@@ -108,7 +106,9 @@ public class MainActivity extends SwifiicActivity {
             	if (data.hasExtra("userName")) {
             		userName = data.getStringExtra("userName");
             	}
-            	user.setText(userName);
+            	ActionBar actionBar = getActionBar();
+            	actionBar.setTitle(userName);
+            	b.setEnabled(true);
             	Log.d("ActivityResult", "Got user: " + userName);
             }
             return;
@@ -123,29 +123,25 @@ public class MainActivity extends SwifiicActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_msngr);
-         
+        
         messageToSend = (EditText)findViewById(R.id.msgTextToSend);
-        user = (TextView)findViewById(R.id.usrListToSend);
         conversation = (ListView)findViewById(R.id.conversation);
+        b = (ImageButton)findViewById(R.id.buttonSendMsg);
         
         // Assigning an action to the send button
-        ImageButton b = (ImageButton)findViewById(R.id.buttonSendMsg);
+        
+        b.setEnabled(false);
         b.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-            	if(user.getText().equals("Select User")) {
-            		Context context = getApplicationContext();
-            		Toast toast = Toast.makeText(context, "Select a user first!", Toast.LENGTH_SHORT);
-            		toast.setGravity(Gravity.TOP, 0, 150);
-            		toast.show();
-            	}
-            	else if (messageToSend.getText().toString().equals("")){
+            	ActionBar actionBar = getActionBar();
+            	if (messageToSend.getText().toString().equals("")){
             		// Do nothing if the message is empty
             	}
             	else {
             		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(v.getContext());
             		String message = messageToSend.getText().toString();
-            		String toUser = user.getText().toString();
+            		String toUser = actionBar.getTitle().toString();
             		String fromUser = sharedPref.getString("my_identity", "UnknownUser");
             		Date date = new Date();
             		String sentAt = "" + date.getTime();
@@ -173,7 +169,7 @@ public class MainActivity extends SwifiicActivity {
                     db.closeDB();
                     EditText msgInput = (EditText) findViewById(R.id.msgTextToSend);
                     msgInput.setText("");
-                    customAdapter.changeCursor(db.getMessagesForUser(user.getText().toString()));
+                    customAdapter.changeCursor(db.getMessagesForUser(actionBar.getTitle().toString()));
                     conversation.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -196,12 +192,14 @@ public class MainActivity extends SwifiicActivity {
 			}
         });
         
-        if(!user.getText().toString().equals("Select User")) {
+        final ActionBar actionBar = getActionBar();
+        
+        if(!actionBar.getTitle().toString().equals("Select User")) {
         	final DatabaseHelper dbh = new DatabaseHelper(this);
         	new Handler().post(new Runnable() {
 	        	@Override
 	            public void run() {
-	        		customAdapter = new CustomCursorAdapter(MainActivity.this, dbh.getMessagesForUser(user.getText().toString()));
+	        		customAdapter = new CustomCursorAdapter(MainActivity.this, dbh.getMessagesForUser(actionBar.getTitle().toString()));
 	                conversation.setAdapter(customAdapter);
 	            }
         	});

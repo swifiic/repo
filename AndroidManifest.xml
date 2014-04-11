@@ -9,7 +9,7 @@
         android:targetSdkVersion="19" />
 
     <uses-permission android:name="de.tubs.ibr.dtn.permission.DTN_COMMUNICATION" />
-    <uses-permission android:name="swifiic.suta.USER" />
+    <uses-permission android:name="in.swifiic.android.app.suta.USER" />
 
     <application
         android:allowBackup="true"

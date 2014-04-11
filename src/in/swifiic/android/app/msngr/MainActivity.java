@@ -10,13 +10,18 @@ import in.swifiic.android.app.lib.xml.Notification;
 import java.util.Date;
 
 import android.app.ActionBar;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -64,12 +69,42 @@ public class MainActivity extends SwifiicActivity {
                     	db = new DatabaseHelper(getApplicationContext());
                     	db.addMessage(msg);
                     	db.closeDB();
+                    	showNotification(msg);
                     }
                 } else {
                     Log.d(TAG, "Broadcast Receiver ignoring message - no notification found");
                 }
             }
         };      
+    }
+    
+    public void showNotification(Msg msg){
+
+        // define sound URI, the sound to be played when there's a notification
+        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        // intent triggered, you can add other intent for other actions
+        Intent intent = new Intent(MainActivity.this, NotificationCompat.class);
+        PendingIntent pIntent = PendingIntent.getActivity(MainActivity.this, 0, intent, 0);
+
+        // this is it, we'll build the notification!
+        // in the addAction method, if you don't want any icon, just set the first param to 0
+        android.app.Notification mNotification = new NotificationCompat.Builder(this)
+            .setContentTitle("New Message!")
+            .setContentText(msg.getUser() + ": " + msg.getMsg())
+            .setSmallIcon(R.drawable.ic_launcher)
+            .setContentIntent(pIntent)
+            .setSound(soundUri)
+            .addAction(R.drawable.ic_launcher, "View", pIntent)
+            .addAction(0, "Remind", pIntent)
+            .build();
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        // If you want to hide the notification after it was selected, do the code below
+        mNotification.flags |= android.app.Notification.FLAG_AUTO_CANCEL;
+
+        notificationManager.notify(0, mNotification);
     }
     
     @Override

@@ -198,6 +198,7 @@ public class GenericService extends IntentService {
         @Override
         public void onSessionConnected(Session session) {
             Log.d(TAG, "Session connected");
+            session.setDataHandler(mDataHandler);
         }
 
         @Override
@@ -215,9 +216,8 @@ public class GenericService extends IntentService {
         if(null == mClient) {
         	mClient = new DTNClient(mSession);
         	String appName = this.getApplication().getPackageName();
+        	Log.d("GenericService", "Registered with: " + appName);
             Registration registration = new Registration(appName);
-            
-            mClient.setDataHandler(mDataHandler);
             
             try {
                 // initialize the connection to the DTN service

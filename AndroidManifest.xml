@@ -8,7 +8,7 @@
         android:minSdkVersion="15"
         android:targetSdkVersion="18" />
     <uses-permission android:name="de.tubs.ibr.dtn.permission.DTN_COMMUNICATION"/>
-    <uses-permission android:name="swifiic.suta.USER"/>
+    <uses-permission android:name="in.swifiic.android.app.suta.USER"/>
     
     <application>
         <activity android:label="Select User"

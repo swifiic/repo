@@ -49,7 +49,7 @@ public class Suta extends Base implements SwifiicHandler {
             		suta.send(deviceList.get(i) + "/in.swifiic.android.app.suta", message);
             		// Mark bundle as delivered...                    
                     logger.log(Level.INFO, "Attempted to {0} send to {1}", 
-                    				new Object[] {message, deviceList.get(i) + "/in.swifiic.android.app.msngr"});
+                    				new Object[] {message, deviceList.get(i) + "/in.swifiic.android.app.suta"});
             	}
 	    	}
 	    }

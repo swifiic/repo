@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
 
 public class SettingsActivity extends PreferenceActivity {
 

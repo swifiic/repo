@@ -26,6 +26,8 @@
             </intent-filter>
         </activity>
         
+        <service android:name="in.swifiic.android.app.lib.GenericService" />
+        
         <activity
             android:name="in.swifiic.android.app.suta.SettingsActivity"
             android:label="@string/title_activity_settings"

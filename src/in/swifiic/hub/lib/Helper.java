@@ -69,8 +69,53 @@ public class Helper {
 	
 	public static List<String> getDevicesForAllUsers() {
 		List<String> deviceList = new ArrayList<String>();
-		deviceList.add("dtn://shivam-nexus");
-		deviceList.add("dtn://abhishek-grand");
+		Connection connection = DatabaseHelper.connectToDB();
+		Statement statement;
+		String sql;
+		ResultSet result;
+		try {
+			statement = connection.createStatement();
+			sql = "SELECT dtn_id FROM Users";
+			result = statement.executeQuery(sql);
+			// Extract data from result set
+			while(result.next()) {
+				// Retrieve by column name
+				String dtnId = result.getString("dtn_id");
+				deviceList.add(dtnId);
+			}
+			result.close();
+			statement.close();
+			DatabaseHelper.closeDB(connection);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return deviceList;
+	}
+	
+	/*
+	 * Format username|alias;username|alias;...
+	 */
+	public static String getAllUsers() {
+		String users = "";
+		Connection connection = DatabaseHelper.connectToDB();
+		Statement statement;
+		String sql;
+		ResultSet result;
+		try {
+			statement = connection.createStatement();
+			sql = "SELECT username,alias FROM Users";
+			result = statement.executeQuery(sql);
+			// Extract data from result set
+			while(result.next()) {
+				// Retrieve by column name
+				users += result.getString("username") + "|" + result.getString("alias") + ";";
+			}
+			result.close();
+			statement.close();
+			DatabaseHelper.closeDB(connection);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return users;
 	}
 }

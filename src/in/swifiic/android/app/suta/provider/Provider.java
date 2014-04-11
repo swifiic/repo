@@ -1,5 +1,7 @@
 package in.swifiic.android.app.suta.provider;
 
+import java.util.StringTokenizer;
+
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -29,10 +31,10 @@ import android.util.Log;
 
 public class Provider extends ContentProvider {
 
-	private static final String AUTHORITY = "swifiic.suta";
+	private static final String AUTHORITY = "in.swifiic.android.app.suta";
 	private static final String USER_BASE_PATH = "users";
 	private static final int USERS = 10;
-	public static Provider providerInstance=null;
+	public static Provider providerInstance = null;
 	private DatabaseHelper dbHelper = null;
 
     //---for database use---
@@ -123,7 +125,9 @@ public class Provider extends ContentProvider {
             onCreate(db);
         }
         
-        protected void populateSchema(SQLiteDatabase db, String usrs, String apps) {
+        // TODO FIXME
+        @SuppressWarnings("unused")
+		protected void populateSchema(SQLiteDatabase db, String usrs, String apps) {
         	// STUB
         }
     } 
@@ -141,7 +145,7 @@ public class Provider extends ContentProvider {
 	    
 		switch (uriType) {
 	    case USERS:
-	    	return "vnd.android.cursor.dir/swifiic.suta.users";
+	    	return "vnd.android.cursor.dir/in.swifiic.android.app.suta.users";
 	    default:
 	    	throw new IllegalArgumentException("Unknown URI: " + arg0);
 	    }
@@ -156,9 +160,23 @@ public class Provider extends ContentProvider {
         providerInstance = this;
         return (sutaDB == null)? false: true;
 	}
-
-	public void loadSchema(String userSchema, String appSchema){
-		dbHelper.populateSchema(sutaDB, userSchema, appSchema);
+	
+	// userSchema format - "username|alias;username|alias;..."
+	public void loadSchema(String userSchema){
+		ContentValues v = new ContentValues();
+		int i = 1;
+		StringTokenizer st = new StringTokenizer(userSchema, ";");
+		while(st.hasMoreTokens()) {
+			StringTokenizer st2 = new StringTokenizer(st.nextToken(), "|");
+		     while(st2.hasMoreTokens()) {
+		    	 v.put("user_id", i);
+		         v.put("name", st2.nextToken());
+		         v.put("alias", st2.nextToken());
+		         sutaDB.insert(DB_USR_TABLE, "", v);
+		         v.clear();
+		         ++i;
+		     }
+		 }
 	}
 	
 	@Override

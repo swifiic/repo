@@ -8,7 +8,7 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="19" />
     
-    <permission android:name="swifiic.suta.USER" ></permission>
+    <permission android:name="in.swifiic.android.app.suta.USER" ></permission>
 
     <uses-permission android:name="de.tubs.ibr.dtn.permission.DTN_COMMUNICATION" />
 
@@ -18,7 +18,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="swifiic.suta.MainActivity"
+            android:name="in.swifiic.android.app.suta.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,19 +27,19 @@
         </activity>
         
         <activity
-            android:name="swifiic.suta.SettingsActivity"
+            android:name="in.swifiic.android.app.suta.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName="swifiic.suta.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="swifiic.suta.MainActivity" />
+                android:value="in.swifiic.android.app.suta.MainActivity" />
         </activity>
         
         <provider
-            android:name="swifiic.suta.provider.Provider"
-            android:authorities="swifiic.suta"
+            android:name="in.swifiic.android.app.suta.provider.Provider"
+            android:authorities="in.swifiic.android.app.suta"
             android:exported="true"
-            android:permission="swifiic.suta.USER" >
+            android:permission="in.swifiic.android.app.suta.USER" >
         </provider>
      
     </application>

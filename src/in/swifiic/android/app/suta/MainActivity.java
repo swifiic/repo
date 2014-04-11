@@ -1,8 +1,6 @@
 package in.swifiic.android.app.suta;
 
-import in.swifiic.android.app.lib.Helper;
 import in.swifiic.android.app.lib.ui.SwifiicActivity;
-import in.swifiic.android.app.lib.xml.Notification;
 import in.swifiic.android.app.suta.provider.Provider;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -24,11 +22,9 @@ public class MainActivity extends SwifiicActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.hasExtra("notification")) {
-                	String message= intent.getStringExtra("notification");
-                	
-                    Log.d("MAIN", "TBD XXX -  handle incoming messages" + message);
-                    Notification notif = Helper.parseNotification(message);
-                    handleNotification(notif);
+                	String message = intent.getStringExtra("notification");
+                    Log.d(TAG, "Handling incoming messages: " + message);
+                    handleNotification(message);
                 } else {
                     Log.d(TAG, "Broadcast Receiver ignoring message - no notification found");
                 }
@@ -52,7 +48,7 @@ public class MainActivity extends SwifiicActivity {
 
     //private AppEndpointContext aeCtx = new AppEndpointContext("Messenger", "0.1", "1");
 
-    protected void handleNotification(Notification notif){
+    protected void handleNotification(String message){
     	// TODO if(notif.getNotificationName().equals("SyncToDevice")) { }
     	// we need these arguments
 
@@ -66,20 +62,16 @@ public class MainActivity extends SwifiicActivity {
     	// appList  <app name="" id="" alias=""> <role alias=""> <u id="" /> ... </role> <role...> </app>
     	
     	
-    	// Above was the grand goal - now simple impl
-    	// userList "name|id|alias;name|id|alias;..."
+    	// Above was the grand goal - now simple implementation
+    	// userList "username|alias;username|alias;..."
     	// appList  "appName|appId|appAlias|role1Alias:usrId:usrId:usrId|role2alias:...;
     	
-    	String userList = notif.getArgument("userList");
-    	String appList = notif.getArgument("appList");
     	if(null == Provider.providerInstance){
-    		Log.e(TAG,"No Provider - whatsup...");
+    		Log.e(TAG,"No Provider - whatsup...?");
     	} else {
-    		Provider.providerInstance.loadSchema(userList, appList);
+    		Provider.providerInstance.loadSchema(message);
     	}
-    	
     }
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

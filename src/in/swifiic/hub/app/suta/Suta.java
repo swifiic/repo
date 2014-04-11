@@ -44,7 +44,7 @@ public class Suta extends Base implements SwifiicHandler {
 	    	} else if(input.equalsIgnoreCase("send")) {
 	    		// TODO Send broadcast to devices
 	    		List<String> deviceList = Helper.getDevicesForAllUsers();
-	    		String message = serializeDeviceList(deviceList);
+	    		String message = Helper.getAllUsers();
 	    		for(int i = deviceList.size()-1; i >= 0; --i) {
             		suta.send(deviceList.get(i) + "/in.swifiic.android.app.suta", message);
             		// Mark bundle as delivered...                    
@@ -55,15 +55,6 @@ public class Suta extends Base implements SwifiicHandler {
 	    }
     }
     
-    public static String serializeDeviceList(List<String> deviceList) {
-    	String returnValue = "";
-    	int size = deviceList.size();
-    	returnValue += size;
-    	for(int i=0; i<size; ++i) {
-    		returnValue += "|" + deviceList.get(i);
-    	}
-		return returnValue;
-    }
 
 	@Override
 	public void handlePayload(String payload, final Context ctx) {

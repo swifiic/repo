@@ -5,11 +5,11 @@ import java.sql.*;
 public class DatabaseHelper {
 	// JDBC Driver details and database URL
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-	static final String DB_URL = "jdbc:mysql://localhost/apphub";
+	static final String DB_URL = "jdbc:mysql://localhost/swifiic";
 	
 	// Database credentials
 	static final String USER = "root";
-	static final String PASS = "swifiic";
+	static final String PASS = "qwerty";
 	
 	/*
 	 * Opens a connection to MySQL Database and returns the 

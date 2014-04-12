@@ -42,7 +42,11 @@ public class Operation {
 	{
 		return appName;
 	}
-	
+
+	public String getOperationName() {
+		return opName;
+	}
+
 	
 	public Operation() {
 		

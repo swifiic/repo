@@ -5,9 +5,6 @@ public class Action extends Operation{
 		super();
 	}
 	
-	public String getNotificationName() {
-		return opName;
-	}
 	
 	public boolean hasArgument(String argName) {
 		for(int i = arguments.size()-1; i >= 0; --i){

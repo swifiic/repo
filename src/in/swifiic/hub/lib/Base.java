@@ -35,6 +35,7 @@ public class Base {
 
         final Bundle finalBundle = bundle;
         
+        System.out.println("Sending a bundle to: " + destination.toString() + " with data: " + message);
         dtnClient.send(finalBundle);    	
     }
 }

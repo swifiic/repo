@@ -64,12 +64,23 @@ public class MainActivity extends SwifiicActivity {
                     Log.d(TAG, "Handling incoming message: " + payload);
                     Notification notif = Helper.parseNotification(payload);
                 	// Checking for opName of Notification
-                    if(notif.getNotificationName() == "DeliverMessage") {
+                    if(notif.getNotificationName().equals("DeliverMessage")) {
+                    	Log.d(TAG, "Adding received message to the database.");
                     	Msg msg = new Msg(notif);
                     	db = new DatabaseHelper(getApplicationContext());
                     	db.addMessage(msg);
                     	db.closeDB();
+                    	Log.d(TAG, "Showing notification now...");
                     	showNotification(msg);
+                    	ActionBar actionBar = getActionBar();
+                    	customAdapter.changeCursor(db.getMessagesForUser(actionBar.getTitle().toString()));
+                        conversation.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                conversation.setSelection(conversation.getCount());
+                                conversation.smoothScrollToPosition(conversation.getCount());
+                            }
+                        }, 100);
                     }
                 } else {
                     Log.d(TAG, "Broadcast Receiver ignoring message - no notification found");
@@ -95,8 +106,6 @@ public class MainActivity extends SwifiicActivity {
             .setSmallIcon(R.drawable.ic_launcher)
             .setContentIntent(pIntent)
             .setSound(soundUri)
-            .addAction(R.drawable.ic_launcher, "View", pIntent)
-            .addAction(0, "Remind", pIntent)
             .build();
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

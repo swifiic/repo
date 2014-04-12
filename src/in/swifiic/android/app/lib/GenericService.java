@@ -276,6 +276,7 @@ public class GenericService extends IntentService {
                 Serializer serializer = new Persister();
                 @SuppressWarnings("unused")  // this is checking that XML is fine
 				Notification notif = serializer.read(Notification.class,msg);
+                Log.d(TAG, "Got a message: " + msg.toString());
 	            updatedIntent.putExtra("notification", msg);
 	            sendBroadcast(updatedIntent);
 			} catch (Exception e) {

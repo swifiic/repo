@@ -1,5 +1,11 @@
 package in.swifiic.android.app.lib;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.StringWriter;
 
 import in.swifiic.android.app.lib.xml.Notification;
@@ -7,6 +13,8 @@ import in.swifiic.android.app.lib.xml.Action;
 
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
+
+import de.tubs.ibr.dtn.util.Base64;
 
 import android.content.Intent;
 import android.content.Context;
@@ -63,4 +71,67 @@ public class Helper {
         }
         return null;
 	}
+	
+	/**
+	 * @param f
+	 *            -> file type
+	 * @return String -> Base64 encoded string of the file
+	 */
+	// TODO
+	public static String fileToB64String(String fName) {
+		StringBuffer fileBuf = new StringBuffer();
+		File readFile = new File(fName);
+
+		if (readFile.exists()) {
+			FileInputStream fis;
+			try {
+				fis = new FileInputStream(readFile);
+
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+				byte[] buf = new byte[1024];
+				try {
+					for (int readNum; (readNum = fis.read(buf)) != -1;) {
+						bos.write(buf, 0, readNum);
+						// no doubt here is 0
+						/*
+						 * Writes len bytes from the specified byte array
+						 * starting at offset off to this byte array output
+						 * stream.
+						 */
+					}
+				} catch (IOException ex) {
+				}
+
+				byte[] bytes = bos.toByteArray();
+
+				fileBuf.append(Base64.encodeBytes(bytes));
+			} catch (FileNotFoundException e) {
+
+				e.printStackTrace();
+			}
+		}
+
+		return fileBuf.toString();
+	}
+
+	public static void b64StringToFile(String contentB64, String fileName){
+		File writeFile = new File(fileName);
+		FileOutputStream str =null;
+		try {
+			str = new FileOutputStream(writeFile);
+			str.write(Base64.decode(contentB64));
+			
+		} catch (Exception e) {
+			Log.e("b64StringToFile", "Could not save file " + e.getLocalizedMessage());
+		} finally {
+			try {
+				if(null != str) str.close();
+			} catch (Exception e) {/* do nothing */	}
+		}
+		
+		
+		
+	}
+
 }

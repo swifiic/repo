@@ -48,4 +48,12 @@ public class Operation {
 	public String getOriginatingUserName() {
 		return origUsr;
 	}
+	
+	public String getFileData() {
+		return fileData;
+	}
+	public void setFileData(String data) {
+		fileData = data ;
+	}
+	
 }

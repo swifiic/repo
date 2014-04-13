@@ -22,7 +22,9 @@ public class Notification extends Operation {
 		arguments = action.arguments;
 		deviceId = "TODO"; // TODO - get from runtime context
 		origUsr = action.origUsr;
-		version = "0.1"; // in future handle backward compatability - Move to constants		
+		version = "0.1"; // in future handle backward compatability - Move to constants
+		if(null != action.fileData)
+			if(action.fileData.length()>0) fileData = action.fileData;
 	}
 	
 	public boolean addArgument(String argName, String argVal) {

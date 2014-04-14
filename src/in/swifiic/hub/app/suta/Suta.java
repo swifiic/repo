@@ -32,11 +32,26 @@ public class Suta extends Base implements SwifiicHandler {
         logger.log(Level.INFO, dtnClient.getConfiguration());
     }
     
+    static boolean exitFlag=false;
     public static void main(String args[]) throws IOException {
     	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     	Suta suta = new Suta();
-    	String input;
-    	while(true) {
+    	Runtime.getRuntime().addShutdownHook(new Thread() {
+		    public void run() { Suta.exitFlag=true; }
+		 });
+    	
+    	if(args.length>0 && args[0].equalsIgnoreCase("-D")) { // daemon mode
+    		while(!Suta.exitFlag) {
+    			try {
+					Thread.sleep(60);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
+    		
+    	} else 	while(!Suta.exitFlag) {
+        	String input;
 		    System.out.print("Enter \"exit\" to exit application and \"send\" to send broadcast to devices: ");
 	    	input = br.readLine();
 	    	if(input.equalsIgnoreCase("exit")) {

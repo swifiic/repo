@@ -34,12 +34,26 @@ public class Messenger extends Base implements SwifiicHandler {
         dtnClient = getDtnClient(PRIMARY_EID, this);
         logger.log(Level.INFO, dtnClient.getConfiguration());
     }
-    
+    static boolean exitFlag=false;
     public static void main(String args[]) throws IOException {
     	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     	Messenger messenger = new Messenger();
-    	String input;
-    	while(true) {
+    	Runtime.getRuntime().addShutdownHook(new Thread() {
+		    public void run() { Messenger.exitFlag=true; }
+		 });
+    	
+    	if(args.length>0 && args[0].equalsIgnoreCase("-D")) { // daemon mode
+    		while(! Messenger.exitFlag) {
+    			try {
+					Thread.sleep(60);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
+    		
+    	} else 	while(Messenger.exitFlag) {
+        	String input;
 		    System.out.print("Enter \"exit\" to exit application: ");
 	    	input = br.readLine();
 	    	if(input.equalsIgnoreCase("exit")) {

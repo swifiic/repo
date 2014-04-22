@@ -2,6 +2,7 @@ package in.swifiic.hub.lib;
 
 import ibrdtn.api.object.Bundle;
 import ibrdtn.api.object.EID;
+import ibrdtn.api.object.GroupEndpoint;
 import ibrdtn.api.object.PayloadBlock;
 import ibrdtn.api.object.SingletonEndpoint;
 import ibrdtn.example.api.Constants;
@@ -35,7 +36,21 @@ public class Base {
 
         final Bundle finalBundle = bundle;
         
-        System.out.println("Sending a bundle to: " + destination.toString() + " with data: " + message);
+        System.out.println("Sending a bundle to: " + destination.toString() + "\n with data: " + message);
+        dtnClient.send(finalBundle);    	
+    }
+
+    protected void sendGrp(String destinationAddress, String message) {
+    	EID destination = new GroupEndpoint(destinationAddress);
+
+        // Create bundle to send
+        Bundle bundle = new Bundle(destination, Constants.LIFETIME);
+        bundle.setPriority(Bundle.Priority.NORMAL);
+        bundle.appendBlock(new PayloadBlock(message.getBytes()));
+
+        final Bundle finalBundle = bundle;
+        
+        System.out.println("Sending a bundle to  Group: " + destination.toString() + "\n with data: " + message);
         dtnClient.send(finalBundle);    	
     }
 }

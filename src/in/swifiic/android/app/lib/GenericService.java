@@ -20,6 +20,7 @@ import de.tubs.ibr.dtn.api.BundleID;
 import de.tubs.ibr.dtn.api.DTNClient;
 import de.tubs.ibr.dtn.api.DTNClient.Session;
 import de.tubs.ibr.dtn.api.DataHandler;
+import de.tubs.ibr.dtn.api.GroupEndpoint;
 import de.tubs.ibr.dtn.api.Registration;
 import de.tubs.ibr.dtn.api.ServiceNotAvailableException;
 import de.tubs.ibr.dtn.api.SessionConnection;
@@ -208,6 +209,8 @@ public class GenericService extends IntentService {
         
     };
     
+    
+    GroupEndpoint GE_TEST=null;
     @Override
     public void  onCreate() {
         super.onCreate();
@@ -218,11 +221,13 @@ public class GenericService extends IntentService {
         	String appName = this.getApplication().getPackageName();
         	Log.d("GenericService", "Registered with: " + appName);
             Registration registration = new Registration(appName);
+        	GE_TEST=new GroupEndpoint("dtn://"+appName + "/mc");
+            registration.add(GE_TEST);
             
             try {
                 // initialize the connection to the DTN service
                 mClient.initialize(this, registration);
-                Log.d(TAG, "Connection to DTN service established.");
+                Log.d(TAG, "Connection to DTN service established. GE=" + GE_TEST + " endpoint=" +appName);
             } catch (ServiceNotAvailableException e) {
                 // The DTN service has not been found
                 Log.e(TAG, "DTN service unavailable. Is IBR-DTN installed?", e);
@@ -278,6 +283,10 @@ public class GenericService extends IntentService {
 				Notification notif = serializer.read(Notification.class,msg);
                 Log.d(TAG, "Got a message: " + msg.toString());
 	            updatedIntent.putExtra("notification", msg);
+	            if(null != GE_TEST && mBundle.getDestination().equals(GE_TEST)) {
+	            	updatedIntent.putExtra("multicast", "true");
+	            	Log.d(TAG, "Got via Multicast");
+	            }
 	            sendBroadcast(updatedIntent);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

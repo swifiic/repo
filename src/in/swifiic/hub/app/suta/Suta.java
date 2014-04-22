@@ -61,7 +61,8 @@ public class Suta extends Base implements SwifiicHandler {
 	    		List<String> deviceList = Helper.getDevicesForAllUsers();
 	    		String message = Helper.getAllUsers();
 	    		for(int i = deviceList.size()-1; i >= 0; --i) {
-            		suta.send(deviceList.get(i) + "/in.swifiic.android.app.suta", message);
+            		//suta.send(deviceList.get(i) + "/in.swifiic.android.app.suta", message);
+            		suta.sendGrp("dtn://in.swifiic.android.app.suta/mc", message);
             		// Mark bundle as delivered...                    
                     logger.log(Level.INFO, "Attempted to {0} send to {1}", 
                     				new Object[] {message, deviceList.get(i) + "/in.swifiic.android.app.suta"});

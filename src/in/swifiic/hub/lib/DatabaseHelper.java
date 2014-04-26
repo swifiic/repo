@@ -8,8 +8,8 @@ public class DatabaseHelper {
 	static final String DB_URL = "jdbc:mysql://localhost/swifiic";
 	
 	// Database credentials
-	static final String USER = "swifiic";
-	static final String PASS = "why";
+	static final String USER = "root";
+	static final String PASS = "";
 	
 	/*
 	 * Opens a connection to MySQL Database and returns the 

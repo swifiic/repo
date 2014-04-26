@@ -38,8 +38,7 @@ public class Operation {
 	@Element(required=false)
 	String fileData;
 
-	public String getAppName()
-	{
+	public String getAppName() {
 		return appName;
 	}
 
@@ -47,8 +46,7 @@ public class Operation {
 		return opName;
 	}
 
-	
 	public Operation() {
-		
+		super();
 	}
 }

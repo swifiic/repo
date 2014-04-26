@@ -12,6 +12,17 @@ public class Notification extends Operation {
 	public Notification() {
 		super();
 	}
+	
+	public Notification(String opName, String appName, String appId, String appVer, String origUsr) {
+		super();
+		this.opName = opName;
+		this.appName = appName;
+		this.appId = appId;
+		this.appVer = appVer;
+		this.deviceId = "TODO"; // TODO - get from runtime context
+		this.origUsr = origUsr;
+		this.version = "0.1"; // in future handle backward compatability - Move to constants
+	}
 
 	public Notification(Action action ){
 		super();

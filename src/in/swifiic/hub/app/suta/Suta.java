@@ -5,6 +5,8 @@ import ibrdtn.example.api.DTNClient;
 import in.swifiic.hub.lib.Base;
 import in.swifiic.hub.lib.Helper;
 import in.swifiic.hub.lib.SwifiicHandler;
+import in.swifiic.hub.lib.xml.Notification;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -59,12 +61,15 @@ public class Suta extends Base implements SwifiicHandler {
 	    	} else if(input.equalsIgnoreCase("send")) {
 	    		// TODO Send broadcast to devices
 	    		List<String> deviceList = Helper.getDevicesForAllUsers();
-	    		String message = Helper.getAllUsers();
+	    		String userList = Helper.getAllUsers();
+	    		Notification notif = new Notification("DeviceListUpdate", "SUTA", "TODO", "0.1", "Hub");
+	    		notif.addArgument("userList", userList);
+	    		String payload = Helper.serializeNotification(notif);
 	    		for(int i = deviceList.size()-1; i >= 0; --i) {
-            		suta.send(deviceList.get(i) + "/in.swifiic.android.app.suta", message);
+            		suta.send(deviceList.get(i) + "/in.swifiic.android.app.suta", payload);
             		// Mark bundle as delivered...                    
                     logger.log(Level.INFO, "Attempted to {0} send to {1}", 
-                    				new Object[] {message, deviceList.get(i) + "/in.swifiic.android.app.suta"});
+                    				new Object[] {payload, deviceList.get(i) + "/in.swifiic.android.app.suta"});
             	}
 	    	}
 	    }

@@ -1,7 +1,6 @@
 package in.swifiic.hub.app.suta;
 
 import ibrdtn.example.api.DTNClient;
-
 import in.swifiic.hub.lib.Base;
 import in.swifiic.hub.lib.Helper;
 import in.swifiic.hub.lib.SwifiicHandler;
@@ -10,7 +9,6 @@ import in.swifiic.hub.lib.xml.Notification;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -39,8 +37,8 @@ public class Suta extends Base implements SwifiicHandler {
     	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     	Suta suta = new Suta();
     	Runtime.getRuntime().addShutdownHook(new Thread() {
-		    public void run() { Suta.exitFlag=true; }
-		 });
+		    public void run() { Suta.exitFlag = true; }
+		});
     	
     	if(args.length>0 && args[0].equalsIgnoreCase("-D")) { // daemon mode
     		while(!Suta.exitFlag) {
@@ -60,29 +58,21 @@ public class Suta extends Base implements SwifiicHandler {
 	    		suta.exit();
 	    	} else if(input.equalsIgnoreCase("send")) {
 	    		// TODO Send broadcast to devices
-	    		List<String> deviceList = Helper.getDevicesForAllUsers();
+	    		//List<String> deviceList = Helper.getDevicesForAllUsers();
 	    		String userList = Helper.getAllUsers();
 	    		Notification notif = new Notification("DeviceListUpdate", "SUTA", "TODO", "0.1", "Hub");
 	    		notif.addArgument("userList", userList);
 	    		String payload = Helper.serializeNotification(notif);
-	    		for(int i = deviceList.size()-1; i >= 0; --i) {
-<<<<<<< HEAD
-            		suta.send(deviceList.get(i) + "/in.swifiic.android.app.suta", payload);
-=======
-            		//suta.send(deviceList.get(i) + "/in.swifiic.android.app.suta", message);
-            		suta.sendGrp("dtn://in.swifiic.android.app.suta/mc", message);
->>>>>>> 29dee4208301ba37b256fb87ffe6a98d476b438e
-            		// Mark bundle as delivered...                    
-                    logger.log(Level.INFO, "Attempted to {0} send to {1}", 
-                    				new Object[] {payload, deviceList.get(i) + "/in.swifiic.android.app.suta"});
-            	}
+        		suta.sendGrp("dtn://in.swifiic.android.app.suta/mc", payload);
+        		// Mark bundle as delivered...                    
+                logger.log(Level.INFO, "Attempted to {0} send to {1}", 
+                		new Object[] {payload, "dtn://in.swifiic.android.app.suta/mc"});
 	    	}
 	    }
     }
-    
 
 	@Override
 	public void handlePayload(String payload, final Context ctx) {
-		System.out.println("Got Message:" + payload);	
+		System.out.println("Got Message: " + payload);	
 	}
 }

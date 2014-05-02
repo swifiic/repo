@@ -18,14 +18,9 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="in.swifiic.android.app.msngr.MainActivity"
-            android:label="@string/app_name" 
-            android:windowSoftInputMode="stateVisible|adjustResize"
-            android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
 
         <service android:name="in.swifiic.android.app.lib.GenericService" />
 
@@ -33,6 +28,15 @@
             android:name="in.swifiic.android.app.lib.ui.UserChooserActivity"
             android:label="Select User"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="in.swifiic.android.app.msngr.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName="in.swifiic.android.app.msngr.MainActivity"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.swifiic.android.app.msngr.MainActivity" />
+        </activity>
 
         <receiver
             android:name="in.swifiic.android.app.lib.IBRDtnReceiver"
@@ -53,29 +57,26 @@
                 <category android:name="in.swifiic.android.app.msngr" />
             </intent-filter>
         </receiver>
-
-        <activity
-            android:name="in.swifiic.android.app.msngr.SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:parentActivityName="in.swifiic.android.app.msngr.MainActivity"
-            android:screenOrientation="portrait" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="in.swifiic.android.app.msngr.MainActivity" />
-        </activity>
-        
         <receiver android:name="in.swifiic.android.app.lib.HubAddressReceiver" >
             <intent-filter>
                 <action android:name="swifiic.suta.hubAddressUpdate" />
             </intent-filter>
         </receiver>
-        
         <receiver android:name="in.swifiic.android.app.lib.IdentityReceiver" >
             <intent-filter>
                 <action android:name="swifiic.suta.myIdentityUpdate" />
             </intent-filter>
         </receiver>
-        
+
+        <activity
+            android:name="in.swifiic.android.app.msngr.ChatSummary"
+            android:label="@string/title_activity_chat_summary" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

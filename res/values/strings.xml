@@ -7,5 +7,7 @@
     <string name="select_user">Select User</string>
     <string name="version">0.1</string>
     <string name="profile_pic">Profile Picture</string>
+    <string name="title_activity_chat_summary">SWiFiIC Msngr</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

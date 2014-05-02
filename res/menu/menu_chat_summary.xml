@@ -5,5 +5,11 @@
         android:showAsAction="ifRoom"
         android:title="@string/action_settings"
         android:icon="@drawable/ic_action_settings" />
+    
+    <item
+        android:id="@+id/itemSelectUser"
+        android:showAsAction="ifRoom"
+        android:title="@string/select_user"
+        android:icon="@drawable/ic_action_users" />
 
 </menu>

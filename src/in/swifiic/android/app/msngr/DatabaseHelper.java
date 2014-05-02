@@ -5,6 +5,8 @@ import java.util.Date;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -69,7 +71,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         
         v = new ContentValues();
         v.put(KEY_MESSAGE, "Sample message from shivam to abhishek");
+        v.put(KEY_USER, "test");
+        v.put(KEY_IS_INBOUND, 0);
+        v.put(KEY_SENTAT, date.getTime() + 1000);
+        db.insert(TABLE_MSGS, null, v);
+        
+        v = new ContentValues();
+        v.put(KEY_MESSAGE, "Sample message from shivam to abhishek");
         v.put(KEY_USER, "abhishek");
+        v.put(KEY_IS_INBOUND, 0);
+        v.put(KEY_SENTAT, date.getTime() + 1000);
+        db.insert(TABLE_MSGS, null, v);
+        
+        v = new ContentValues();
+        v.put(KEY_MESSAGE, "Sample message from shivam to abhishek");
+        v.put(KEY_USER, "test");
         v.put(KEY_IS_INBOUND, 0);
         v.put(KEY_SENTAT, date.getTime() + 1000);
         db.insert(TABLE_MSGS, null, v);
@@ -129,4 +145,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (db != null && db.isOpen())
             db.close();
     }
+
+	public Cursor getFirstMessageForAllUsers() {
+		SQLiteDatabase db = this.getReadableDatabase();
+		String[] projection = {"_id","user", "message"};
+		Cursor c = db.query("messages", projection, null, null, "user", null, "sentAt");
+		DatabaseUtils.dumpCursor(c);
+		String temp = "";
+		String user, message;
+		int id;
+		MatrixCursor mc = new MatrixCursor(projection);
+		while(c.moveToNext()) {
+			if(temp.equals(c.getString(c.getColumnIndex("user")))) {
+				continue;
+			}
+			id = c.getInt(c.getColumnIndex("_id"));
+			user = c.getString(c.getColumnIndex("user"));
+			message = c.getString(c.getColumnIndex("message"));
+			mc.addRow(new Object[]{id, user, message});
+			temp = c.getString(c.getColumnIndex("user"));		
+		}
+		return mc;
+	}
 }

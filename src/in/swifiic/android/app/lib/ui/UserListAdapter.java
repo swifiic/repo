@@ -5,7 +5,6 @@ import java.util.List;
 
 import in.swifiic.android.app.lib.User;
 import in.swifiic.lib.app.android.R;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

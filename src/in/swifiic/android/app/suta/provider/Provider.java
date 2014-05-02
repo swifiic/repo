@@ -130,7 +130,7 @@ public class Provider extends ContentProvider {
 		protected void populateSchema(SQLiteDatabase db, String usrs, String apps) {
         	// STUB
         }
-    } 
+    } // class DatabaseHelper
     
     
 	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -162,17 +162,26 @@ public class Provider extends ContentProvider {
 	}
 	
 	// userSchema format - "username|alias;username|alias;..."
-	public void loadSchema(String userSchema){
+	public void loadUserSchema(String userSchema) {
+		sutaDB.execSQL("DELETE FROM users WHERE 1=1");
+		String userInfo, username, alias;
 		ContentValues v = new ContentValues();
 		int i = 1;
 		StringTokenizer st = new StringTokenizer(userSchema, ";");
 		while(st.hasMoreTokens()) {
-			StringTokenizer st2 = new StringTokenizer(st.nextToken(), "|");
+			userInfo = st.nextToken();
+			StringTokenizer st2 = new StringTokenizer(userInfo, "|");
 		     while(st2.hasMoreTokens()) {
+		    	 username = st2.nextToken();
+		    	 alias = st2.nextToken();
 		    	 v.put("user_id", i);
-		         v.put("name", st2.nextToken());
-		         v.put("alias", st2.nextToken());
-		         sutaDB.insert(DB_USR_TABLE, "", v);
+		         v.put("name", username);
+		         v.put("alias", alias);
+		         if(sutaDB.insert(DB_USR_TABLE, "", v) < 0) {
+		        	 Log.e("SUTA Provider", "Unable to insert values: " + v.toString());
+		         } else {
+		        	 Log.d("SUTA Provider", "Successfully to inserted values: " + v.toString());
+		         }
 		         v.clear();
 		         ++i;
 		     }
@@ -188,9 +197,38 @@ public class Provider extends ContentProvider {
 		
 		if(USERS == uriType) {	
 			
-			sqlBuilder.setTables("apps");
-			projection = new String[]{"app_id"};
-			selection = "app_name=\'" + app +"\'";
+//			sqlBuilder.setTables("apps");
+//			projection = new String[]{"app_id"};
+//			selection = "app_name=\'" + app +"\'";
+//			Log.d("Provider query", "Querying for app_id of app: " + app);			
+//			Cursor c1 = sqlBuilder.query(
+//		                sutaDB, 
+//		                projection, 
+//		                selection, 
+//		                selectionArgs, 
+//		                null, 
+//		                null, 
+//		                null);
+//			c1.moveToFirst();
+//			String app_id = c1.getString(0);
+//			
+//			sqlBuilder.setTables("uamaps INNER JOIN users ON uamaps.user_id=users.user_id");			
+//			projection = new String[]{"name", "alias"};
+//			// TODO IMPORTANT - right now just return the whole user list... implement app roles in suta hub for this to work
+//			// selection = "app_id=\'" + app_id +"\'";
+//			selection = null;
+//			Log.d("Provider query", "Querying for users of app: " + app);			
+//			Cursor c = sqlBuilder.query(
+//		                sutaDB, 
+//		                projection, 
+//		                selection, 
+//		                selectionArgs, 
+//		                null, 
+//		                null, 
+//		                sortOrder);
+			sqlBuilder.setTables("users");
+			projection = new String[]{"name","alias"};
+			selection = null;
 			Log.d("Provider query", "Querying for app_id of app: " + app);			
 			Cursor c1 = sqlBuilder.query(
 		                sutaDB, 
@@ -200,25 +238,10 @@ public class Provider extends ContentProvider {
 		                null, 
 		                null, 
 		                null);
-			c1.moveToFirst();
-			String app_id = c1.getString(0);
-			
-			sqlBuilder.setTables("uamaps INNER JOIN users ON uamaps.user_id=users.user_id");			
-			projection = new String[]{"name", "alias"};
-			selection = "app_id=\'" + app_id +"\'";
-			Log.d("Provider query", "Querying for users of app: " + app);			
-			Cursor c = sqlBuilder.query(
-		                sutaDB, 
-		                projection, 
-		                selection, 
-		                selectionArgs, 
-		                null, 
-		                null, 
-		                sortOrder);
-			Log.d("Provider query", "Dumping cursor: " + DatabaseUtils.dumpCursorToString(c));
+			Log.d("Provider query", "Dumping cursor: " + DatabaseUtils.dumpCursorToString(c1));
 
-			c.setNotificationUri(getContext().getContentResolver(), uri);
-			return c;
+			c1.setNotificationUri(getContext().getContentResolver(), uri);
+			return c1;
 		}
         return null;
 	}

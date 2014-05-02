@@ -71,10 +71,10 @@ public class MainActivity extends SwifiicActivity {
     	if(null == Provider.providerInstance){
     		Log.e(TAG,"No Provider - whatsup...?");
     	} else {
-    		if(notif.getNotificationName().equals("SyncToDevice")) {
+    		if(notif.getNotificationName().equals("DeviceListUpdate")) {
     			String userList = notif.getArgument("userList");
     			Log.d(TAG, "Got user list as: " + userList);
-    			Provider.providerInstance.loadSchema(userList);
+    			Provider.providerInstance.loadUserSchema(userList);
     		}		
     	}
     }

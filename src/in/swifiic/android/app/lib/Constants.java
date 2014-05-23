@@ -17,7 +17,7 @@ public final class Constants {
 	
 	public static final String MARK_DELIVERED_INTENT = "in.swifiic.app.MARK_DELIVERED";
 	
-	public static final long LONG_LIFETIME=3600*12;
+	public static final long LONG_LIFETIME = 3600*12;
 	
-	public static final long SHORT_LIFETIME=3600;
+	public static final long SHORT_LIFETIME = 3600;
 }

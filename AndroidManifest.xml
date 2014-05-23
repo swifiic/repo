@@ -62,6 +62,12 @@
                 <category android:name="in.swifiic.android.app.suta" />
             </intent-filter>
         </receiver>
+        
+        <receiver android:name="in.swifiic.android.app.suta.NewMessageReceiver" >
+            <intent-filter>
+                <action android:name="in.swifiic.app.DATA_RECEIVED" />
+            </intent-filter>
+        </receiver>
              
     </application>
 

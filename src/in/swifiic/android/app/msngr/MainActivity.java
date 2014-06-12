@@ -8,11 +8,15 @@ import in.swifiic.android.app.lib.xml.Action;
 import java.util.Date;
 
 import android.app.ActionBar;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,11 +38,26 @@ public class MainActivity extends SwifiicActivity {
     
     DatabaseHelper db;
     ConversationListCursorAdapter customAdapter;
+    BroadcastReceiver mBroadcastReceiver;
+    
+    public MainActivity() {
+    	super();
+	    mBroadcastReceiver = new BroadcastReceiver() {
+	    	@Override
+	    	public void onReceive(Context context, Intent intent) {
+	    		ActionBar actionBar = getActionBar();
+	    		customAdapter.changeCursor(db.getMessagesForUser(actionBar.getTitle().toString()));
+	    	}
+	    };
+    }
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_msngr);
+        
+        IntentFilter filter = new IntentFilter("newMessageReceived");
+		LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, filter);
         
         messageToSend = (EditText)findViewById(R.id.msgTextToSend);
         conversation = (ListView)findViewById(R.id.conversation);
@@ -114,10 +133,6 @@ public class MainActivity extends SwifiicActivity {
         }, 100);
     }
     
-    public void updateConversation() {
-    	customAdapter = new ConversationListCursorAdapter(this.getApplicationContext(), db.getMessagesForUser(actionBar.getTitle().toString()));
-    }
-    
     /*
      * Menu Creation and handling
      * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
@@ -138,5 +153,10 @@ public class MainActivity extends SwifiicActivity {
 		} else {
 			return super.onOptionsItemSelected(item);
 		}
+    }
+    
+    public void onDestroy() {
+    	super.onDestroy();
+    	LocalBroadcastManager.getInstance(this).unregisterReceiver(mBroadcastReceiver);    	
     }
 }

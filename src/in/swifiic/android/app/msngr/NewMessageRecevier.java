@@ -2,7 +2,6 @@ package in.swifiic.android.app.msngr;
 
 import in.swifiic.android.app.lib.Helper;
 import in.swifiic.android.app.lib.xml.Notification;
-import android.app.ActionBar;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -11,6 +10,8 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class NewMessageRecevier extends BroadcastReceiver {
@@ -20,8 +21,7 @@ public class NewMessageRecevier extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (intent.hasExtra("notification")) {
-        	String payload= intent.getStringExtra("notification");
-        	
+        	String payload= intent.getStringExtra("notification");  	
             Log.d(TAG, "Handling incoming message: " + payload);
             Notification notif = Helper.parseNotification(payload);
         	// Checking for opName of Notification
@@ -32,47 +32,48 @@ public class NewMessageRecevier extends BroadcastReceiver {
             	db.addMessage(msg);
             	db.closeDB();
             	Log.d(TAG, "Showing notification now...");
-            	showNotification(msg);
-            	ActionBar actionBar = getActionBar();
-            	customAdapter.changeCursor(db.getMessagesForUser(actionBar.getTitle().toString()));
-                conversation.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        conversation.setSelection(conversation.getCount());
-                        conversation.smoothScrollToPosition(conversation.getCount());
-                    }
-                }, 100);
+            	showNotification(msg, context);
+            	LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
             }
         } else {
             Log.d(TAG, "Broadcast Receiver ignoring message - no notification found");
         }
 	}
 	
-	public void showNotification(Msg msg){
+	public void showNotification(Msg msg, Context context){
+		Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+		NotificationCompat.Builder mBuilder =
+		        new NotificationCompat.Builder(context)
+		        .setSmallIcon(R.drawable.ic_launcher)
+		        .setContentTitle("New Message - " + msg.getUser())
+		        .setContentText(msg.getMsg())
+		        .setSound(sound);
+		// Creates an explicit intent for an Activity in your app
+		Intent resultIntent = new Intent(context, MainActivity.class);
+		resultIntent.putExtra("userName", msg.getUser());
 
-        // define sound URI, the sound to be played when there's a notification
-        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
-        // intent triggered, you can add other intent for other actions
-        Intent intent = new Intent(MainActivity.this, NotificationCompat.class);
-        PendingIntent pIntent = PendingIntent.getActivity(MainActivity.this, 0, intent, 0);
-
-        // this is it, we'll build the notification!
-        // in the addAction method, if you don't want any icon, just set the first param to 0
-        android.app.Notification mNotification = new NotificationCompat.Builder(this)
-            .setContentTitle("New Message!")
-            .setContentText(msg.getUser() + ": " + msg.getMsg())
-            .setSmallIcon(R.drawable.ic_launcher)
-            .setContentIntent(pIntent)
-            .setSound(soundUri)
-            .build();
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-        // If you want to hide the notification after it was selected, do the code below
-        mNotification.flags |= android.app.Notification.FLAG_AUTO_CANCEL;
-
-        notificationManager.notify(0, mNotification);
+		// The stack builder object will contain an artificial back stack for the
+		// started Activity.
+		// This ensures that navigating backward from the Activity leads out of
+		// your application to the Home screen.
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+		// Adds the back stack for the Intent (but not the Intent itself)
+		stackBuilder.addParentStack(MainActivity.class);
+		// Adds the Intent that starts the Activity to the top of the stack
+		stackBuilder.addNextIntent(resultIntent);
+		PendingIntent resultPendingIntent =
+		        stackBuilder.getPendingIntent(
+		            0,
+		            PendingIntent.FLAG_UPDATE_CURRENT
+		        );
+		mBuilder.setContentIntent(resultPendingIntent);
+		NotificationManager mNotificationManager =
+		    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		int mId = 1;
+		// mId allows you to update the notification later on.
+		mNotificationManager.notify(mId , mBuilder.build());
+		Intent chatActivityIntent = new Intent("newMessageReceived");
+		chatActivityIntent.putExtra("notification", mId);
+		LocalBroadcastManager.getInstance(context).sendBroadcast(chatActivityIntent);
     }
-
 }

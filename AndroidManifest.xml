@@ -67,6 +67,11 @@
                 <action android:name="swifiic.suta.myIdentityUpdate" />
             </intent-filter>
         </receiver>
+        <receiver android:name="in.swifiic.android.app.msgnr.NewMessageReceiver" >
+            <intent-filter>
+                <action android:name="in.swifiic.app.DATA_RECEIVED" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name="in.swifiic.android.app.msngr.ChatSummary"

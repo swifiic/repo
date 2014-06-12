@@ -1,20 +1,10 @@
 package in.swifiic.android.app.msngr;
 
-import in.swifiic.android.app.lib.Helper;
 import in.swifiic.android.app.lib.ui.SwifiicActivity;
 import in.swifiic.android.app.lib.ui.UserChooserActivity;
-import in.swifiic.android.app.lib.xml.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,65 +21,6 @@ public class ChatSummary extends SwifiicActivity {
 	
 	private DatabaseHelper db;
 	
-	/**
-     * Mandatory implementation to receive swifiic notifications
-     */
-    public ChatSummary() {
-    	super();
-    	
-    	// This is a must for all applications - hook to get notification from GenericService
-    	mDataReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.hasExtra("notification")) {
-                	String payload= intent.getStringExtra("notification");
-                	
-                    Log.d(TAG, "Handling incoming message: " + payload);
-                    Notification notif = Helper.parseNotification(payload);
-                	// Checking for opName of Notification
-                    if(notif.getNotificationName().equals("DeliverMessage")) {
-                    	Log.d(TAG, "Adding received message to the database.");
-                    	Msg msg = new Msg(notif);
-                    	db = new DatabaseHelper(getApplicationContext());
-                    	db.addMessage(msg);
-                    	db.closeDB();
-                    	Log.d(TAG, "Showing notification now...");
-                    	showNotification(msg);
-                    }
-                } else {
-                    Log.d(TAG, "Broadcast Receiver ignoring message - no notification found");
-                }
-            }
-        };      
-    }
-    
-    public void showNotification(Msg msg){
-
-        // define sound URI, the sound to be played when there's a notification
-        Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
-        // intent triggered, you can add other intent for other actions
-        Intent intent = new Intent(ChatSummary.this, NotificationCompat.class);
-        PendingIntent pIntent = PendingIntent.getActivity(ChatSummary.this, 0, intent, 0);
-
-        // this is it, we'll build the notification!
-        // in the addAction method, if you don't want any icon, just set the first param to 0
-        android.app.Notification mNotification = new NotificationCompat.Builder(this)
-            .setContentTitle("New Message!")
-            .setContentText(msg.getUser() + ": " + msg.getMsg())
-            .setSmallIcon(R.drawable.ic_launcher)
-            .setContentIntent(pIntent)
-            .setSound(soundUri)
-            .build();
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-        // If you want to hide the notification after it was selected, do the code below
-        mNotification.flags |= android.app.Notification.FLAG_AUTO_CANCEL;
-
-        notificationManager.notify(0, mNotification);
-    }
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -99,11 +30,10 @@ public class ChatSummary extends SwifiicActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		DatabaseHelper db = new DatabaseHelper(this);
+		db = new DatabaseHelper(this);
 		Cursor c = db.getFirstMessageForAllUsers();
 		ChatSummaryCursorAdapter adapter = new ChatSummaryCursorAdapter(this, c);
-		DatabaseUtils.dumpCursor(c);
-		Log.d("ChatSummary", "Setting cursor!");
+		Log.d(TAG, "Setting cursor!");
 		c.moveToFirst();
 		adapter.changeCursor(c);
 		ListView chatList = (ListView) findViewById(R.id.list);

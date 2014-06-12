@@ -150,11 +150,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	public Cursor getFirstMessageForAllUsers() {
 		SQLiteDatabase db = this.getReadableDatabase();
-		String[] projection = {"_id","user", "message"};
+		String[] projection = {"_id","user", "message", "sentAt"};
 		Cursor c = db.query("messages", projection, null, null, "user", null, "sentAt");
 		DatabaseUtils.dumpCursor(c);
 		String temp = "";
-		String user, message;
+		String user, message, sentAt;
 		int id;
 		MatrixCursor mc = new MatrixCursor(projection);
 		while(c.moveToNext()) {
@@ -164,7 +164,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			id = c.getInt(c.getColumnIndex("_id"));
 			user = c.getString(c.getColumnIndex("user"));
 			message = c.getString(c.getColumnIndex("message"));
-			mc.addRow(new Object[]{id, user, message});
+			sentAt = c.getString(c.getColumnIndex("sentAt"));
+			mc.addRow(new Object[]{id, user, message, sentAt});
 			temp = c.getString(c.getColumnIndex("user"));		
 		}
 		return mc;

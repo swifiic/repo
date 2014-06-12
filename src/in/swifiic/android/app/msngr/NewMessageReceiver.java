@@ -14,7 +14,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-public class NewMessageRecevier extends BroadcastReceiver {
+public class NewMessageReceiver extends BroadcastReceiver {
 
 	private static final String TAG = "NewMessageReceiver";
 
@@ -71,7 +71,9 @@ public class NewMessageRecevier extends BroadcastReceiver {
 		    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		int mId = 1;
 		// mId allows you to update the notification later on.
-		mNotificationManager.notify(mId , mBuilder.build());
+		android.app.Notification notification = mBuilder.build();
+		notification.flags = android.app.Notification.DEFAULT_LIGHTS | android.app.Notification.FLAG_AUTO_CANCEL;
+		mNotificationManager.notify(mId , notification);
 		Intent chatActivityIntent = new Intent("newMessageReceived");
 		chatActivityIntent.putExtra("notification", mId);
 		LocalBroadcastManager.getInstance(context).sendBroadcast(chatActivityIntent);

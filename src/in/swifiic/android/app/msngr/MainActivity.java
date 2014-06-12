@@ -40,24 +40,10 @@ public class MainActivity extends SwifiicActivity {
     ConversationListCursorAdapter customAdapter;
     BroadcastReceiver mBroadcastReceiver;
     
-    public MainActivity() {
-    	super();
-	    mBroadcastReceiver = new BroadcastReceiver() {
-	    	@Override
-	    	public void onReceive(Context context, Intent intent) {
-	    		ActionBar actionBar = getActionBar();
-	    		customAdapter.changeCursor(db.getMessagesForUser(actionBar.getTitle().toString()));
-	    	}
-	    };
-    }
-    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_msngr);
-        
-        IntentFilter filter = new IntentFilter("newMessageReceived");
-		LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, filter);
         
         messageToSend = (EditText)findViewById(R.id.msgTextToSend);
         conversation = (ListView)findViewById(R.id.conversation);
@@ -65,8 +51,21 @@ public class MainActivity extends SwifiicActivity {
         
         Intent i = getIntent();
         String userName = i.getStringExtra("userName");
+        Log.d(TAG, "Got username: " + userName);
         final ActionBar actionBar = getActionBar();
         actionBar.setTitle(userName);
+        
+        mBroadcastReceiver = new BroadcastReceiver() {
+	    	@Override
+	    	public void onReceive(Context context, Intent intent) {
+	    		ActionBar actionBar = getActionBar();
+	    		customAdapter.changeCursor(db.getMessagesForUser(actionBar.getTitle().toString()));
+	    	}
+	    };
+        
+        IntentFilter filter = new IntentFilter("newMessageReceived");
+		LocalBroadcastManager.getInstance(this).registerReceiver(mBroadcastReceiver, filter);
+		Log.d(TAG, "Broadcast Receiver registered.");
         
         // Assigning an action to the send button        
         b.setOnClickListener(new OnClickListener() {
@@ -119,7 +118,12 @@ public class MainActivity extends SwifiicActivity {
     	new Handler().post(new Runnable() {
         	@Override
             public void run() {
-        		customAdapter = new ConversationListCursorAdapter(MainActivity.this, db.getMessagesForUser(actionBar.getTitle().toString()));
+        		String user = actionBar.getTitle().toString();
+        		db = new DatabaseHelper(MainActivity.this);
+        		customAdapter = new ConversationListCursorAdapter(MainActivity.this, db.getMessagesForUser(user));
+        		if(customAdapter==null) {
+        			Log.e(TAG, "Custom adapter is null?!?1");
+        		}
                 conversation.setAdapter(customAdapter);
             }
     	});

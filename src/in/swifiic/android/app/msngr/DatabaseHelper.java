@@ -110,7 +110,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(msg_id==-1) {
     		Log.e(TAG, "Error inserting row!");
     	}
-     
+        db.close();
+        Log.d(TAG, "Done adding message, message id: " + msg_id);
         return msg_id;
     }
     
@@ -129,6 +130,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
         Log.d(TAG, "Got" + c.getCount() + " messages.");
+        db.close();
         return c;
     }
     

@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -33,49 +32,38 @@ public class NewMessageReceiver extends BroadcastReceiver {
             	db.closeDB();
             	Log.d(TAG, "Showing notification now...");
             	showNotification(msg, context);
-            	LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            	Log.d(TAG, "Returned from notification");
             }
         } else {
             Log.d(TAG, "Broadcast Receiver ignoring message - no notification found");
         }
 	}
 	
-	public void showNotification(Msg msg, Context context){
+	public void showNotification(Msg msg, Context context) {
 		Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+		Intent notificationIntent = new Intent(context, MainActivity.class);
+		notificationIntent.putExtra("userName", msg.getUser());
+		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+		
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(context)
-		        .setSmallIcon(R.drawable.ic_launcher)
 		        .setContentTitle("New Message - " + msg.getUser())
 		        .setContentText(msg.getMsg())
+		        .setSmallIcon(R.drawable.ic_launcher)
+		        .setContentIntent(contentIntent)
 		        .setSound(sound);
-		// Creates an explicit intent for an Activity in your app
-		Intent resultIntent = new Intent(context, MainActivity.class);
-		resultIntent.putExtra("userName", msg.getUser());
-
-		// The stack builder object will contain an artificial back stack for the
-		// started Activity.
-		// This ensures that navigating backward from the Activity leads out of
-		// your application to the Home screen.
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-		// Adds the back stack for the Intent (but not the Intent itself)
-		stackBuilder.addParentStack(MainActivity.class);
-		// Adds the Intent that starts the Activity to the top of the stack
-		stackBuilder.addNextIntent(resultIntent);
-		PendingIntent resultPendingIntent =
-		        stackBuilder.getPendingIntent(
-		            0,
-		            PendingIntent.FLAG_UPDATE_CURRENT
-		        );
-		mBuilder.setContentIntent(resultPendingIntent);
+		
 		NotificationManager mNotificationManager =
 		    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		int mId = 1;
 		// mId allows you to update the notification later on.
 		android.app.Notification notification = mBuilder.build();
-		notification.flags = android.app.Notification.DEFAULT_LIGHTS | android.app.Notification.FLAG_AUTO_CANCEL;
+		notification.flags |= android.app.Notification.FLAG_AUTO_CANCEL;
 		mNotificationManager.notify(mId , notification);
+		Log.d(TAG, "Done showing notification, sending broadcast to update conversation view.");
 		Intent chatActivityIntent = new Intent("newMessageReceived");
-		chatActivityIntent.putExtra("notification", mId);
+		chatActivityIntent.putExtra("notificationId", mId);
 		LocalBroadcastManager.getInstance(context).sendBroadcast(chatActivityIntent);
+		return;
     }
 }

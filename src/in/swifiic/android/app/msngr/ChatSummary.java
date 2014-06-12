@@ -19,8 +19,6 @@ public class ChatSummary extends SwifiicActivity {
 	private static final int SELECT_USER = 1;
 	private String TAG = "ChatSummary";
 	
-	private DatabaseHelper db;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,8 +28,9 @@ public class ChatSummary extends SwifiicActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		db = new DatabaseHelper(this);
+		DatabaseHelper db = new DatabaseHelper(this);
 		Cursor c = db.getFirstMessageForAllUsers();
+		db.closeDB();
 		ChatSummaryCursorAdapter adapter = new ChatSummaryCursorAdapter(this, c);
 		Log.d(TAG, "Setting cursor!");
 		c.moveToFirst();

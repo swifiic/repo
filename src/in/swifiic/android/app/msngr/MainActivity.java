@@ -8,6 +8,7 @@ import in.swifiic.android.app.lib.xml.Action;
 import java.util.Date;
 
 import android.app.ActionBar;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -36,7 +38,6 @@ public class MainActivity extends SwifiicActivity {
     
     private AppEndpointContext aeCtx = new AppEndpointContext("Msngr", "0.1", "1");
     
-    DatabaseHelper db;
     ConversationListCursorAdapter customAdapter;
     BroadcastReceiver mBroadcastReceiver;
     
@@ -58,8 +59,14 @@ public class MainActivity extends SwifiicActivity {
         mBroadcastReceiver = new BroadcastReceiver() {
 	    	@Override
 	    	public void onReceive(Context context, Intent intent) {
+	    		DatabaseHelper db = new DatabaseHelper(context);
 	    		ActionBar actionBar = getActionBar();
 	    		customAdapter.changeCursor(db.getMessagesForUser(actionBar.getTitle().toString()));
+	    		db.closeDB();
+	    		Log.d(TAG, "Cancelling notification");
+	    		NotificationManager nm = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+	    		SystemClock.sleep(2000);
+	    		nm.cancel(intent.getIntExtra("notificationId", 1));
 	    	}
 	    };
         
@@ -99,13 +106,13 @@ public class MainActivity extends SwifiicActivity {
                     msg.setIsInbound(0);
                     msg.setSentAtTime(sentAt);
                     
-                    db = new DatabaseHelper(v.getContext());
+                    DatabaseHelper db = new DatabaseHelper(v.getContext());
                     db.addMessage(msg);
                     Log.d(TAG, "Inserted a row: " + msg.getMsg());
-                    db.closeDB();
                     EditText msgInput = (EditText) findViewById(R.id.msgTextToSend);
                     msgInput.setText("");
                     customAdapter.changeCursor(db.getMessagesForUser(actionBar.getTitle().toString()));
+                    db.closeDB();
             	}
             }
         });
@@ -119,8 +126,9 @@ public class MainActivity extends SwifiicActivity {
         	@Override
             public void run() {
         		String user = actionBar.getTitle().toString();
-        		db = new DatabaseHelper(MainActivity.this);
+        		DatabaseHelper db = new DatabaseHelper(MainActivity.this);
         		customAdapter = new ConversationListCursorAdapter(MainActivity.this, db.getMessagesForUser(user));
+        		db.closeDB();
         		if(customAdapter==null) {
         			Log.e(TAG, "Custom adapter is null?!?1");
         		}

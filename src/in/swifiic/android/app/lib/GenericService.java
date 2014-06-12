@@ -264,7 +264,7 @@ public class GenericService extends IntentService {
         public void endBundle() {
             // complete bundle received
             BundleID received = new BundleID(mBundle);
-            
+            Log.d(TAG, "Received complete bundle: " + received.toString());
             
             // mark the bundle as delivered
             Intent i = new Intent(GenericService.this, GenericService.class);

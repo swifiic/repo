@@ -50,7 +50,7 @@ public class Base {
 
         final Bundle finalBundle = bundle;
         
-        System.out.println("Sending a bundle to  Group: " + destination.toString() + "\n with data: " + message);
+        //System.out.println("Sending a bundle to  Group: " + destination.toString() + "\n with data: " + message);
         dtnClient.send(finalBundle);    	
     }
 }

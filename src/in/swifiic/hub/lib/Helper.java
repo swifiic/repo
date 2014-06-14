@@ -15,6 +15,9 @@ import java.util.List;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
+import com.mysql.jdbc.Blob;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
+
 public class Helper {
 
 	public static Action parseAction(String str) {
@@ -100,15 +103,23 @@ public class Helper {
 		Connection connection = DatabaseHelper.connectToDB();
 		Statement statement;
 		String sql;
+		String username, alias, imageEncoded64;
+		Blob imageBlob;
+		byte[] imageBytes;
 		ResultSet result;
 		try {
 			statement = connection.createStatement();
-			sql = "SELECT username,alias FROM Users";
+			sql = "SELECT username,alias,profile_pic FROM Users";
 			result = statement.executeQuery(sql);
 			// Extract data from result set
 			while(result.next()) {
 				// Retrieve by column name
-				users += result.getString("username") + "|" + result.getString("alias") + ";";
+				username = result.getString("username");
+				alias = result.getString("alias");
+				imageBlob = (Blob) result.getBlob("profile_pic");
+				imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+				imageEncoded64 = Base64.encode(imageBytes);
+				users += username + "|" + alias + "|" + imageEncoded64 + ";";
 			}
 			result.close();
 			statement.close();

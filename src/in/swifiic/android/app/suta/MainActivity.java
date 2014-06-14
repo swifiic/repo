@@ -1,6 +1,7 @@
 package in.swifiic.android.app.suta;
 
 import in.swifiic.android.app.lib.ui.SwifiicActivity;
+import in.swifiic.android.app.lib.ui.UserChooserActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -24,8 +25,11 @@ public class MainActivity extends SwifiicActivity {
 			Intent selectedSettings = new Intent(this, SettingsActivity.class);
 			startActivity(selectedSettings);
 			return true;
-		}
-		else {
+		} else if (itemId == R.id.users) {
+			Intent selectedUserList = new Intent(this, UserChooserActivity.class);
+			startActivity(selectedUserList);
+			return true;
+		} else {
 			return super.onOptionsItemSelected(item);
 		}
     }

@@ -1,7 +1,16 @@
 package in.swifiic.android.app.suta.provider;
 
+import in.swifiic.android.app.lib.Constants;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.StringTokenizer;
 
+import de.tubs.ibr.dtn.util.Base64;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,7 +20,10 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 
 /***
@@ -30,6 +42,8 @@ import android.util.Log;
 // <appName> is variable
 
 public class Provider extends ContentProvider {
+	
+	private static final String TAG = "Provider";
 
 	private static final String AUTHORITY = "in.swifiic.android.app.suta";
 	private static final String USER_BASE_PATH = "users";
@@ -44,7 +58,7 @@ public class Provider extends ContentProvider {
     private static final String DB_APP_TABLE = "apps";
     private static final String DB_MAP_TABLE = "uamaps";
     
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     
     private static final String CREATE_TABLE_USER =
             "CREATE TABLE " + DB_USR_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -71,47 +85,13 @@ public class Provider extends ContentProvider {
         }
 
         @Override
-        public void onCreate(SQLiteDatabase db) 
-        {
+        public void onCreate(SQLiteDatabase db) {
         	Log.d("onCreate Provider", "Creating table with: " + CREATE_TABLE_USER);
             db.execSQL(CREATE_TABLE_USER);
             Log.d("onCreate Provider", "Creating table with: " + CREATE_TABLE_APP);
             db.execSQL(CREATE_TABLE_APP);
             Log.d("onCreate Provider", "Creating table with: " + CREATE_TABLE_MAP);
             db.execSQL(CREATE_TABLE_MAP);
-            
-            ContentValues v = new ContentValues();
-            
-            // refer PopulateTestData.txt
-            v.put("user_id", "1");
-            v.put("name", "Shivam");
-            v.put("alias", "shivam");
-            db.insert(DB_USR_TABLE, "", v);
-            v.clear();
-            
-            v.put("user_id", "2"); 
-            v.put("name", "Abhishek");
-            v.put("alias", "abhishek");
-            db.insert(DB_USR_TABLE, "", v);
-            v.clear();
-            
-            v.put("app_id", "1"); 
-            v.put("app_name", "msngr");
-            v.put("role1", "user");
-            db.insert(DB_APP_TABLE, "", v);
-            v.clear();
-            
-            v.put("app_id", "1"); 
-            v.put("role", "user");
-            v.put("user_id", "1");
-            db.insert(DB_MAP_TABLE, "", v);
-            v.clear();
-            
-            v.put("app_id", "1"); 
-            v.put("role", "user");
-            v.put("user_id", "2");
-            db.insert(DB_MAP_TABLE, "", v);
-            v.clear();
         }
 
         @Override
@@ -164,7 +144,11 @@ public class Provider extends ContentProvider {
 	// userSchema format - "username|alias;username|alias;..."
 	public void loadUserSchema(String userSchema) {
 		sutaDB.execSQL("DELETE FROM users WHERE 1=1");
-		String userInfo, username, alias;
+		String userInfo, username, alias, imageEncoded64;
+		String dirPath = Constants.PUBLIC_DIR_PATH;
+		File directory = new File(dirPath);
+		directory.mkdirs();
+		byte[] imageBytes = null;
 		ContentValues v = new ContentValues();
 		int i = 1;
 		StringTokenizer st = new StringTokenizer(userSchema, ";");
@@ -174,6 +158,20 @@ public class Provider extends ContentProvider {
 		     while(st2.hasMoreTokens()) {
 		    	 username = st2.nextToken();
 		    	 alias = st2.nextToken();
+		    	 imageEncoded64 = st2.nextToken();
+		    	 File file = new File(dirPath, username + ".png");
+		    	 
+		    	 try {
+		    		 imageBytes = Base64.decode(imageEncoded64);
+		    		 Log.d(TAG, "Saving profile pic to: " + file.toString());
+		    		 OutputStream out = new FileOutputStream(file);
+		    		 Bitmap bm = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+		    		 bm.compress(Bitmap.CompressFormat.PNG, 90, out);
+		    		 out.flush();
+		    		 out.close();
+		    	 } catch (IOException e) {
+		    		 e.printStackTrace();
+		    	 }
 		    	 v.put("user_id", i);
 		         v.put("name", username);
 		         v.put("alias", alias);

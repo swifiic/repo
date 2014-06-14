@@ -11,6 +11,7 @@
     <permission android:name="in.swifiic.android.app.suta.USER" ></permission>
 
     <uses-permission android:name="de.tubs.ibr.dtn.permission.DTN_COMMUNICATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -36,6 +37,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="in.swifiic.android.app.suta.MainActivity" />
         </activity>
+        
+        <activity
+            android:name="in.swifiic.android.app.lib.ui.UserChooserActivity"
+            android:label="User List"
+            android:screenOrientation="portrait" />
         
         <provider
             android:name="in.swifiic.android.app.suta.provider.Provider"

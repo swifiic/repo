@@ -1,5 +1,7 @@
 package in.swifiic.android.app.lib;
 
+import android.os.Environment;
+
 public final class Constants {
 
 	public static final String IBR_DTN_RECEIVE = "de.tubs.ibr.dtn.intent.RECEIVE"; // RECEIVE
@@ -20,4 +22,7 @@ public final class Constants {
 	public static final long LONG_LIFETIME = 3600*12;
 	
 	public static final long SHORT_LIFETIME = 3600;
+	
+	
+	public static final String PUBLIC_DIR_PATH = Environment.getExternalStorageDirectory().toString() + "/swifiic/";
 }

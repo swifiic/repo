@@ -6,7 +6,6 @@ import android.os.Parcelable;
 public class User implements Parcelable {
 	public String alias;
 	public String userName;
-	public byte[] imageArray;
 	
 	public int describeContents() {
 		return 0;
@@ -16,7 +15,6 @@ public class User implements Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(alias);
 		dest.writeString(userName);
-		dest.writeByteArray(imageArray);
 	}
 	
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -24,7 +22,6 @@ public class User implements Parcelable {
         	User n = new User();
         	n.alias = source.readString();
         	n.userName = source.readString();
-        	source.readByteArray(n.imageArray);
         	return n;
         }
 

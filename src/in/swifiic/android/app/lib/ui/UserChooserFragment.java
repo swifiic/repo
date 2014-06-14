@@ -2,11 +2,9 @@ package in.swifiic.android.app.lib.ui;
 
 import java.util.List;
 
-
 import in.swifiic.android.app.lib.GenericService;
 import in.swifiic.android.app.lib.User;
 import in.swifiic.android.app.lib.UserListLoader;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -52,6 +50,7 @@ public class UserChooserFragment extends ListFragment implements
         Intent data = new Intent();
         data.putExtra("userName", n.userName);
         data.putExtra("alias", n.alias);
+
         // select the item
         getActivity().setResult(1, data);
         getActivity().finish();

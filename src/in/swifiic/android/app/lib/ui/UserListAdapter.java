@@ -3,9 +3,12 @@ package in.swifiic.android.app.lib.ui;
 import java.util.LinkedList;
 import java.util.List;
 
+import in.swifiic.android.app.lib.Constants;
 import in.swifiic.android.app.lib.User;
 import in.swifiic.lib.app.android.R;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +21,7 @@ public class UserListAdapter extends BaseAdapter {
     private List<User> mList = new LinkedList<User>();
 
     private class ViewHolder {
-        @SuppressWarnings("unused")
-		public ImageView imageIcon; // TBD XXX integrate user PNG here - for their avatar / image
+        public ImageView imageIcon; // TBD XXX integrate user PNG here - for their avatar / image
         public TextView textName;
         public TextView textAlias;
         public User user;
@@ -73,7 +75,9 @@ public class UserListAdapter extends BaseAdapter {
         }
 
         holder.user = mList.get(position);
-
+        
+        Bitmap bm = BitmapFactory.decodeFile(Constants.PUBLIC_DIR_PATH + holder.user.userName + ".png");
+        holder.imageIcon.setImageBitmap(bm);
         holder.textName.setText(holder.user.alias);
         holder.textAlias.setText(holder.user.userName);
 

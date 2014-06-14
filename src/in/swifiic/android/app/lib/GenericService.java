@@ -37,28 +37,21 @@ import de.tubs.ibr.dtn.api.TransferMode;
  */
 public class GenericService extends IntentService {
     
-    // This TAG is used to identify this class (e.g. for debugging)
     private static final String TAG = "GenericService";
-    
-    // This is the object that receives interactions from clients.  See
-    // RemoteService for a more complete example.
     
     // The communication with the DTN service is done using the DTNClient
     private DTNClient mClient = null;
     
     // Hold the last message as result
     private StringBuffer mLastMessage = new StringBuffer("");
-    
-
 
     public GenericService() {
         super(TAG);
-    }
-    
+    } 
     
     public String getLastMessage() {
     	String toReturn = mLastMessage.toString();
-    	mLastMessage = new StringBuffer("");;
+    	mLastMessage = new StringBuffer("");
         return toReturn;
     }
     
@@ -78,8 +71,6 @@ public class GenericService extends IntentService {
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
-
-  
     
     private void sendToHub(String message, String hubAddress) {
         // create a new bundle
@@ -98,8 +89,7 @@ public class GenericService extends IntentService {
         
         // set destination for status reports
         b.setReportto(SingletonEndpoint.ME);
-        
-        
+              
         try {
             // get the DTN session
             Session s = mClient.getSession();
@@ -107,12 +97,9 @@ public class GenericService extends IntentService {
             // send the bundle
             BundleID ret = s.send(b, message.getBytes());
             
-            if (ret == null)
-            {
+            if (ret == null) {
                 Log.e(TAG, "could not send the message");
-            }
-            else
-            {
+            } else {
                 Log.d(TAG, "Bundle sent, BundleID: " + ret.toString() + "Bundle Source:" + mClient.getDTNService().getEndpoint());
             }
         } catch (SessionDestroyedException e) {
@@ -120,7 +107,7 @@ public class GenericService extends IntentService {
         } catch (InterruptedException e) {
             Log.e(TAG, "could not send the message", e);
         } catch (RemoteException e) {
-        	Log.e(TAG,"Sent but with remote exception in logs");
+        	Log.e(TAG, "Sent but with remote exception in logs");
         }
     }
 
@@ -135,7 +122,7 @@ public class GenericService extends IntentService {
         	Log.e(TAG, "Received Null action - ignoring");
         	return;
         }
-        Log.d(TAG, "Handling Intent:"+ action);
+        Log.d(TAG, "Handling Intent: " + action);
         if (de.tubs.ibr.dtn.Intent.RECEIVE.equals(action))
         {
             // Received bundles from the DTN service here
@@ -150,33 +137,26 @@ public class GenericService extends IntentService {
             } catch (InterruptedException e) {
                 Log.e(TAG, "Can not query for bundle", e);
             }
-        }
-        else if (Constants.MARK_DELIVERED_INTENT.equals(action))
-        {
+        } else if (Constants.MARK_DELIVERED_INTENT.equals(action)) {
             // retrieve the bundle ID of the intent
             BundleID bundleid = intent.getParcelableExtra("bundleid");
-            
             try {
                 // mark the bundle ID as delivered
                 mClient.getSession().delivered(bundleid);
             } catch (Exception e) {
                 Log.e(TAG, "Can not mark bundle as delivered.", e);
             }
-        }
-        else if (Constants.REPORT_DELIVERED_INTENT.equals(action))
-        {
+        } else if (Constants.REPORT_DELIVERED_INTENT.equals(action)) {
             // retrieve the source of the status report
             SingletonEndpoint source = intent.getParcelableExtra("source");
             
             // retrieve the bundle ID of the intent
             BundleID bundleid = intent.getParcelableExtra("bundleid");
             
-            // TODO MSG_DELIVERED_APPHUB should be sent to activity : BUT we need to map bundleId to Action Request Number
-            
+            // TODO MSG_DELIVERED_APPHUB should be sent to activity
+            // BUT we need to map bundleId to Action Request Number   
             Log.d(TAG, "Status report received for " + bundleid.toString() + " from " + source.toString());
-        }
-        else if (Constants.SEND_MSG_INTENT.equals(action))
-        {
+        } else if (Constants.SEND_MSG_INTENT.equals(action)) {
             // retrieve the Action object message
         	String msg = intent.getStringExtra("action");
         	String hubAddress = intent.getStringExtra("hub_address");
@@ -187,9 +167,8 @@ public class GenericService extends IntentService {
 				Action req = serializer.read(Action.class, msg);
                 sendToHub(msg, hubAddress);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
-				Log.e(TAG,"Parse failed during send message for String:"+msg);
+				Log.e(TAG, "Parse failed during send message for String: " + msg);
 			}
         }
     }
@@ -210,24 +189,23 @@ public class GenericService extends IntentService {
     };
     
     
-    GroupEndpoint GE_TEST=null;
+    GroupEndpoint GE_TEST = null;
     @Override
     public void  onCreate() {
         super.onCreate();
         
         // create a new DTN client
-        if(null == mClient) {
+        if(null==mClient) {
         	mClient = new DTNClient(mSession);
         	String appName = this.getApplication().getPackageName();
-        	Log.d("GenericService", "Registered with: " + appName);
-            Registration registration = new Registration(appName);
-        	GE_TEST=new GroupEndpoint("dtn://"+appName + "/mc");
+        	Registration registration = new Registration(appName);
+        	GE_TEST = new GroupEndpoint("dtn://" + appName + "/mc");
             registration.add(GE_TEST);
             
             try {
                 // initialize the connection to the DTN service
                 mClient.initialize(this, registration);
-                Log.d(TAG, "Connection to DTN service established. GE=" + GE_TEST + " endpoint=" +appName);
+                Log.d(TAG, "Connection to DTN service established. GE = " + GE_TEST + " SE = " +appName);
             } catch (ServiceNotAvailableException e) {
                 // The DTN service has not been found
                 Log.e(TAG, "DTN service unavailable. Is IBR-DTN installed?", e);
@@ -280,7 +258,7 @@ public class GenericService extends IntentService {
             try {
                 Serializer serializer = new Persister();
                 @SuppressWarnings("unused")  // this is checking that XML is fine
-				Notification notif = serializer.read(Notification.class,msg);
+				Notification notif = serializer.read(Notification.class, msg);
                 Log.d(TAG, "Got a message: " + msg.toString());
 	            updatedIntent.putExtra("notification", msg);
 	            if(null != GE_TEST && mBundle.getDestination().equals(GE_TEST)) {
@@ -289,9 +267,8 @@ public class GenericService extends IntentService {
 	            }
 	            sendBroadcast(updatedIntent);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
-				Log.e(TAG,"Parse failed for String"+msg);
+				Log.e(TAG,"Parse failed for message: " + msg);
 			}
             // free the bundle header
             mBundle = null;
@@ -326,7 +303,7 @@ public class GenericService extends IntentService {
         public void payload(byte[] data) {
             // payload is received here
         	mLastMessage.append(new String(data));
-            Log.d(TAG, "payload received: " + data);
+            Log.d(TAG, "Payload received: " + data);
         }
 
         @Override

@@ -5,7 +5,7 @@
     android:padding="6dip" >
 
     <ImageView
-        android:id="@+id/chatListIcon"
+        android:id="@+id/profilePic"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:gravity="center_vertical"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="false"
-        android:layout_toRightOf="@id/chatListIcon"
+        android:layout_toRightOf="@id/profilePic"
         android:ellipsize="marquee"
         android:singleLine="true"
         android:text="Last Message"
@@ -36,7 +36,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/chatListIcon"
+        android:layout_toRightOf="@id/profilePic"
         android:gravity="center_vertical"
         android:text="Alias"
         android:textSize="18sp" />

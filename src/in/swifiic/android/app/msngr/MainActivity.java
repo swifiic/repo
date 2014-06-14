@@ -1,6 +1,7 @@
 package in.swifiic.android.app.msngr;
 
 import in.swifiic.android.app.lib.AppEndpointContext;
+import in.swifiic.android.app.lib.Constants;
 import in.swifiic.android.app.lib.Helper;
 import in.swifiic.android.app.lib.ui.SwifiicActivity;
 import in.swifiic.android.app.lib.xml.Action;
@@ -14,6 +15,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -52,9 +57,11 @@ public class MainActivity extends SwifiicActivity {
         
         Intent i = getIntent();
         String userName = i.getStringExtra("userName");
+        Drawable icon = Drawable.createFromPath(Constants.PUBLIC_DIR_PATH + userName + ".png");
         Log.d(TAG, "Got username: " + userName);
         final ActionBar actionBar = getActionBar();
         actionBar.setTitle(userName);
+        actionBar.setIcon(icon);
         
         mBroadcastReceiver = new BroadcastReceiver() {
 	    	@Override

@@ -1,14 +1,19 @@
 package in.swifiic.android.app.msngr;
 
+import in.swifiic.android.app.lib.Constants;
+
 import java.util.Date;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ChatSummaryCursorAdapter extends CursorAdapter {
@@ -30,13 +35,17 @@ public class ChatSummaryCursorAdapter extends CursorAdapter {
 		TextView alias = (TextView) view.findViewById(R.id.firstLine);
 		TextView message = (TextView) view.findViewById(R.id.secondLine);
 		TextView timestamp = (TextView) view.findViewById(R.id.timestamp);
-		
+		ImageView profilePic = (ImageView) view.findViewById(R.id.profilePic);
+ 		
 		Date date = new Date(Long.parseLong(cursor.getString(cursor.getColumnIndex("sentAt"))));
         java.text.DateFormat df = DateFormat.getTimeFormat(context);
         String timeString = df.format(date);
-		// TODO ImageView userImage = (ImageView) view.findViewById(R.id.chatListIcon);
-		alias.setText(cursor.getString(cursor.getColumnIndex("user")));
+		
+        alias.setText(cursor.getString(cursor.getColumnIndex("user")));
 		message.setText(cursor.getString(cursor.getColumnIndex("message")));
+		String dir = Constants.PUBLIC_DIR_PATH;
+		Bitmap bm = BitmapFactory.decodeFile(dir + cursor.getString(cursor.getColumnIndex("user")) + ".png");
+		profilePic.setImageBitmap(bm);
 		timestamp.setText(timeString);
 	}
 

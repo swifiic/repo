@@ -45,7 +45,6 @@ public class Suta extends Base implements SwifiicHandler {
     			try {
 					Thread.sleep(60);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
     		}
@@ -57,8 +56,6 @@ public class Suta extends Base implements SwifiicHandler {
 	    	if(input.equalsIgnoreCase("exit")) {
 	    		suta.exit();
 	    	} else if(input.equalsIgnoreCase("send")) {
-	    		// TODO Send broadcast to devices
-	    		//List<String> deviceList = Helper.getDevicesForAllUsers();
 	    		String userList = Helper.getAllUsers();
 	    		Notification notif = new Notification("DeviceListUpdate", "SUTA", "TODO", "0.1", "Hub");
 	    		notif.addArgument("userList", userList);

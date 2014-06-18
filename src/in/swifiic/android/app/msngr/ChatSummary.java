@@ -1,14 +1,20 @@
 package in.swifiic.android.app.msngr;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import in.swifiic.android.app.lib.ui.SwifiicActivity;
 import in.swifiic.android.app.lib.ui.UserChooserActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -28,14 +34,14 @@ public class ChatSummary extends SwifiicActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		DatabaseHelper db = new DatabaseHelper(this);
+		final DatabaseHelper db = new DatabaseHelper(this);
 		Cursor c = db.getFirstMessageForAllUsers();
 		db.closeDB();
-		ChatSummaryCursorAdapter adapter = new ChatSummaryCursorAdapter(this, c);
+		final ChatSummaryCursorAdapter adapter = new ChatSummaryCursorAdapter(this, c);
 		Log.d(TAG, "Setting cursor!");
 		c.moveToFirst();
 		adapter.changeCursor(c);
-		ListView chatList = (ListView) findViewById(R.id.list);
+		final ListView chatList = (ListView) findViewById(R.id.list);
 		chatList.setAdapter(adapter);
 		chatList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -46,6 +52,64 @@ public class ChatSummary extends SwifiicActivity {
 				i.putExtra("userName", userName);
 				startActivity(i);
 			}
+		});
+		chatList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		chatList.setMultiChoiceModeListener(new MultiChoiceModeListener() {
+			
+			int count = 0;
+			List<String> selectedItems = new ArrayList<String>();
+			
+			@Override
+		    public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+		        // Here you can do something when items are selected/de-selected,
+		        // such as update the title in the CAB
+				View listItem = (View) chatList.getChildAt(position);
+				TextView userNameView = (TextView) listItem.findViewById(R.id.firstLine);
+				if (checked) {					
+					selectedItems.add(userNameView.getText().toString());
+					++count;
+				} else {
+					selectedItems.remove(userNameView.getText().toString());
+					--count;
+				}
+				mode.invalidate();
+		    }
+
+		    @Override
+		    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+		        // Respond to clicks on the actions in the CAB
+		        switch (item.getItemId()) {
+		            case R.id.delete_chat:
+		                DatabaseHelper dbh = new DatabaseHelper(chatList.getContext());
+		                dbh.deleteMessagesForUserIds(selectedItems);
+		                dbh.closeDB();
+		                adapter.changeCursor(db.getFirstMessageForAllUsers());
+		                mode.finish(); // Action picked, so close the CAB
+		                return true;
+		            default:
+		                return false;
+		        }
+		    }
+
+		    @Override
+		    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+		        // Inflate the menu for the CAB
+		        MenuInflater inflater = mode.getMenuInflater();
+		        inflater.inflate(R.menu.context_chat_summary, menu);
+		        return true;
+		    }
+
+		    @Override
+		    public void onDestroyActionMode(ActionMode mode) {
+		        // Here you can make any necessary updates to the activity when
+		        // the CAB is removed. By default, selected items are deselected/unchecked.
+		    }
+
+		    @Override
+		    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+		        mode.setTitle(count + " items selected");
+		        return true;
+		    }
 		});
 	}
 	

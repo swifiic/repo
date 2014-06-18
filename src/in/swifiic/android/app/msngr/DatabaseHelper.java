@@ -1,6 +1,7 @@
 package in.swifiic.android.app.msngr;
 
 import java.util.Date;
+import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -169,5 +170,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			temp = c.getString(c.getColumnIndex("user"));		
 		}
 		return mc;
+	}
+
+	public void deleteMessagesForUserIds(List<String> selectedItems) {
+		int size = selectedItems.size();
+		for(int i=size-1; i >= 0; --i) {
+			String query = "DELETE FROM " + TABLE_MSGS + " WHERE " + KEY_USER + "=\'" + selectedItems.get(i) + "\'";
+			Log.d(TAG, "Deleting messages from user: " + selectedItems.get(i));
+			SQLiteDatabase db = getWritableDatabase();
+			db.execSQL(query);
+			db.close();
+		}
+		
 	}
 }

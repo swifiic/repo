@@ -1,11 +1,9 @@
 package in.swifiic.android.app.msngr;
 
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 
@@ -40,11 +38,7 @@ public class SettingsActivity extends PreferenceActivity {
 
 		// Bind the summaries of EditText to their values.
 		bindPreferenceSummaryToValue(findPreference("hub_address"));
-		bindPreferenceSummaryToValue(findPreference("my_identity"));
-		
-		// Set listener on CheckBox Preferences
-		findPreference("delete_all_messages").setOnPreferenceChangeListener(prefChangeListener);
-		findPreference("populate_sample").setOnPreferenceChangeListener(prefChangeListener);
+		bindPreferenceSummaryToValue(findPreference("my_identity"));	
 	}
 
 	/**
@@ -62,21 +56,6 @@ public class SettingsActivity extends PreferenceActivity {
 			else if(preference.getKey().equals("my_identity")) {
 				String stringValue = value.toString();
 				preference.setSummary(stringValue + " - Set from SUTA");
-				return true;
-			}
-			else if(preference.getKey().equals("delete_all_messages")) {
-				Log.d("Settings", "User clicked delete!");
-				DatabaseHelper db = new DatabaseHelper(preference.getContext());
-				db.deleteAll();
-				CheckBoxPreference pref = (CheckBoxPreference) preference;
-				pref.setChecked(false);
-				return true;
-			}
-			else if(preference.getKey().equals("populate_sample")) {
-				DatabaseHelper db = new DatabaseHelper(preference.getContext());
-				db.populateSampleMessages(db.getWritableDatabase());
-				CheckBoxPreference pref = (CheckBoxPreference) preference;
-				pref.setChecked(false);
 				return true;
 			}
 			return false;

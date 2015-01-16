@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:isScrollContainer="true" >
+    
+    <ListView
+        android:id="@+id/conversation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottomRow"
+        android:transcriptMode="alwaysScroll" >
+        
+    </ListView>
+
+    <LinearLayout android:id="@+id/bottomRow"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:background="@color/lighter_blue"
+        android:padding="10dp" >
+        
+        <EditText
+            android:id="@+id/msgTextToSend"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
+            android:maxLines="2"
+            android:padding="5dp" />
+                 
+	    <ImageButton
+	        android:id="@+id/buttonSendMsg"
+	        android:src="@drawable/ic_action_name"
+	        android:scaleType="centerCrop"
+	        android:paddingLeft="2dp"
+	        android:layout_width="50dp"
+	        android:layout_height="match_parent"
+	        android:background="@color/send_button"
+	        android:text="@string/send"
+	        android:contentDescription="@string/send" />
+	    
+    </LinearLayout>
+    
+</RelativeLayout>

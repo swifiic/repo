@@ -35,7 +35,7 @@
     <PreferenceCategory 
         android:title="Settings">
 		
-	    <in.swifiic.android.app.msngr.MyDialogPreference
+	    <in.swifiic.app.msngr.andi.MyDialogPreference
 	        android:key="delete_all_messages"
 	        android:selectable="true"
 	        android:title="Delete all messages?"

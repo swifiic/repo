@@ -1,0 +1,21 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+	<EditTextPreference
+        android:defaultValue="@string/pref_default_hub_address"
+        android:inputType="text"
+        android:key="hub_address"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_hub_address" />
+	
+	<EditTextPreference
+        android:defaultValue="@string/pref_default_my_identity"
+        android:inputType="text"
+        android:key="my_identity"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_my_identity" />
+    
+</PreferenceScreen>

@@ -4,7 +4,7 @@ import ibrdtn.api.APIException;
 import ibrdtn.api.EventClient;
 import ibrdtn.api.ExtendedClient;
 import ibrdtn.api.object.Bundle;
-import in.swifiic.hub.lib.SwifiicHandler;
+import in.swifiic.plat.helper.hub.SwifiicHandler;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;

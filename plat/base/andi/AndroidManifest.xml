@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="in.swifiic.lib.app.android"
+    package="in.swifiic.plat.andi"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -13,14 +13,14 @@
     
     <application>
         <activity android:label="Select User"
-            android:name="in.swifiic.android.app.lib.ui.UserChooserActivity" />
+            android:name="in.swifiic.plat.helper.andi.ui.UserChooserActivity" />
         
-        <service android:name="in.swifiic.android.app.lib.GenericService" />
+        <service android:name="in.swifiic.plat.helper.andi.GenericService" />
     
         <!-- Borrowed from DTN Example App -->
    	    <receiver
 	        android:enabled="true"
-	        android:name="in.swifiic.android.app.lib.IBRDtnReceiver"
+	        android:name="in.swifiic.plat.helper.andi.IBRDtnReceiver"
 	        android:exported="true"
 	        android:permission="de.tubs.ibr.dtn.permission.DTN_SERVER">
 	        <!-- Add intent filter for notification of incoming bundles -->

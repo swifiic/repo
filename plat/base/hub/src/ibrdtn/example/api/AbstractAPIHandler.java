@@ -7,8 +7,8 @@ import ibrdtn.api.object.Bundle;
 import ibrdtn.api.object.BundleID;
 import ibrdtn.api.sab.Custody;
 import ibrdtn.api.sab.StatusReport;
-import in.swifiic.hub.lib.SwifiicHandler;
-import in.swifiic.hub.lib.SwifiicHandler.Context;
+import in.swifiic.plat.helper.hub.SwifiicHandler;
+import in.swifiic.plat.helper.hub.SwifiicHandler.Context;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

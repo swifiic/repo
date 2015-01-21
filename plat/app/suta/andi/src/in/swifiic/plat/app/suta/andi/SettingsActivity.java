@@ -1,6 +1,6 @@
 package in.swifiic.plat.app.suta.andi;
 
-import in.swifiic.android.app.suta.R;
+import in.swifiic.plat.app.suta.andi.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;

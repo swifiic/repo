@@ -1,6 +1,6 @@
 package in.swifiic.plat.app.suta.andi;
 
-import in.swifiic.android.app.suta.R;
+import in.swifiic.plat.app.suta.andi.R;
 import in.swifiic.plat.helper.andi.ui.SwifiicActivity;
 import in.swifiic.plat.helper.andi.ui.UserChooserActivity;
 import android.content.Intent;

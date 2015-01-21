@@ -60,10 +60,10 @@ public class Suta extends Base implements SwifiicHandler {
 	    		Notification notif = new Notification("DeviceListUpdate", "SUTA", "TODO", "0.1", "Hub");
 	    		notif.addArgument("userList", userList);
 	    		String payload = Helper.serializeNotification(notif);
-        		suta.sendGrp("dtn://in.swifiic.android.app.suta/mc", payload);
+        		suta.sendGrp("dtn://in.swifiic.plat.app.suta.andi/mc", payload);
         		// Mark bundle as delivered...                    
                 logger.log(Level.INFO, "Attempted to {0} send to {1}", 
-                		new Object[] {payload, "dtn://in.swifiic.android.app.suta/mc"});
+                		new Object[] {payload, "dtn://in.swifiic.plat.app.suta.andi/mc"});
 	    	}
 	    }
     }

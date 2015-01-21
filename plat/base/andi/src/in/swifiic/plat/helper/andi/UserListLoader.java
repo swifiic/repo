@@ -92,7 +92,7 @@ public class UserListLoader extends AsyncTaskLoader<List<User>> {
 	}
 
 	private Cursor getUsers() {
-		Uri uri = Uri.parse("content://in.swifiic.android.app.suta/users/msngr");
+		Uri uri = Uri.parse("content://in.swifiic.plat.app.suta.andi/users/msngr"); // TODO XXX should not be msngr in helper
 		String[] projection = null;
 		String selection = null;
 		String[] selectionArgs = null;

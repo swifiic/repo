@@ -9,7 +9,7 @@
         android:targetSdkVersion="19" />
 
     <uses-permission android:name="de.tubs.ibr.dtn.permission.DTN_COMMUNICATION" />
-    <uses-permission android:name="in.swifiic.android.app.suta.USER" />
+    <uses-permission android:name="in.swifiic.plat.app.suta.andi.USER" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
@@ -61,17 +61,17 @@
         </receiver>
         <receiver android:name="in.swifiic.plat.helper.andi.HubAddressReceiver" >
             <intent-filter>
-                <action android:name="swifiic.suta.hubAddressUpdate" />
+                <action android:name="swifiic.suta.hubAddressUpdate" /> <!-- AT TBD TODO XXX -->
             </intent-filter>
         </receiver>
         <receiver android:name="in.swifiic.plat.helper.andi.IdentityReceiver" >
             <intent-filter>
-                <action android:name="swifiic.suta.myIdentityUpdate" />
+                <action android:name="swifiic.suta.myIdentityUpdate" /> <!-- AT TBD TODO XXX -->
             </intent-filter>
         </receiver>
         <receiver android:name="in.swifiic.app.msngr.andi.NewMessageReceiver" >
             <intent-filter>
-                <action android:name="in.swifiic.app.DATA_RECEIVED" />
+                <action android:name="in.swifiic.app.DATA_RECEIVED" /> <!-- AT TBD TODO XXX -->
             </intent-filter>
         </receiver>
 

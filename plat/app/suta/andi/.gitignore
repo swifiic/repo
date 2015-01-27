@@ -2,3 +2,7 @@ bin
 gen
 lint.xml
 .classpath
+build.xml
+**/*.xml~
+.gitignore~
+local.properties

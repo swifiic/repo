@@ -16,7 +16,8 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import com.mysql.jdbc.Blob;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+import org.apache.commons.codec.binary.Base64;
+//import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 public class Helper {
 
@@ -105,7 +106,6 @@ public class Helper {
 		String sql;
 		String username, alias, imageEncoded64;
 		Blob imageBlob;
-		byte[] imageBytes;
 		ResultSet result;
 		try {
 			statement = connection.createStatement();
@@ -117,8 +117,8 @@ public class Helper {
 				username = result.getString("username");
 				alias = result.getString("alias");
 				imageBlob = (Blob) result.getBlob("profile_pic");
-				imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
-				imageEncoded64 = Base64.encode(imageBytes);
+				byte[] imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
+				imageEncoded64 = Base64.encodeBase64String(imageBytes);
 				users += username + "|" + alias + "|" + imageEncoded64 + ";";
 			}
 			result.close();

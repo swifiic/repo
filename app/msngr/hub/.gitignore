@@ -2,3 +2,7 @@
 # Ignoring the built files
 bin
 .classpath
+.gitignore~
+**/*.xml~
+**/*.jar
+build

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" name="Suta" packages="">
+  <Appenders>
+    <Syslog name="bsd" host="localhost" port="514" protocol="TCP"/>
+    <Syslog name="RFC5424" format="RFC5424" host="localhost" port="8514"
+            protocol="TCP" appName="suta" includeMDC="true"
+            facility="LOCAL0" enterpriseNumber="18060" newLine="true"
+            messageId="Audit" id="suta"/>
+  </Appenders>
+  <Loggers>
+    <Logger name="in.swifiic.suta" level="info">
+      <AppenderRef ref="RFC5424"/>
+    </Logger>
+    <Root level="error">
+      <AppenderRef ref="bsd"/>
+    </Root>
+  </Loggers>
+</Configuration>

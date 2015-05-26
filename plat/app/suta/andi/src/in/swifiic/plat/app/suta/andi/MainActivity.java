@@ -16,7 +16,10 @@ public class MainActivity extends SwifiicActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);        
+        setContentView(R.layout.activity_main);    
+    	Intent serviceIntent = new Intent();
+		serviceIntent.setAction("in.swifiic.plat.app.suta.andi.mgmt.TrackService");
+		startService(serviceIntent);
     }
     
     @Override

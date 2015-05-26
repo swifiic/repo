@@ -10,7 +10,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.StringTokenizer;
 
-import de.tubs.ibr.dtn.util.Base64;
+import android.util.Base64;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -162,10 +162,11 @@ public class Provider extends ContentProvider {
 		    	 File file = new File(dirPath, username + ".png");
 		    	 
 		    	 try {
-		    		 imageBytes = Base64.decode(imageEncoded64);
+		    		 imageBytes = Base64.decode(imageEncoded64, Base64.DEFAULT);
 		    		 Log.d(TAG, "Saving profile pic to: " + file.toString());
 		    		 OutputStream out = new FileOutputStream(file);
 		    		 Bitmap bm = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+		    		 
 		    		 bm.compress(Bitmap.CompressFormat.PNG, 90, out);
 		    		 out.flush();
 		    		 out.close();

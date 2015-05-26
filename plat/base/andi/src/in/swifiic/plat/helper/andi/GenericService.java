@@ -1,5 +1,9 @@
 package in.swifiic.plat.helper.andi;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
@@ -19,6 +23,7 @@ import de.tubs.ibr.dtn.api.Bundle.ProcFlags;
 import de.tubs.ibr.dtn.api.BundleID;
 import de.tubs.ibr.dtn.api.DTNClient;
 import de.tubs.ibr.dtn.api.DTNClient.Session;
+import de.tubs.ibr.dtn.api.DTNIntentService;
 import de.tubs.ibr.dtn.api.DataHandler;
 import de.tubs.ibr.dtn.api.GroupEndpoint;
 import de.tubs.ibr.dtn.api.Registration;
@@ -35,12 +40,11 @@ import de.tubs.ibr.dtn.api.TransferMode;
  * @author abhishek
  *
  */
-public class GenericService extends IntentService {
+public class GenericService extends DTNIntentService {
     
     private static final String TAG = "GenericService";
     
-    // The communication with the DTN service is done using the DTNClient
-    private DTNClient mClient = null;
+    DTNClient.Session mSession=null;
     
     // Hold the last message as result
     private StringBuffer mLastMessage = new StringBuffer("");
@@ -81,6 +85,9 @@ public class GenericService extends IntentService {
         // set the destination of the bundle
         b.setDestination(destination);
         
+       // if(b.getDestination()==null)
+        	//return;
+        
         // limit the lifetime of the bundle to 60 seconds
         b.setLifetime(Constants.LONG_LIFETIME); 
         
@@ -92,29 +99,31 @@ public class GenericService extends IntentService {
               
         try {
             // get the DTN session
-            Session s = mClient.getSession();
+             if(mSession == null)
+            	 throw(new SessionDestroyedException("No DTN Session"));
             
             // send the bundle
-            BundleID ret = s.send(b, message.getBytes());
+            BundleID ret = mSession.send(b, message.getBytes());
             
             if (ret == null) {
                 Log.e(TAG, "could not send the message");
+            //    b.setLifetime(Constants.END_LIFETIME);
             } else {
-                Log.d(TAG, "Bundle sent, BundleID: " + ret.toString() + "Bundle Source:" + mClient.getDTNService().getEndpoint());
+                Log.d(TAG, "Bundle sent, BundleID: " + ret.toString() + "Bundle Source:" + getClient().getEndpoint() + "Bundle Destination:"+destination);
             }
         } catch (SessionDestroyedException e) {
             Log.e(TAG, "could not send the message", e);
-        } catch (InterruptedException e) {
-            Log.e(TAG, "could not send the message", e);
-        } catch (RemoteException e) {
-        	Log.e(TAG, "Sent but with remote exception in logs");
-        }
+        } 
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
         if(null==intent) {
         	Log.e(TAG, "Received Null Intent - ignoring");
+        	return;
+        }
+        if(null == mSession){
+        	Log.e(TAG, "Session Not Up: skipping");
         	return;
         }
         String action = intent.getAction();
@@ -129,20 +138,18 @@ public class GenericService extends IntentService {
             try {
                 // We loop here until no more bundles are available
                 // (queryNext() returns false)
-                while (mClient.getSession().queryNext()){
+                while (mSession.queryNext()){
                 	Log.e(TAG, "Attempting to processs a BUNDLE !!!!!!");
                 }
             } catch (SessionDestroyedException e) {
                 Log.e(TAG, "Can not query for bundle", e);
-            } catch (InterruptedException e) {
-                Log.e(TAG, "Can not query for bundle", e);
-            }
+            } 
         } else if (Constants.MARK_DELIVERED_INTENT.equals(action)) {
             // retrieve the bundle ID of the intent
             BundleID bundleid = intent.getParcelableExtra("bundleid");
             try {
                 // mark the bundle ID as delivered
-                mClient.getSession().delivered(bundleid);
+                mSession.delivered(bundleid);
             } catch (Exception e) {
                 Log.e(TAG, "Can not mark bundle as delivered.", e);
             }
@@ -173,55 +180,35 @@ public class GenericService extends IntentService {
         }
     }
     
-    SessionConnection mSession = new SessionConnection() {
-
-        @Override
-        public void onSessionConnected(Session session) {
-            Log.d(TAG, "Session connected");
-            session.setDataHandler(mDataHandler);
-        }
-
-        @Override
-        public void onSessionDisconnected() {
-            Log.d(TAG, "Session disconnected");
-        }
-        
-    };
     
-    
+    ScheduledExecutorService mExecutor  = null;
     GroupEndpoint GE_TEST = null;
     @Override
     public void  onCreate() {
         super.onCreate();
         
-        // create a new DTN client
-        if(null==mClient) {
-        	mClient = new DTNClient(mSession);
-        	String appName = this.getApplication().getPackageName();
-        	Registration registration = new Registration(appName);
-        	GE_TEST = new GroupEndpoint("dtn://" + appName + "/mc");
-            registration.add(GE_TEST);
-            
-            try {
-                // initialize the connection to the DTN service
-                mClient.initialize(this, registration);
-                Log.d(TAG, "Connection to DTN service established. GE = " + GE_TEST + " SE = " +appName);
-            } catch (ServiceNotAvailableException e) {
-                // The DTN service has not been found
-                Log.e(TAG, "DTN service unavailable. Is IBR-DTN installed?", e);
-            } catch (SecurityException e) {
-                // The service has not been found
-                Log.e(TAG, "The app has no permission to access the DTN service. It is important to install the DTN service first and then the app.", e);
-            }
-        }
-    }
+        mExecutor = Executors.newScheduledThreadPool(1);
+        String appName = this.getApplication().getPackageName();
+    	Registration registration = new Registration(appName);
+    	GE_TEST = new GroupEndpoint("dtn://" + appName + "/mc");
+        registration.add(GE_TEST);
+        try {
+	        initialize(registration);
+	        Log.d(TAG, "Connection to DTN service established.");
+	    } catch (ServiceNotAvailableException e) {
+	        // The DTN service has not been found
+	        Log.e(TAG, "DTN service unavailable. Is IBR-DTN installed?", e);
+	    } catch (SecurityException e) {
+	        // The service has not been found
+	        Log.e(TAG, "The app has no permission to access the DTN service. It is important to install the DTN service first and then the app.", e);
+	    }
+	}
 
     @Override
     public void onDestroy() {
         // terminate the DTN service
-        mClient.terminate();
-        mClient = null;
-        
+    	mSession.destroy();
+    	mExecutor.shutdown();
         super.onDestroy();
     }
 
@@ -313,4 +300,17 @@ public class GenericService extends IntentService {
             Log.d(TAG, offset + " of " + length + " bytes received");
         }
     };
+
+	@Override
+	protected void onSessionConnected(Session arg0) {
+		mSession = arg0;
+		mSession.setDataHandler(mDataHandler);
+		
+	}
+
+	@Override
+	protected void onSessionDisconnected() {
+		mSession= null;
+		
+	}
 }

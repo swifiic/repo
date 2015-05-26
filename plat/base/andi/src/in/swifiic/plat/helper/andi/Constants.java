@@ -23,6 +23,8 @@ public final class Constants {
 	
 	public static final long SHORT_LIFETIME = 3600;
 	
+	public static final long END_LIFETIME = 0;
+	
 	
 	public static final String PUBLIC_DIR_PATH = Environment.getExternalStorageDirectory().toString() + "/swifiic/";
 }

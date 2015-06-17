@@ -1,0 +1,14 @@
+<project name="SWiFiIC" default="all" basedir=".">
+<target name="init" description="Build the platform components">
+    <ant dir="plat"/>
+</target>
+<target name="Apps" depends="init" description="Build the whole code-base">
+    <ant dir="app"/>
+</target>
+<target name="all" depends="init,Apps"/>
+<target name="clean">
+    <ant dir="plat" target="clean"/>
+    <ant dir="app" target="clean"/>
+</target>
+</project>
+

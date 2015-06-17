@@ -1,0 +1,50 @@
+<project name="in-swifiic-suta" default="dist" basedir=".">
+    <description>
+        simple build file for Hub
+    </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="src"/>
+  <property name="lib" location="../../../../lib"/>
+  <property name="build" location="../../../../build"/>
+  <property name="dist"  location="../../../../dist"/>
+
+ <path id="external.jars">
+                <fileset dir="${lib}" includes="hub/*jar"/>
+                <fileset dir="${lib}" includes="common/*jar"/>
+  </path>
+  <path id="project.classpath">
+                <pathelement location="${src}"/>
+                <path refid="external.jars" />
+  </path>
+
+	
+  <target name="init">
+    <!-- Create the time stamp sets the variable ${DSTAMP}; not used presently-->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+  </target>
+
+  <target name="compile" depends="init"
+        description="compile the source " >
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src}" destdir="${build}" classpathref="project.classpath" debug="true"/>
+  </target>
+
+  <target name="dist" depends="compile"
+        description="generate the distribution" >
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}/lib"/>
+
+    <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
+    <jar jarfile="${dist}/lib/in-swifiic-hub.jar" basedir="${build}">
+    </jar>
+  </target>
+
+  <target name="clean"
+        description="clean up" >
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+</project>

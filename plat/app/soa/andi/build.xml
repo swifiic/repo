@@ -1,0 +1,9 @@
+<project name="soa-andi" default="All" basedir=".">
+<target name="release"  description="No code here yet">
+</target>
+<target name="All"  description="No code here yet">
+</target>
+<target name="clean"  description="No code here yet">
+</target>
+</project>
+

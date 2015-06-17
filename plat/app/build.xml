@@ -1,0 +1,11 @@
+<project name="SWiFiIC-plat-app-soa" default="Apps" basedir=".">
+<target name="Apps" description="Build Operator App">
+    <ant dir="soa" />
+    <ant dir="suta" />
+</target>
+<target name="clean" description="cleanup the old build">
+    <ant dir="soa" target="clean"/>
+    <ant dir="suta" target="clean"/>
+</target>
+</project>
+

@@ -5,7 +5,7 @@
   <!-- set global properties for this build -->
   <property name="src" location="src"/>
   <property name="lib" location="../../../lib"/>
-  <property name="build" location="../../../build"/>
+  <property name="build" location="../../../build/msngr"/>
   <property name="dist"  location="../../../dist"/>
 
  <path id="external.jars">
@@ -34,11 +34,9 @@
 
   <target name="dist" depends="compile"
         description="generate the distribution" >
-    <!-- Create the distribution directory -->
-    <mkdir dir="${dist}/lib"/>
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/in-swifiic-msnjr.jar" basedir="${build}">
+    <jar jarfile="${dist}/msnjr-hub-${DSTAMP}.jar" basedir="${build}">
     </jar>
   </target>
 

@@ -1,7 +1,3 @@
 bin
 gen
 .classpath
-build.xml
-**/*.xml~
-.gitignore~
-local.properties

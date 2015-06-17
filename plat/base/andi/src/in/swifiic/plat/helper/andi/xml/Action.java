@@ -32,7 +32,7 @@ public class Action extends Operation{
 			
 		}
 		arguments.add(arg);
-		//Log.d(TAG, "added argument " + argName + " after" + length + "entries");
+		Log.d(TAG, "added argument " + argName + " after" + length + "entries");
 		return true;
 	}
 	

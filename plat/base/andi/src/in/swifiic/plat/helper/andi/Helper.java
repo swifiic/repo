@@ -60,10 +60,9 @@ public class Helper {
             
             i.setAction(Constants.SEND_MSG_INTENT);
             i.putExtra("action", msg); // msgTextToSend
-            Log.d("Inside Send Action","hubaddress is"+hubAddress);
             i.putExtra("hub_address", hubAddress);
             
-            Log.d("Helper", "Sending: " + msg.substring(0, 100) + "To: " + hubAddress);
+            Log.d("Helper", "Sending: " + msg + "To: " + hubAddress);
             
             c.startService(i);
         } catch(Exception e) {

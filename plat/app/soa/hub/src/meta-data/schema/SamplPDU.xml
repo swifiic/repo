@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PDU xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="AppHub.xsd"
+    appVer="0.1" 
+    deviceId="28:CC:01:D8:FB:82" 
+    appId="2" 
+    version="0.1" 
+    userId="2" >
+  
+  <activity name="SendMessage" delay="MedPri" > <!-- Other defaults taken from Application definitions -->
+      <argument argName="message" argValue="Hello World !!!" />
+      <argument argName="userList" argValue="*" />
+  </activity>
+  
+</PDU>

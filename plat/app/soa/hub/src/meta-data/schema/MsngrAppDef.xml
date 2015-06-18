@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AppDef xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="AppHub.xsd"
+    appName="Msngr" appVer="0.1" 
+    defBilling="Monthly" appId="2" 
+    logVisibility="AdminAndUser" roleVisibility="Public">
+    
+  <rolesNeeded>Admin</rolesNeeded>
+  <rolesNeeded>User</rolesNeeded>
+  
+  <activity name="SendMessage" delay="MedPri" 
+      discradPolicy="OnLowSpaceWarnThreshold"  coupledOperations="DeliverMessage"
+      mode="AsyncNotifyAndAck">
+      <argument argName="message" argValue="user message to be sent" />
+      <argument argName="userList" argValue="comma (,) separated user list; * for all" />
+    <behavior>Only Admin can send message to all users</behavior>
+  </activity>
+
+  <activity name="DeliverReceipt" delay="LowPri" 
+      discradPolicy="OnLowSpaceWarnThreshold" coupledOperations="SendMessage,DeliverReceipt" 
+      mode="AsyncNotifyNoAck">
+    <argument argName="message" argValue="user message that was sent" />
+    <argument argName="sender" argValue="user message to be delivered" />
+    <behavior>Receiver is interpreted from PDU</behavior>
+  </activity>
+  
+  <notification name="DeliverMessage" delay="LowPri" 
+      discradPolicy="OnLowSpaceWarnThreshold"  coupledOperations="SendMessage,DeliverReceipt"
+      mode="AsyncNotifyAndAck">
+      <argument argName="message" argValue="user message to be delivered" />
+      <argument argName="sender" argValue="user message to be delivered" />
+    <behavior>AppHub transforms SendMessage to DeliverMessage and sends to each entity specified in userList</behavior>
+  </notification>
+  
+</AppDef>

@@ -1,0 +1,30 @@
+use apphub;
+/* test data population */
+INSERT INTO User (Name, EmailAddress, MobileNumber, 
+                  Address, ImageFileLocation, AddrProofFileLocation, 
+                  AddressVerificationNotes,  CreateTime, CreatedLedgerId,
+                  RemainingCreditPostAudit, Status, Password)
+            VALUE ('Operator', 'atst@live.com', '+919618258456',
+                   'test address', 'not needed', 'not needed',
+                   'is operator', NOW(), '0', 
+                   '1000000', 'operator', PASSWORD('inDclear'));
+
+SET @rootUserId = LAST_INSERT_ID();
+
+INSERT INTO User (Name, EmailAddress, MobileNumber, 
+                  Address, ImageFileLocation, AddrProofFileLocation, 
+                  AddressVerificationNotes,  CreateTime, CreatedLedgerId,
+                  RemainingCreditPostAudit, Status, Password)
+            VALUE ('Test User', 'atst@live.com', '+919618258456',
+                   'test address', 'not provided', 'not provided',
+                   'is dummy user', NOW(), '0', 
+                   '1000000', 'operator', PASSWORD('inDclear'));
+
+SET @testUserId = LAST_INSERT_ID();
+
+INSERT INTO Device (MAC, UserId,CreatedLedgerEntry, Notes, CreateTime) VALUES ('28:CC:01:D8:FB:82', @rootUserId, '0', 'operator device 1', NOW()), ('08:D4:2B:18:0C:E4', @testUserId, '0', 'Test User device Nexus 10', NOW());
+
+INSERT INTO App (AppId, AppName) VALUES ('1', 'SWiFiICOT'),('2', 'Msngr');	
+			
+INSERT AppUserMaps (AppId, UserId, Role) VALUES ('1', @rootUserId, 'admin'), ('2', @testUserId, 'user'), ('2', @rootUserId, 'user');
+

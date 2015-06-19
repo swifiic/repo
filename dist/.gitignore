@@ -1,3 +1,6 @@
 lib/
+docs/
+hub/
 *.jar
 *.apk
+*.war

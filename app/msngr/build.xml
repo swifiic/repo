@@ -1,7 +1,7 @@
 <project name="Msngr" default="All" basedir=".">
 <target name="All"  description="Build the hub and andi">
     <ant dir="hub"/>
-    <ant dir="andi" target="release"/>
+    <ant dir="andi" target="debug"/>
 </target>
 <target name="clean"  description="clean the old build">
     <ant dir="hub" target="clean"/>

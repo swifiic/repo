@@ -6,7 +6,7 @@
   <property name="src" location="src"/>
   <property name="lib" location="../../../lib"/>
   <property name="build" location="../../../build/msngr"/>
-  <property name="dist"  location="../../../dist"/>
+  <property name="dist"  location="../../../dist/msngr"/>
 
  <path id="external.jars">
                 <fileset dir="${lib}" includes="hub/*jar"/>

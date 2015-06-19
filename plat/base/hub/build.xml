@@ -6,8 +6,8 @@
   <property name="src1" location="src/ibrdtn"/>
   <property name="src2" location="src/in"/>
   <property name="lib" location="../../../lib"/>
-  <property name="build" location="../../../build"/>
-  <property name="dist"  location="../../../dist"/>
+  <property name="build" location="../../../build/hub"/>
+  <property name="dist"  location="../../../dist/hub"/>
 
  <path id="external.jars">
                 <fileset dir="${lib}" includes="hub/*jar"/>

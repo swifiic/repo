@@ -103,7 +103,7 @@ public final class Oprtr extends ActionProcessor {
         if (null == con)
         	try {
         		Class.forName("com.mysql.jdbc.Driver");
-        		con =DriverManager.getConnection("jdbc:mysql://localhost:3306/swifiic","bits","fixit");
+        		con =DriverManager.getConnection("jdbc:mysql://localhost:3306/swifiic","swifiic","fixit");
         		// TBD - create a lower access account and connection for other servlets
         	} catch (SQLException e) {
         		o.println("Sql exception in checkDB : "+e);
@@ -561,7 +561,7 @@ private boolean validate(String user,String pass,HttpSession session){
 			stmt = con.prepareStatement("INSERT INTO User (Name, Alias,EmailAddress, MobileNumber," +
                   "Address, ProfilePic,ImageFile, IdProofFile,AddrProofFile," + 
                   "AddressVerificationNotes,  CreateTime, CreatedLedgerId," +
-                  "RemainingCreditPostAudit, Status, Password,DtnId)" +
+                  "RemainingCreditPostAudit, Status, Password,DtnId, UserId)" +
                   "VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                   Statement.RETURN_GENERATED_KEYS);
 			//o.println("Before filling the fields");
@@ -581,6 +581,7 @@ private boolean validate(String user,String pass,HttpSession session){
 			stmt.setString(14,"active");
 			stmt.setString(15, "simple");
 			stmt.setString(16,dtnId);
+			stmt.setNull(17,Types.INTEGER);
 			
 			int affectedRows = stmt.executeUpdate();
 	        if (affectedRows == 0) {

@@ -96,9 +96,10 @@ CREATE TABLE User
     EmailAddress VARCHAR(64),
     MobileNumber VARCHAR(32),
     Address VARCHAR(256),
-    ImageFile BLOB , /* Profile pic of the User */
+    ImageFile BLOB , /* Actual user photo */
     IdProofFile BLOB , /* IdProof image */ 
     AddrProofFile BLOB , /* Address Proof image */
+    ProfilePic BLOB , /* Profile pic of the User */
     AddressVerificationNotes VARCHAR(256), /* Address Notes */
     CreateTime DATETIME, /* TimeStamp when the user is added*/
     CreatedLedgerId BIGINT, 

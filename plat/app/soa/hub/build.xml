@@ -47,7 +47,7 @@
      set to the current working directory.
 -->
 
-<project name="SOA-Hub" default="compile" basedir=".">
+<project name="SOA-Hub" default="dist" basedir=".">
 
 
 
@@ -126,13 +126,13 @@
 
 -->
 
-  <property name="app.name"      value="myapp"/>
+  <property name="app.name"      value="HubSrvr"/>
   <property name="app.path"      value="/${app.name}"/>
-  <property name="app.version"   value="0.1-dev"/>
-  <property name="build.home"    value="${basedir}/../../../../build/SOA"/>
+  <property name="app.version"   value="0.1"/>
+  <property name="build.home"    value="${basedir}/../../../../build/SOA/hub"/>
   <property name="catalina.home" value="/var/lib/tomcat7/"/> 
   <property name="catalina.bin.home" value="/usr/share/tomcat7/"/> 
-  <property name="dist.home"     value="${build.home}/dist"/>
+  <property name="dist.home"     value="${basedir}/../../../../dist/hub"/>
   <property name="docs.home"     value="${build.home}/docs"/>
   <property name="manager.url"   value="http://localhost:8080/manager"/>
   <property name="src.home"      value="./src"/>
@@ -352,14 +352,16 @@
   <target name="dist" depends="compile,javadoc"
    description="Create binary distribution">
 
-    <!-- Copy documentation subdirectories -->
+    <!-- AT skipped for SOA - Copy documentation subdirectories
     <mkdir   dir="${dist.home}/docs"/>
     <copy    todir="${dist.home}/docs">
       <fileset dir="${docs.home}"/>
-    </copy>
+    </copy> -->
 
     <!-- Create application JAR file -->
-    <jar jarfile="${dist.home}/${app.name}-${app.version}.war"
+    <!-- jar jarfile="${dist.home}/${app.name}-${app.version}.war"
+         basedir="${build.home}"/-->
+    <jar jarfile="${dist.home}/${app.name}.war"
          basedir="${build.home}"/>
 
     <!-- Copy additional files to ${dist.home} as necessary -->

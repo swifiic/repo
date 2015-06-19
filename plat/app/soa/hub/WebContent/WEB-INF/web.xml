@@ -15,7 +15,7 @@
         <transport-guarantee>CONFIDENTIAL</transport-guarantee>
     </user-data-constraint>
 </security-constraint-->
-  <display-name>hubSrvr</display-name>
+  <display-name>HubSrvr</display-name>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.htm</welcome-file>
@@ -24,6 +24,7 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+<!-- AT removing the mapping as @WebServlet annotation is being used within Java code
   <servlet>
       <servlet-name>Oprtr</servlet-name>
       <servlet-class>operator.Oprtr</servlet-class>
@@ -32,9 +33,10 @@
       <servlet-name>Oprtr</servlet-name>
       <url-pattern>/Oprtr</url-pattern>
   </servlet-mapping>
+-->
 <context-param>
     <param-name>log4j2Configuration</param-name>
-    <param-value>/home/aarthi/workspace/HubSrvr/WebContent/WEB-INF/log4j2.xml</param-value>
+    <param-value>${env:catalina.base}/webapps/HubSrvr/WebContent/WEB-INF/log4j2.xml</param-value>
 </context-param>
 
 </web-app>

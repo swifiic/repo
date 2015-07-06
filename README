@@ -1,2 +1,27 @@
 For SWiFiIC project - shared under GPL-v2 as of now
 Note: The project team reserves the rights to change the licensing terms for future work.
+
+
+
+To Deploy on Hub:
+
+setup my-sql DB and login etc.
+
+sudo apt-get install tomcat7-user
+tomcat7-instance-create HubSrvr
+cd HubSrvr/webapps/
+scp abhishek@172.16.2.133:/home/abhishek/wa15/repo/dist/*.war .
+cd ..
+vi conf/server.xml # set port number etc. 18080 for now
+ls
+bin/startup.sh
+
+For Hublets (e.g. SUTA) under "dist" folder
+defArgs="-Dfile.encoding=UTF-8"
+commonInclude=./lib/in-swifiic-hub.jar:./lib/commons-codec-1.8.jar:./lib/mysql-connector-java-5.1.29-bin.jar:./lib/simple-xml-2.7.1.jar
+proj=suta-hub-20150619.jar
+classToRun=in.swifiic.plat.app.suta.hub.Suta
+echo java ${defArgs} -classpath ./${proj}:${commonInclude} ${classToRun} -D
+java ${defArgs} -classpath ./${proj}:${commonInclude} ${classToRun} -D
+
+

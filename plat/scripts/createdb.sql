@@ -29,8 +29,8 @@ CREATE TABLE OperatorLedger
     EventNotes VARCHAR(256), /* description of the Ledger entry*/
     ReqUserId INT, /* User Id of the User who requested the Ledger entry*/
     ReqDeviceId INT, /* Device Id , where the Ledger Request came from*/
-    CreditDeviceId INT, /* Id of the device to be credited */
-    DebitDeviceId INT, /* Id od the device to be debited */
+    CreditUserId INT, /* Id of the device to be credited */
+    DebitUserId INT, /* Id od the device to be debited */
     Details VARCHAR(1024), /* Details of the Ledger Entry - Credit or Debit */
     Time TIMESTAMP, /* Timestamp of the ledger entry
     AuditLogId BIGINT,  /* LogId of the Audit that fulfills the current ledger entry  */
@@ -48,8 +48,8 @@ CREATE TABLE AppLedger
     ReqAppId INT,
     ReqAppRole VARCHAR(64),
     ReqDeviceId INT,
-    CreditDeviceId INT,
-    DebitDeviceId INT,
+    CreditUserId INT,
+    DebitUserId INT,
     Details VARCHAR(1024),
     TimeReq TIMESTAMP,
     TimeCommitted TIMESTAMP,

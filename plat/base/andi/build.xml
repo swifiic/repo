@@ -68,6 +68,34 @@
     -->
     <import file="custom_rules.xml" optional="true" />
 
+    <!-- Extract the folders from libs
+         Abhishek thakur - as per http://stackoverflow.com/questions/25879356/how-do-i-specify-multiple-libs-directories-in-my-ant-script
+         and http://stackoverflow.com/questions/3217643/how-to-add-external-jar-libraries-to-an-android-project-from-the-command-line
+    -->
+    <target name="-pre-compile">
+	 <echo level="info">Pre Compile info: ${project.all.jars.path} </echo>
+        <if>
+            <condition><isset property="project.all.jars.path" /></condition>
+            <then>
+	        <echo level="info">Pre Compile True: ${project.all.jars.path} </echo>
+                <path id="temp.proj.path">
+                    <path path="${toString:project.all.jars.path}" />
+                </path>
+            </then>
+        </if>
+
+        <path id="project.all.jars.path">
+            <!-- path path="${toString:project.all.jars.path}"/ -->
+            <path path="${toString:temp.proj.path}"/>
+            <fileset dir="${project.ext.jars.path}">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${jar.libs.dir}">
+                <include name="*.jar"/>
+            </fileset>
+        </path>
+    </target>
+
     <!-- Import the actual build file.
 
          To customize existing targets, there are two options:

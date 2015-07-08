@@ -75,6 +75,9 @@
     <string name="DtnId">Dtn Id</string>
     
     
+    <!-- abhishek for build details intial values are place holders -->
+    <string name="app_build_date">20150708</string>
+    <string name="app_build_ctx">at-slkbk-lx /home/abhishek/STP/repo/plat/app/soa/andi abhishek</string>
     
     
     

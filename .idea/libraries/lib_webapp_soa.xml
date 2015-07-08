@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="lib-webapp-soa">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/plat/app/soa/hub/WebContent/WEB-INF/lib/log4j-jcl-2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/plat/app/soa/hub/WebContent/WEB-INF/lib/jasypt-1.9.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/plat/app/soa/hub/WebContent/WEB-INF/lib/log4j-jul-2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/plat/app/soa/hub/WebContent/WEB-INF/lib/log4j-api-2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/plat/app/soa/hub/WebContent/WEB-INF/lib/mysql-connector-java-5.1.26-bin.jar!/" />
+      <root url="jar://$PROJECT_DIR$/plat/app/soa/hub/WebContent/WEB-INF/lib/log4j-core-2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

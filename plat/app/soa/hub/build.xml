@@ -180,7 +180,10 @@
     <fileset dir="${web.home}/WEB-INF/lib">
       <include name="*.jar"/>
     </fileset>
-
+    <!-- abhishek added for central location of shared libraries -->
+    <fileset dir="${src.home}/../../../../../lib/common">
+      <include name="*.jar"/>
+    </fileset>
   </path>
 
 

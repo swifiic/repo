@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="lib-hub-common">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/hub/commons-codec-1.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/hub/mysql-connector-java-5.1.29-bin.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

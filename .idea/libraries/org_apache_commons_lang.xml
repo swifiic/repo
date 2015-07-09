@@ -1,7 +1,6 @@
 <component name="libraryTable">
-  <library name="lib-common-andi-hub">
+  <library name="org-apache-commons-lang">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/common/simple-xml-2.7.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/common/org-apache-commons-lang.jar!/" />
     </CLASSES>
     <JAVADOC />

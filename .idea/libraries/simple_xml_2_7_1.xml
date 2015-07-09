@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="libs-andi-joda">
+  <library name="simple-xml-2.7.1">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/plat/app/soa/andi/libs/joda-time-2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/common/simple-xml-2.7.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

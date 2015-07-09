@@ -3,25 +3,31 @@ Note: The project team reserves the rights to change the licensing terms for fut
 
 
 
-To Deploy on Hub:
+To Deploy on Hub :
+A. Install IBR DTN daemon and setup as mentioned in Getting Started
+B. Install my-sql DB and note root-login etc.
+C. Install tomcat7-user [sudo apt-get install tomcat7-user] and set it up 
+  E.g.
+    cd /opt/swifiic
+    tomcat7-instance-create HubSrvr
+    cd HubSrvr/webapps/
+    scp abhishek@172.16.2.133:/home/abhishek/wa15/repo/dist/*.war .
+    cd ..
+    vi conf/server.xml # set port number etc. 18080 for now
+    ls
+    bin/startup.sh
 
-setup my-sql DB and login etc.
-
-sudo apt-get install tomcat7-user
-tomcat7-instance-create HubSrvr
-cd HubSrvr/webapps/
-scp abhishek@172.16.2.133:/home/abhishek/wa15/repo/dist/*.war .
-cd ..
-vi conf/server.xml # set port number etc. 18080 for now
-ls
-bin/startup.sh
-
-For Hublets (e.g. SUTA) under "dist" folder
+D. For each Hublets (e.g. SUTA) under "dist" folder
 defArgs="-Dfile.encoding=UTF-8"
 commonInclude=./lib/in-swifiic-hub.jar:./lib/commons-codec-1.8.jar:./lib/mysql-connector-java-5.1.29-bin.jar:./lib/simple-xml-2.7.1.jar
 proj=suta-hub-20150619.jar
 classToRun=in.swifiic.plat.app.suta.hub.Suta
-echo java ${defArgs} -classpath ./${proj}:${commonInclude} ${classToRun} -D
-java ${defArgs} -classpath ./${proj}:${commonInclude} ${classToRun} -D
+echo java ${defArgs} -classpath ./${proj}:${commonInclude} ${classToRun} 
+java ${defArgs} -classpath ./${proj}:${commonInclude} ${classToRun} 
 
-
+E. From SOA add some sample users
+F. On some device install IBR DTN, SUTA and Msngr apps. Configure IBR DTN id, and SUT user-name +Hub address
+     as per the setting in SOA
+G. From SUTA hublet - type "send" so that user list multicasts it to all devices
+H. Look for list of users in SUTA and then in Msngr
+I. Send messages to other users in Msngr [note as per known bug, first message fails as it does not have hub id populated in Msngr]

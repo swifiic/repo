@@ -1,6 +1,6 @@
 <project name="SWiFiIC-plat-app-soa" default="All" basedir=".">
 <target name="All"  description="Build the platform apps">
-    <ant dir="hub"/>
+    <ant dir="hub" target="dist"/>
     <ant dir="andi" target="debug"/>
 </target>
 <target name="clean"  description="clean the old build">

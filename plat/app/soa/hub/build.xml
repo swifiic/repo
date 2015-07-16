@@ -419,11 +419,17 @@
 
   <target name="javadoc" depends="compile"
    description="Create Javadoc API documentation">
+  <condition 
+      property="javadoc.doclint.none" 
+      value="-Xdoclint:none" 
+      else="">
+        <equals arg1="${ant.java.version}" arg2="1.8"/>
+    </condition>
 
     <mkdir          dir="${dist.home}/docs/api"/>
     <javadoc sourcepath="${src.home}"
                 destdir="${dist.home}/docs/api"
-           packagenames="*">
+           packagenames="*" additionalparam="${javadoc.doclint.none}">
       <classpath refid="compile.classpath"/>
     </javadoc>
 

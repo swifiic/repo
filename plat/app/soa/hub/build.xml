@@ -168,6 +168,15 @@
     <pathelement location="${foo.jar}"/>
 -->
 
+    <!-- abhishek added for central location of shared libraries -->
+    <fileset dir="${src.home}/../../../../../lib/common">
+      <include name="*.jar"/>
+    </fileset>
+    <fileset dir="${src.home}/../../../../../lib/hub">
+      <include name="*.jar"/>
+    </fileset>
+
+
     <!-- Include all elements that Tomcat exposes to applications -->
     <pathelement location="${catalina.home}/common/classes"/>
     <fileset dir="${catalina.bin.home}/lib"> <!-- AT added for Ubuntu -->
@@ -178,10 +187,6 @@
     </fileset>
     <pathelement location="${catalina.home}/shared/classes"/>
     <fileset dir="${web.home}/WEB-INF/lib">
-      <include name="*.jar"/>
-    </fileset>
-    <!-- abhishek added for central location of shared libraries -->
-    <fileset dir="${src.home}/../../../../../lib/common">
       <include name="*.jar"/>
     </fileset>
   </path>
@@ -487,6 +492,15 @@
     <!-- Copy external dependencies as required -->
     <!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->
     <mkdir  dir="${build.home}/WEB-INF/lib"/>
+    <copy  todir="${build.home}/WEB-INF/lib">
+       <fileset dir="${src.home}/../../../../../lib/common">
+         <include name="*.jar"/>
+       </fileset>
+       <fileset dir="${src.home}/../../../../../lib/hub">
+         <include name="*.jar"/>
+       </fileset>
+
+    </copy>
 <!--
     <copy todir="${build.home}/WEB-INF/lib" file="${foo.jar}"/>
 -->

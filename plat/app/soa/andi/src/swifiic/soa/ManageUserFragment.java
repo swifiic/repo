@@ -174,8 +174,8 @@ public class ManageUserFragment extends Fragment implements OnItemClickListener,
 							  
 						if (response.getStatusLine().getStatusCode()==HttpURLConnection.HTTP_OK){		 
 								if (listBytes!=null){
-									for(int i=0;i<listBytes.length;i++)
-										System.out.println(listBytes[i]);
+									//for(int i=0;i<listBytes.length;i++)
+									//	System.out.println(listBytes[i]);
 									// convert the byte array into an ArrayList which contains the user data or transaction data
 									ArrayList<HashMap<String,String>> list = 
 											(ArrayList<HashMap<String, String>>) SerializationUtils.deserialize(listBytes);

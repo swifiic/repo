@@ -16,13 +16,31 @@ import javax.servlet.http.HttpSession;
 
 import org.jasypt.util.password.StrongPasswordEncryptor;
 
-import java.sql.*;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.SQLException;
+//import java.sql.Blob;
+
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.codec.binary.Base64;
+
+import com.mysql.jdbc.Blob;
+import com.mysql.jdbc.ExceptionInterceptor;
+
+
+
 
 import org.apache.commons.lang.SerializationUtils;
 import org.apache.logging.log4j.LogManager;
@@ -240,10 +258,17 @@ public final class Oprtr extends ActionProcessor {
 		
 		String usrEmail = ctx.getArgVal(usrEmail_tag);
 		String notes = ctx.getArgVal(notes_tag);
-		String photoFile = ctx.getArgVal(imageFile_tag);
-		String idProofFile = ctx.getArgVal(idProofFile_tag);
-		String addressProofFile = ctx.getArgVal(addrProofFile_tag);
-		String profilePic = ctx.getArgVal(profilePic_tag);
+
+		String photoFileStr = ctx.getArgVal(imageFile_tag);
+		String idProofFileStr = ctx.getArgVal(idProofFile_tag);
+		String addressProofFileStr = ctx.getArgVal(addrProofFile_tag);
+		String profilePicStr = ctx.getArgVal(profilePic_tag);
+
+		byte[] photoFile =  getBlobFromBase64(photoFileStr);
+		byte[] idProofFile =  getBlobFromBase64(idProofFileStr);
+		byte[] addressProofFile =  getBlobFromBase64(addressProofFileStr);
+		byte[] profilePic =  getBlobFromBase64(profilePicStr);
+
 		String dtnId=ctx.getArgVal(dtnId_tag);
 		//String profilePic = null;
 		
@@ -261,10 +286,10 @@ public final class Oprtr extends ActionProcessor {
 			stmt.setString(3, usrEmail);
 			stmt.setString(4, mobNum);
 			stmt.setString(5, address);
-			stmt.setString(6, photoFile);
-			stmt.setString(7, photoFile);
-			stmt.setString(8, idProofFile);
-			stmt.setString(9, addressProofFile);
+			stmt.setObject(6, profilePic);
+			stmt.setObject(7, photoFile);
+			stmt.setObject(8, idProofFile);
+			stmt.setObject(9, addressProofFile);
 			stmt.setString(10, notes);
 			stmt.setString(11,dtnId);
 		
@@ -278,7 +303,7 @@ public final class Oprtr extends ActionProcessor {
 	        o.println("Successfully Edited...!!");
 	        successResponse(ctx,response, "Edited user with UserId: "+userKeyID);
 	    } catch(Exception ex){
-	    	o.println("Error in addUser in Oprtr: "+ex);
+	    	o.println("Error in editUser in Oprtr: "+ex);
 			errorResponse(ctx, response, ex.getMessage());
 	    }finally {
 	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
@@ -408,57 +433,80 @@ private boolean validate(String user,String pass,HttpSession session){
 		}
 	}
 	
-	private void listUser(ReqCtx ctx, HttpServletResponse response) throws IOException{
-		try {
-		String sessionId = ctx.getArgVal(JSESSIONID_tag);
-		
-		HttpSession session = SessionCounterListener.getSession(sessionId);
-		OutputStream s = response.getOutputStream();
-		//outstmt = con.prepareStatement("SELECT Password,Status FROM User WHERE MobileNumber = ?");
-        //PreparedStatement stmt = con.prepareStatement("SELECT * FROM User where Name=?");
-        PreparedStatement stmt = con.prepareStatement("SELECT * FROM User where Status!='deleted'");
-        //stmt.setString(1,"First");
-        ResultSet rs = stmt.executeQuery();
-        ArrayList<HashMap<String,String>> set = new ArrayList<HashMap<String,String>>();
-        HashMap<String,String> cur ;
-        while (rs.next()){
-        	cur = new HashMap<String,String>();
-        	cur.put("userKeyID",rs.getString("UserId"));
-        	cur.put("usrName",rs.getString("Name"));
-        	cur.put("imageFile",rs.getString("ImageFile"));
-        	cur.put("mobNum",rs.getString("MobileNumber"));
-        	cur.put("alias",rs.getString("Alias"));
-        	cur.put("usrEmail",rs.getString("EmailAddress"));
-        	cur.put("address",rs.getString("Address"));
-        	cur.put("profilePic",rs.getString("ProfilePic"));
-        	cur.put("idProofFile",rs.getString("IdProofFile"));
-        	cur.put("addressProofFile",rs.getString("AddrProofFile"));
-        	cur.put("notes",rs.getString("AddressVerificationNotes"));
-        	cur.put("remainingCreditPostAudit",rs.getString("RemainingCreditPostAudit"));
-        	cur.put("lastAuditedActivityAt",rs.getString("LastAuditedActivityAt"));
-        	cur.put("notes",rs.getString("AddressVerificationNotes"));
-        	// Getting the MAC address corresponding to the current User Id from the Device table
-        	stmt  = con.prepareStatement("SELECT MAC FROM Device where UserId=?",Statement.RETURN_GENERATED_KEYS);
-        	stmt.setInt(1,rs.getInt("userId"));
-        	ResultSet rs2 = stmt.executeQuery();
-        	rs2.next();
-        	cur.put("custDeviceId",rs2.getString(1));
-        	//o.println("Writing : "+cur);
-        	set.add(cur);
+        private String getBase64OfBlob(java.sql.Blob b){
+            byte[] imageBytes = null;
+            String imageEncoded64 = "";
+			try {
+				imageBytes = b.getBytes(1, (int) b.length());
+				byte[] intermediate =Base64.encodeBase64(imageBytes);
+				imageEncoded64 = new String(intermediate);
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            return imageEncoded64;
         }
-       log(INFO,"Sending the data of "+set.size()+" users");
-        
-       byte objBytes[] = SerializationUtils.serialize(set);  
-       
-       s.write(objBytes,0,objBytes.length);
-       s.close();
-		//out.close();
-		} catch(Exception e){
-			errorResponse(ctx, response, e.getMessage());
-			log(WARNING,"Exception in listUser of Oprtr: "+e);
-		}
-		
-	}
+        private void listUser(ReqCtx ctx, HttpServletResponse response) throws IOException{
+        	try {
+        		//String sessionId = ctx.getArgVal(JSESSIONID_tag);
+
+        		// HttpSession session = SessionCounterListener.getSession(sessionId);
+        		OutputStream s = response.getOutputStream();
+        		//outstmt = con.prepareStatement("SELECT Password,Status FROM User WHERE MobileNumber = ?");
+        		//PreparedStatement stmt = con.prepareStatement("SELECT * FROM User where Name=?");
+        		PreparedStatement stmt = con.prepareStatement("SELECT * FROM User where Status!='deleted'");
+        		//stmt.setString(1,"First");
+        		ResultSet rs = stmt.executeQuery();
+        		ArrayList<HashMap<String,String>> set = new ArrayList<HashMap<String,String>>();
+        		HashMap<String,String> cur ;
+        		log(Level.INFO,"Listing User Start");
+        		while (rs.next()){
+        			cur = new HashMap<String,String>();
+        			cur.put("userKeyID",rs.getString("UserId"));
+        			cur.put("usrName",rs.getString("Name"));
+        			cur.put("mobNum",rs.getString("MobileNumber"));
+        			cur.put("alias",rs.getString("Alias"));
+        			
+        			cur.put("usrEmail",rs.getString("EmailAddress"));
+        			cur.put("address",rs.getString("Address"));
+        			cur.put("notes",rs.getString("AddressVerificationNotes"));
+        			cur.put("remainingCreditPostAudit",rs.getString("RemainingCreditPostAudit"));
+        			cur.put("lastAuditedActivityAt",rs.getString("LastAuditedActivityAt"));
+
+        			java.sql.Blob  bT = rs.getBlob("ImageFile");
+        			String str = getBase64OfBlob(bT);
+        			cur.put("imageFile",str);
+        			cur.put("profilePic",getBase64OfBlob( rs.getBlob("ProfilePic")));
+        			cur.put("idProofFile",getBase64OfBlob( rs.getBlob("IdProofFile")));
+        			cur.put("addressProofFile",getBase64OfBlob( rs.getBlob("AddrProofFile")));
+
+        			// Getting the MAC address corresponding to the current User Id from the Device table
+        			stmt  = con.prepareStatement("SELECT MAC FROM Device where UserId=?",Statement.RETURN_GENERATED_KEYS);
+        			stmt.setInt(1,rs.getInt("UserId"));
+        			ResultSet rs2 = stmt.executeQuery();
+        			rs2.next();
+        			cur.put("custDeviceId",rs2.getString(1));
+        			//o.println("Writing : "+cur);
+        			set.add(cur);
+        			
+        		}
+        		log(INFO,"Sending the data of "+set.size()+" users");
+
+        		byte objBytes[] = SerializationUtils.serialize(set);  
+
+        		s.write(objBytes,0,objBytes.length);
+        		s.close();
+        		//out.close();
+        	} catch(Exception e){
+        		log(Level.INFO,"Listing User Failed");
+        		errorResponse(ctx, response, e.getMessage());
+        		log(WARNING,"Exception in listUser of Oprtr: "+e);
+        		log.error("stack trace", e);
+
+        	}
+
+        }
 	
 	
 	private void changeCredits(ReqCtx ctx, HttpServletResponse response) throws  IOException {
@@ -510,7 +558,30 @@ private boolean validate(String user,String pass,HttpSession session){
 			
 	}
 	
+       class MyExeptionInterceptor implements ExceptionInterceptor {
+          
+
+		@Override
+		public void destroy() {		/* doing nothing */		}
+
+		@Override
+		public void init(com.mysql.jdbc.Connection arg0, Properties arg1)
+				throws SQLException {		/* doing nothing */		}
+
+
+		@Override
+		public SQLException interceptException(SQLException sqlEx,
+				com.mysql.jdbc.Connection arg1) {
+			o.println("Error in Blob");
+            return sqlEx;
+		}
+       }
 	
+        private byte[] getBlobFromBase64(String data){
+            byte[] imageBytes = Base64.decodeBase64(data);
+            return imageBytes;
+        }
+
 	private void addUser(ReqCtx ctx, HttpServletResponse response) throws  IOException {
 	    PreparedStatement stmt = null;
 		PreparedStatement statement = null;
@@ -525,11 +596,18 @@ private boolean validate(String user,String pass,HttpSession session){
 		String initialCredit = ctx.getArgVal(initialCredit_tag);
 		String usrEmail = ctx.getArgVal(usrEmail_tag);
 		String notes = ctx.getArgVal(notes_tag);
-		String photoFile = ctx.getArgVal(imageFile_tag);
-		String idProofFile = ctx.getArgVal(idProofFile_tag);
-		String addressProofFile = ctx.getArgVal(addrProofFile_tag);
-		String profilePic = ctx.getArgVal(profilePic_tag);
 		String dtnId=ctx.getArgVal(dtnId_tag);
+
+		String photoFileStr = ctx.getArgVal(imageFile_tag);
+		String idProofFileStr = ctx.getArgVal(idProofFile_tag);
+		String addressProofFileStr = ctx.getArgVal(addrProofFile_tag);
+		String profilePicStr = ctx.getArgVal(profilePic_tag);
+
+		byte[] photoFile = getBlobFromBase64(photoFileStr);
+		byte[] idProofFile = getBlobFromBase64(idProofFileStr);
+		byte[] addressProofFile = getBlobFromBase64(addressProofFileStr);
+		byte[] profilePic = getBlobFromBase64(profilePicStr);
+
 		boolean userExists = false;
 		//String profilePic = null;
 		if(null == initialCredit) initialCredit="0";
@@ -557,23 +635,23 @@ private boolean validate(String user,String pass,HttpSession session){
 				userExists = true;
 				throw new SQLException("User with the same mobile number and Name exists!!");
 			}
-			
+			stmt.close();
 			stmt = con.prepareStatement("INSERT INTO User (Name, Alias,EmailAddress, MobileNumber," +
-                  "Address, ProfilePic,ImageFile, IdProofFile,AddrProofFile," + 
-                  "AddressVerificationNotes,  CreateTime, CreatedLedgerId," +
-                  "RemainingCreditPostAudit, Status, Password,DtnId, UserId)" +
-                  "VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                  Statement.RETURN_GENERATED_KEYS);
+											"Address, ProfilePic,ImageFile, IdProofFile,AddrProofFile," + 
+											"AddressVerificationNotes,  CreateTime, CreatedLedgerId," +
+											"RemainingCreditPostAudit, Status, Password,DtnId)" +
+											"VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+										Statement.RETURN_GENERATED_KEYS);
 			//o.println("Before filling the fields");
 			stmt.setString(1, usrName);
 			stmt.setString(2, alias);
 			stmt.setString(3, usrEmail);
 			stmt.setString(4, mobNum);
 			stmt.setString(5, address);
-			stmt.setString(6, profilePic);
-			stmt.setString(7, photoFile);
-			stmt.setString(8, idProofFile);
-			stmt.setString(9, addressProofFile);
+			stmt.setObject(6, profilePic);
+			stmt.setObject(7, photoFile);
+			stmt.setObject(8, idProofFile);
+			stmt.setObject(9, addressProofFile);
 			stmt.setString(10, notes);
 			stmt.setTimestamp(11, now);
 			stmt.setInt(12, 0);
@@ -581,7 +659,7 @@ private boolean validate(String user,String pass,HttpSession session){
 			stmt.setString(14,"active");
 			stmt.setString(15, "simple");
 			stmt.setString(16,dtnId);
-			stmt.setNull(17,Types.INTEGER);
+			//stmt.setNull(17,Types.INTEGER);
 			
 			int affectedRows = stmt.executeUpdate();
 	        if (affectedRows == 0) {

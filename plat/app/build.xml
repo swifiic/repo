@@ -2,7 +2,10 @@
 <target name="Apps" description="Build Operator App">
     <ant dir="soa" />
     <ant dir="suta" />
+    <copy file="suta/andi/bin/SUTA-debug.apk" todir="../../dist" />
+    <copy file="soa/andi/bin/SOA-debug.apk" todir="../../dist" />
 </target>
+
 <target name="clean" description="cleanup the old build">
     <ant dir="soa" target="clean"/>
     <ant dir="suta" target="clean"/>

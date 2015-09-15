@@ -7,6 +7,8 @@ import in.swifiic.plat.helper.hub.SwifiicHandler;
 import in.swifiic.plat.helper.hub.xml.Notification;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.ExecutorService;
@@ -14,15 +16,20 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import in.swifiic.plat.helper.hub.xml.Action;
+	
+
+import org.apache.commons.codec.binary.Base64;
 
 
 public class Suta extends Base implements SwifiicHandler {
 	
 	private static final Logger logger = LogManager.getLogManager().getLogger("");
+    public static org.apache.logging.log4j.Logger logNew=org.apache.logging.log4j.LogManager.getLogger("in.swifiic.plat.app.suta.hub.Suta");
+    
     private DTNClient dtnClient;
     
     protected ExecutorService executor = Executors.newCachedThreadPool();
-    
     // Following is the name of the endpoint to register with
     protected String PRIMARY_EID = "suta";
     
@@ -30,6 +37,7 @@ public class Suta extends Base implements SwifiicHandler {
         // Initialize connection to daemon
         dtnClient = getDtnClient(PRIMARY_EID, this);
         logger.log(Level.INFO, dtnClient.getConfiguration());
+        logNew.info(dtnClient.getConfiguration());
     }
     
     static boolean exitFlag=false;
@@ -61,15 +69,66 @@ public class Suta extends Base implements SwifiicHandler {
 	    		notif.addArgument("userList", userList);
 	    		String payload = Helper.serializeNotification(notif);
         		suta.sendGrp("dtn://in.swifiic.plat.app.suta.andi/mc", payload);
-        		// Mark bundle as delivered...                    
-                logger.log(Level.INFO, "Attempted to {0} send to {1}", 
-                		new Object[] {payload, "dtn://in.swifiic.plat.app.suta.andi/mc"});
+
+                logNew.info("Sending payload to  dtn://in.swifiic.plat.app.suta.andi/mc"+payload);
+               // logger.log(Level.INFO, "Attempted to {0} send to {1}", 
+                		//new Object[] {payload, "dtn://in.swifiic.plat.app.suta.andi/mc"});
 	    	}
 	    }
     }
 
 	@Override
 	public void handlePayload(String payload, final Context ctx) {
-		System.out.println("Got Message: " + payload);	
+//System.out.println("Got Message: " + payload);	
+//		logNew.info("Got Message: " + payload);	
+	
+		final String message = payload;
+	executor.execute(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+	
+		
+		Action action = Helper.parseAction(message); 	
+		if(null==action)
+			return;
+       	String actualContent=action.getArgument("message");
+    	//System.out.println("aC:"+actualContent);
+    	String fileName=action.getArgument("filename");
+    	//System.out.println(fileName);
+    	logNew.info("Log file received with message "+fileName+"\n");
+    	if(fileName!=null) {
+    		
+        /* should get folderppath from config file :TBD : XXX */
+    	String folderpath="/home/aarthi/Desktop/tmp/";
+    	String filepath=folderpath + fileName;
+		b64StringToFile(actualContent, filepath); 
+}
+}
+catch(Exception e)
+{
+System.out.println(e);
+}
+	}
+});
+}
+
+
+    static void b64StringToFile(String contentB64, String fileName){
+		File writeFile = new File(fileName);
+		FileOutputStream str =null;
+		try {
+			str = new FileOutputStream(writeFile);
+			str.write((new Base64()).decode(contentB64));
+			
+		} catch (Exception e) {
+			logger.log(Level.INFO,"b64StringToFile", "Could not save file " + e.getLocalizedMessage());
+			logNew.error("b64StringToFile:Could not save file " + e.getLocalizedMessage());
+		} finally {
+			try {
+				if(null != str) str.close();
+			} catch (Exception e) {/* do nothing */	}
+		}
 	}
 }

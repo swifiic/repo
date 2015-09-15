@@ -31,6 +31,9 @@
         description="compile the source " >
     <!-- Compile the java code from ${src} into ${build} -->
     <javac srcdir="${src}" destdir="${build}" classpathref="project.classpath" debug="true"/>
+  <copy todir="${build}">
+            <fileset dir="${src}" excludes="**/*.java"/>
+        </copy>
   </target>
 
   <target name="dist" depends="compile"

@@ -18,7 +18,8 @@ build/
 out/
 
 # Local configuration file (sdk path, etc)
-./**/local.properties
+/**/local.properties
+/**/project.properties
 
 # Windows thumbnail db
 Thumbs.db

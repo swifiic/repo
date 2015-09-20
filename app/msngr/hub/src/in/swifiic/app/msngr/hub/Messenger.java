@@ -33,11 +33,13 @@ public class Messenger extends Base implements SwifiicHandler {
     
     // Following is the name of the endpoint to register with
     protected String PRIMARY_EID = "Msngr";
-    
+     public static org.apache.logging.log4j.Logger logNew=org.apache.logging.log4j.LogManager.getLogger("in.swifiic.app.msngr.hub.Messenger");
     public Messenger() {
         // Initialize connection to daemon
         dtnClient = getDtnClient(PRIMARY_EID, this);
         logger.log(Level.INFO, dtnClient.getConfiguration());
+logNew.info(dtnClient.getConfiguration());
+
     }
     
     public static void main(String args[]) throws IOException {
@@ -56,7 +58,8 @@ public class Messenger extends Base implements SwifiicHandler {
 	@Override
 	public void handlePayload(String payload, final Context ctx) {
 		final String message = payload;
-		System.out.println("Got Message:" + payload);
+		//System.out.println("Got Message:" + payload);
+		logNew.info("\n Got Message:" +payload);
 		executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -83,6 +86,7 @@ public class Messenger extends Base implements SwifiicHandler {
                 	boolean status = Helper.debitUser(fromUser);
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, "Unable to process message and send response\n" + e.getMessage());
+		    logNew.info("Unable to process message and send response\n" + e.getMessage());
                 }
             }
         });

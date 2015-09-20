@@ -27,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -50,6 +51,12 @@ public class MainActivity extends SwifiicActivity {
         setContentView(R.layout.main_activity_msngr);
         
         messageToSend = (EditText)findViewById(R.id.msgTextToSend);
+
+        messageToSend.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(messageToSend, InputMethodManager.SHOW_IMPLICIT);
+
+
         conversation = (ListView)findViewById(R.id.conversation);
         b = (ImageButton)findViewById(R.id.buttonSendMsg);
         

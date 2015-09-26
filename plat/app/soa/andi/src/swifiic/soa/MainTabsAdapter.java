@@ -26,9 +26,7 @@ public class MainTabsAdapter extends FragmentPagerAdapter {
 		case 3:
 			// Movies fragment activity
 			return new ManageSWiFiICFragment();
-		case 4:
-			// Movies fragment activity
-			return new ManageSWiFiICFragment();
+
 		}
 
 		return null;
@@ -36,8 +34,8 @@ public class MainTabsAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public int getCount() {
-		// get item count - equal to number of tabs
-		return 3;
+		// get item count  : equal to number of tabs
+		return 4;
 	}
 
 }

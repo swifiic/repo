@@ -18,6 +18,7 @@ import android.app.ActionBar.Tab;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,6 +31,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -38,6 +40,7 @@ import android.widget.Toast;
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
 	public static final String URL = Constants.URL;
+
 	private MyViewPager viewPager;
 	//private ViewPager viewPager;
     private MainTabsAdapter mAdapter;
@@ -70,8 +73,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
        tabs =  new String[]{getResources().getString(R.string.Recharge),
   			  getResources().getString(R.string.addUser),
   			  getResources().getString(R.string.Users),
-  			  getResources().getString(R.string.swifiic),
-  			  getResources().getString(R.string.place_holder) };
+  			  getResources().getString(R.string.swifiic)};
         // Adding Tabs
         for (String tab_name : tabs) {
             actionBar.addTab(actionBar.newTab().setText(tab_name).setTabListener(this));

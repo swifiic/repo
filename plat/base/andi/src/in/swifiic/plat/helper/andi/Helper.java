@@ -133,4 +133,26 @@ public class Helper {
 		
 	}
 
+
+public static String sendSutaInfo(Action act, String hubAddress, Context c) {
+    try {
+    	// Loading my identity from preferences
+    	 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(c);
+         String myIdentity = sharedPref.getString("my_identity", "");
+     	act.addArgument("fromUser", myIdentity);
+    	Intent i = new Intent(c, GenericService.class);
+    	String msg = serializeAction(act);
+        i.setAction(Constants.SEND_INFO_INTENT);
+        i.putExtra("action", msg); // msgTextToSend
+        i.putExtra("hub_address", hubAddress);
+     
+        
+        Log.d("Helper", "Sending: " + msg + "To: " + hubAddress);
+        
+        c.startService(i);
+    } catch(Exception e) {
+    	Log.e("sendAction", "Something goofy:" + e.getMessage());
+    }
+    return null;
+}
 }

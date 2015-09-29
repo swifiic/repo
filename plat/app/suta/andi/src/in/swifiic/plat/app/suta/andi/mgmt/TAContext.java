@@ -269,7 +269,7 @@ class TAContext{
 
 	boolean shouldCreateLogFile() 	{
 		// for testing NUMBER_NODES / 20
-		return (sAC.getCount() + sIC.getCount() > NUMBER_NODES/10);
+		return (sAC.getCount() + sIC.getCount() > NUMBER_NODES/5);
 		// for real all NUMBER_NODES
 		// return (sAC.getCount() + sIC.getCount() > NUMBER_NODES);
 	}

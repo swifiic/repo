@@ -185,6 +185,10 @@ public class Provider extends ContentProvider {
 		     }
 		 }
 	}
+	public void deletedB()
+	{
+		sutaDB.execSQL("DELETE FROM users WHERE 1=1");
+	}
 	
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {

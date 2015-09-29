@@ -10,8 +10,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -21,7 +25,7 @@ import org.apache.commons.codec.binary.Base64;
 // import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 public class Helper {
-
+	private static final Logger logger = LogManager.getLogManager().getLogger("");
 	public static Action parseAction(String str) {
         Serializer serializer = new Persister();
         try {
@@ -97,8 +101,11 @@ public class Helper {
 		return deviceList;
 	}
 	
-	/*
+	/***
+	 * @author aarthi
 	 * Format username|alias;username|alias;...
+	 * Sends the list of users to suta andi devices
+	 * User list is sorted in descending order on the basis of time of last update from app.
 	 */
 	public static String getAllUsers() {
 		String users = "";
@@ -111,7 +118,7 @@ public class Helper {
 		ResultSet result;
 		try {
 			statement = connection.createStatement();
-			sql = "SELECT Name,Alias,ProfilePic FROM User";
+			sql = "SELECT Name,Alias,ProfilePic FROM User ORDER BY TimeOfLastUpdateFromApp desc";
 			result = statement.executeQuery(sql);
 			// Extract data from result set
 			while(result.next()) {
@@ -133,6 +140,7 @@ public class Helper {
 	}
 	
 	 /**
+	  * @author aarthi 
 	  * This function is added for billing purpose whenever a message is sent from swifiic messenger.
 	  * It is taking the UserName as parameter and inserting an entry in OperatorLedger Table.
 	  * @param fromUser
@@ -185,4 +193,82 @@ public class Helper {
 		return res;
 	
 	}
+	/***
+	 * @author aarthi
+	 * This function updates the MacAddress and DTN ID of the user devices in User Table
+	 * @param macId - MacAddress of the device
+	 * @param time  -Time of last update from Suta app
+	 * @param dtnId - DTN ID of the user device
+	 * @param fromUser - Name of User
+	 */
+	public static void updateDatabase(String macId,String time,String dtnId,String fromUser)
+	{
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // your template here
+		
+		String dtn_id=null,mac_address=null;
+		 Connection con=DatabaseHelper.connectToDB();
+	        if(con!=null)
+	        logger.log(Level.INFO,"Connection Successful to DB");
+	        PreparedStatement stmt=null;
+	        PreparedStatement pst=null;
+			ResultSet rs=null;
+			try {
+				java.util.Date dateStr = formatter.parse(time);
+				java.sql.Date dateDB = new java.sql.Date(dateStr.getTime());
+				stmt=con.prepareStatement("Select MacAddress,DtnId from User where Name=?");
+				stmt.setString(1, fromUser);
+				rs=stmt.executeQuery();
+				if(rs.next())
+				{
+					dtn_id=rs.getString("DtnId");
+					mac_address=rs.getString("MacAddress");
+				}
+				//if MAC Address of the device is not initialized. update macaddress and dtn id both
+				if(mac_address.equals("0000000"))
+				{
+					pst=con.prepareStatement("Update User set DtnId=?,MacAddress=?,TimeOfLastUpdateFromApp= ? where Name=?");
+					pst.setString(1, dtnId);
+					pst.setString(2,macId);
+					pst.setTimestamp(3,new java.sql.Timestamp(dateStr.getTime()));
+					pst.setString(4,fromUser);
+					pst.execute();
+					return;
+				}
+				//if macaddress is initialized and dtn id changes allow update
+				else if(mac_address.equals(macId)&& !(dtn_id.equals(dtnId)))
+				{
+					pst=con.prepareStatement("Update User set DtnId=?,TimeOfLastUpdateFromApp= ? where Name=?");
+					pst.setString(1, dtnId);
+					pst.setTimestamp(2,new java.sql.Timestamp(dateStr.getTime()));
+					pst.setString(3,fromUser);
+					pst.execute();
+					return;
+				}
+				//dtnid matches and mac_address differs , throw error
+				else if(!(mac_address.equals(macId))&& dtn_id.equals(dtnId))
+				{
+					logger.log(Level.SEVERE,"Mac Address already initalized for this dtn id ");
+					return;
+				}
+				//both matches allow update of time
+				else if(mac_address.equals(macId)&& (dtn_id.equals(dtnId)))
+				{
+					pst=con.prepareStatement("Update User set TimeOfLastUpdateFromApp= ? where Name=?");
+					pst.setTimestamp(1,new java.sql.Timestamp(dateStr.getTime()));
+					pst.setString(2, fromUser);
+					pst.execute();
+					return;
+				}
+						
+			} 
+			catch (SQLException e) {
+			logger.log(Level.SEVERE,e.toString());
+				//e.printStackTrace();
+			}
+			catch(Exception e)
+			{
+				logger.log(Level.SEVERE,e.toString());
+			}
+	}
+	
 }

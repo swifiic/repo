@@ -15,6 +15,7 @@ import android.util.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 	 
     // Logcat tag
+	public static DatabaseHelper dbHelper=null;
     private static final String TAG = "DatabaseHelper";
  
     // Database Version
@@ -183,4 +184,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 		
 	}
+	public void deleteForReset()
+	{
+		SQLiteDatabase db = getWritableDatabase();
+		String query="DELETE FROM " + TABLE_MSGS + " WHERE 1=1";
+		db.execSQL(query);
+	}
+	
 }

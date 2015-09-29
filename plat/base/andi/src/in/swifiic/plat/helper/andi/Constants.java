@@ -13,6 +13,8 @@ public final class Constants {
 	
 	public static final String SEND_MSG_INTENT = "in.swifiic.app.SEND_MSG";
 	
+	public static final String SEND_INFO_INTENT = "in.swifiic.app.SEND_INFO";
+	
 	public static final String NEWMSG_RECEIVED = "in.swifiic.app.DATA_RECEIVED";
 
 	public static final String MSG_DELIVERED_APPHUB = "in.swifiic.app.HUB_RECEIVED";

@@ -29,6 +29,14 @@
 	        android:selectAllOnFocus="true"
 	        android:singleLine="true"
 	        android:title="@string/pref_title_my_identity" />
+		<Preference
+	        android:defaultValue="@string/pref_default_reset"
+	        android:key="reset_required"
+	        android:maxLines="1"
+	        android:selectable="false"
+	        android:selectAllOnFocus="true"
+	        android:singleLine="true"
+	        android:title="@string/pref_default_reset" />
     
 	</PreferenceCategory>
 	

@@ -39,10 +39,6 @@
             </intent-filter>
         </receiver>
         
-        <receiver android:name="IdentityReceiver" >
-            <intent-filter>
-                <action android:name="swifiic.suta.myIdentityUpdate" />
-            </intent-filter>
-        </receiver>      
+      
     </application>  	    
 </manifest>

@@ -56,8 +56,9 @@ logNew.info(dtnClient.getConfiguration());
     }
 
 	@Override
-	public void handlePayload(String payload, final Context ctx) {
+	public void handlePayload(String payload, final Context ctx,String srcurl) {
 		final String message = payload;
+		System.out.println(srcurl);
 		//System.out.println("Got Message:" + payload);
 		logNew.info("\n Got Message:" +payload);
 		executor.execute(new Runnable() {

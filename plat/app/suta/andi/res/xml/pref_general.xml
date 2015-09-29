@@ -24,4 +24,13 @@
      <PreferenceCategory 
         android:title="@string/app_build_ctx"
         android:key="pref_dummy_key2"/>
+     <Preference
+	        android:defaultValue="@string/pref_default_reset"
+	        android:key="reset_required"
+	        android:maxLines="1"
+	        android:selectable="false"
+	        android:selectAllOnFocus="true"
+	        android:singleLine="true"
+	        android:title="@string/pref_default_reset" />
+    
 </PreferenceScreen>

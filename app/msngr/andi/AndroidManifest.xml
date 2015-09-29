@@ -64,16 +64,13 @@
                 <action android:name="swifiic.suta.hubAddressUpdate" /> <!-- AT TBD TODO XXX -->
             </intent-filter>
         </receiver>
-        <receiver android:name="in.swifiic.plat.helper.andi.IdentityReceiver" >
-            <intent-filter>
-                <action android:name="swifiic.suta.myIdentityUpdate" /> <!-- AT TBD TODO XXX -->
-            </intent-filter>
-        </receiver>
+    
         <receiver android:name="in.swifiic.app.msngr.andi.NewMessageReceiver" >
             <intent-filter>
                 <action android:name="in.swifiic.app.DATA_RECEIVED" /> <!-- AT TBD TODO XXX -->
             </intent-filter>
         </receiver>
+        
 
         <activity
             android:name="in.swifiic.app.msngr.andi.ChatSummary"

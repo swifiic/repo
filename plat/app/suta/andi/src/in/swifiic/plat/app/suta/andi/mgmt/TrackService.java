@@ -7,7 +7,6 @@ import in.swifiic.plat.app.suta.andi.R;
 import in.swifiic.plat.helper.andi.AppEndpointContext;
 import in.swifiic.plat.helper.andi.Helper;
 import in.swifiic.plat.helper.andi.xml.Action;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -55,6 +54,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import in.swifiic.plat.helper.andi.xml.Action;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class TrackService extends Service {
 
@@ -88,7 +92,12 @@ public class TrackService extends Service {
 	    								"/Android/data/" + packageName + "/files/";
 	 ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 	 batteryStatus = getApplicationContext().registerReceiver(null, ifilter);
+	 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+     pref=PreferenceManager.getDefaultSharedPreferences(this);
+ 	
 	
+      String hubAddress = pref.getString("hub_address", "dtn://aarthi-hub.dtn");
+   //  Helper.sendSutaInfo(act, hubAddress + "/suta", this);
 
 		try {
 		    File folder  = new File(folderPath);
@@ -365,7 +374,7 @@ public class TrackService extends Service {
 						String base64str=Helper.fileToB64String(localFileName);
 						Log.d(MY_TAG,"File converted to 64 bit string"+base64str.substring(0, 100));
 						dtnSendFile(base64str,xmlFileName);
-						//file.delete();
+						file.delete();
 					}
 				}
 			}
@@ -382,11 +391,19 @@ public class TrackService extends Service {
 void dtnSendFile(String message,String filename)
 {
 	SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-	
+	Action act = new Action("SendMessage", aeCtx);
+   /* WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+    WifiInfo info = manager.getConnectionInfo();
+    String macAddress = info.getMacAddress();
+    act.addArgument("macAddress", macAddress);
+    Calendar c = Calendar.getInstance();
+    SimpleDateFormat sdf = new SimpleDateFormat("dd:MMMM:yyyy HH:mm:ss a");
+    String strDate = sdf.format(c.getTime());
+    act.addArgument("dateTime",strDate);*/
 	Date date = new Date();
 	String sentAt = "" + date.getTime();
     
-	Action act = new Action("SendMessage", aeCtx);
+	
     act.addArgument("message", message);
     act.addArgument("filename",filename);
     act.addArgument("sentAt", "" + sentAt);  
@@ -397,7 +414,7 @@ void dtnSendFile(String message,String filename)
     Log.d(MY_TAG,"Hub address:::::"+hubAddress);
    
     if(hubAddress.equals(""))
-    	hubAddress="dtn://aarthi-hub";
+    	hubAddress="dtn://aarthi-hub.dtn";
     act.addArgument("sentTo",hubAddress+"/suta");
     Helper.sendAction(act, hubAddress + "/suta", this);
 }

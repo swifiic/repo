@@ -268,10 +268,12 @@ public class AbstractAPIHandler implements ibrdtn.api.sab.CallbackHandler {
         logger.log(Level.INFO, "Handling bundle received from {0}", bundle.getSource());
         
         String data = new String(bytes);
+   
+     
         // Shivam - We don't need context anymore
         Context ctx = new Context();
         ctx.srcUrl = bundle.getSource().toString();
-        hndlr.handlePayload(data, ctx);
+        hndlr.handlePayload(data, ctx,ctx.srcUrl);
     }
 
     @Override

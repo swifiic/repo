@@ -1,5 +1,7 @@
 package in.swifiic.plat.helper.andi;
 
+import java.util.List;
+
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
@@ -21,6 +23,7 @@ import de.tubs.ibr.dtn.api.DTNClient;
 import de.tubs.ibr.dtn.api.DTNClient.Session;
 import de.tubs.ibr.dtn.api.DataHandler;
 import de.tubs.ibr.dtn.api.GroupEndpoint;
+import de.tubs.ibr.dtn.api.Node;
 import de.tubs.ibr.dtn.api.Registration;
 import de.tubs.ibr.dtn.api.ServiceNotAvailableException;
 import de.tubs.ibr.dtn.api.SessionConnection;
@@ -38,7 +41,7 @@ import de.tubs.ibr.dtn.api.TransferMode;
 public class GenericService extends IntentService {
     
     private static final String TAG = "GenericService";
-    
+   
     // The communication with the DTN service is done using the DTNClient
     private DTNClient mClient = null;
     
@@ -73,7 +76,8 @@ public class GenericService extends IntentService {
     }
     
     private void sendToHub(String message, String hubAddress) {
-        // create a new bundle
+     
+    	Log.e(TAG,"sendingto hub function"+message+":"+hubAddress);
         Bundle b = new Bundle();
 
         SingletonEndpoint destination = new SingletonEndpoint(hubAddress);
@@ -81,7 +85,7 @@ public class GenericService extends IntentService {
         // set the destination of the bundle
         b.setDestination(destination);
         
-        // limit the lifetime of the bundle to 60 seconds
+        // limit t/he lifetime of the bundle to 60 seconds
         b.setLifetime(Constants.LONG_LIFETIME); 
         
         // set status report requests for bundle reception
@@ -89,6 +93,10 @@ public class GenericService extends IntentService {
         
         // set destination for status reports
         b.setReportto(SingletonEndpoint.ME);
+    
+        
+        
+       // String outId = mClient.getDTNService().getEndpoint()
               
         try {
             // get the DTN session
@@ -171,6 +179,21 @@ public class GenericService extends IntentService {
 				Log.e(TAG, "Parse failed during send message for String: " + msg);
 			}
         }
+        else if (Constants.SEND_INFO_INTENT.equals(action)) {
+            // retrieve the Action object message
+        	String message=null;
+        	String msg = intent.getStringExtra("action");
+          	String hubAddress = intent.getStringExtra("hub_address");       	
+        	try
+        	{
+        	Log.e(TAG,"Sending to hub"+msg+":"+hubAddress);
+            sendToHub(msg, hubAddress);
+			} catch (Exception e) {
+				e.printStackTrace();
+				Log.e(TAG, "Parse failed during send message for String: " + msg);
+			}
+        }
+        
     }
     
     SessionConnection mSession = new SessionConnection() {
@@ -198,20 +221,31 @@ public class GenericService extends IntentService {
         if(null==mClient) {
         	mClient = new DTNClient(mSession);
         	String appName = this.getApplication().getPackageName();
+        	
         	Registration registration = new Registration(appName);
         	GE_TEST = new GroupEndpoint("dtn://" + appName + "/mc");
             registration.add(GE_TEST);
             
             try {
+            	//endpoint=mClient.getDTNService().getEndpoint();
                 // initialize the connection to the DTN service
                 mClient.initialize(this, registration);
+                Log.d(TAG,"Inside try loop");
                 Log.d(TAG, "Connection to DTN service established. GE = " + GE_TEST + " SE = " +appName);
+                List<Node> neighbours=mClient.getDTNService().getNeighbors();
+            	Log.d(TAG,"Neighbours List "+neighbours.toString());
+		
             } catch (ServiceNotAvailableException e) {
                 // The DTN service has not been found
                 Log.e(TAG, "DTN service unavailable. Is IBR-DTN installed?", e);
             } catch (SecurityException e) {
                 // The service has not been found
                 Log.e(TAG, "The app has no permission to access the DTN service. It is important to install the DTN service first and then the app.", e);
+            }
+            catch(Exception e)
+            {
+
+            Log.e(TAG,"Cant Fetch neighbours list");
             }
         }
     }

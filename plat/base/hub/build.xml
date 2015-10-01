@@ -3,11 +3,13 @@
         simple build file for Hub
     </description>
   <!-- set global properties for this build -->
+ <property name="src" location="src"/>
   <property name="src1" location="src/ibrdtn"/>
   <property name="src2" location="src/in"/>
   <property name="lib" location="../../../lib"/>
   <property name="build" location="../../../build/hub"/>
   <property name="dist"  location="../../../dist/hub"/>
+  <property name="properties" location="properties"/>
 
  <path id="external.jars">
                 <fileset dir="${lib}" includes="hub/*jar"/>
@@ -24,12 +26,21 @@
     <tstamp/>
     <!-- Create the build directory structure used by compile -->
     <mkdir dir="${build}"/>
+    
   </target>
 
   <target name="compile" depends="init"
         description="compile the source " >
     <!-- Compile the java code from ${src} into ${build} -->
     <javac srcdir="${src1}:${src2}" destdir="${build}" classpathref="project.classpath" debug="true"/>
+	 <copy todir="${build}">
+    <fileset dir="${src}">
+      <exclude name="**/*.java"/>
+    </fileset>
+  </copy>
+
+  
+
   </target>
 
   <target name="dist" depends="compile"

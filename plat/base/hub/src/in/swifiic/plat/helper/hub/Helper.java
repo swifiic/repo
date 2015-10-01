@@ -4,6 +4,7 @@ import in.swifiic.plat.helper.hub.SwifiicHandler.Context;
 import in.swifiic.plat.helper.hub.xml.Action;
 import in.swifiic.plat.helper.hub.xml.Notification;
 
+import java.io.FileInputStream;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,6 +14,7 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -25,6 +27,19 @@ import org.apache.commons.codec.binary.Base64;
 // import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 public class Helper {
+	public static Properties sqlProperties=null;
+	static
+	{
+	try
+	{
+sqlProperties=new Properties();
+	sqlProperties.load(new FileInputStream("/home/aarthi/swifiic/repo/plat/base/hub/src/sqlQueries.properties"));
+	}
+	catch(Exception e)
+	{
+		e.printStackTrace();
+	}
+	}
 	private static final Logger logger = LogManager.getLogManager().getLogger("");
 	public static Action parseAction(String str) {
         Serializer serializer = new Persister();
@@ -54,13 +69,13 @@ public class Helper {
 	public static List<String> getDevicesForUser(String user, Context ctx) {
 		List<String> deviceList = new ArrayList<String>();
 		Connection connection = DatabaseHelper.connectToDB();
-		Statement statement;
-		String sql;
+		PreparedStatement statement;
+		String sql=sqlProperties.getProperty("user.findDtnId");
 		ResultSet result;
 		try {
-			statement = connection.createStatement();
-			sql = "SELECT DtnId FROM User WHERE Name=\'" + user + "\'";
-			result = statement.executeQuery(sql);
+			statement = connection.prepareStatement(sql);
+			statement.setString(1, user);
+			result = statement.executeQuery();
 			// Extract data from result set
 			while(result.next()) {
 				// Retrieve by column name
@@ -79,13 +94,12 @@ public class Helper {
 	public static List<String> getDevicesForAllUsers() {
 		List<String> deviceList = new ArrayList<String>();
 		Connection connection = DatabaseHelper.connectToDB();
-		Statement statement;
-		String sql;
+		PreparedStatement statement;
+		String sql=sqlProperties.getProperty("user.findAllDtnIds");
 		ResultSet result;
 		try {
-			statement = connection.createStatement();
-			sql = "SELECT DtnId FROM User";
-			result = statement.executeQuery(sql);
+			statement = connection.prepareStatement(sql);
+			result = statement.executeQuery();
 			// Extract data from result set
 			while(result.next()) {
 				// Retrieve by column name
@@ -110,16 +124,15 @@ public class Helper {
 	public static String getAllUsers() {
 		String users = "";
 		Connection connection = DatabaseHelper.connectToDB();
-		Statement statement;
-		String sql;
+		PreparedStatement statement;
+		String sql=sqlProperties.getProperty("user.retriveUsers");
 		String username, alias, imageEncoded64;
 		Blob imageBlob;
 		byte[] imageBytes;
 		ResultSet result;
 		try {
-			statement = connection.createStatement();
-			sql = "SELECT Name,Alias,ProfilePic FROM User ORDER BY TimeOfLastUpdateFromApp desc";
-			result = statement.executeQuery(sql);
+			statement = connection.prepareStatement(sql);
+			result = statement.executeQuery();
 			// Extract data from result set
 			while(result.next()) {
 				// Retrieve by column name
@@ -159,16 +172,19 @@ public class Helper {
 		ResultSet rs=null;
 	    PreparedStatement pst=null;
 		int userId=0;
+		String query=sqlProperties.getProperty("user.findUserId");
+		String insertQuery=sqlProperties.getProperty("opertorLedger.insert");
+		
 		Boolean res;
 		try {
-			stmt=con.prepareStatement("select UserId from User where Name=?");
+			stmt=con.prepareStatement(query);
 			stmt.setString(1, fromUser);
 			rs=stmt.executeQuery();
 			if(rs.next())
 			{
 				userId=rs.getInt("UserId");
 			}
-			pst=con.prepareStatement("insert into OperatorLedger(EventNotes,ReqUserId,ReqDeviceId,Details,CreditUserId,DebitUserId,Amount)values(?,?,?,?,?,?,?)");
+			pst=con.prepareStatement(insertQuery);
 			pst.setString(1, "Debit For Message");
 			pst.setInt(2,userId);
 			pst.setInt(3, 0);
@@ -212,10 +228,14 @@ public class Helper {
 	        PreparedStatement stmt=null;
 	        PreparedStatement pst=null;
 			ResultSet rs=null;
+			String selectQuery=sqlProperties.getProperty("user.findMacAddress");
+			String updateQuery1=sqlProperties.getProperty("user.updateDtnIdMacAddress");
+			String updateQuery2=sqlProperties.getProperty("user.updateDtnId");
+			String updateQuery3=sqlProperties.getProperty("user.updateTimeOfLastUpdate");
 			try {
 				java.util.Date dateStr = formatter.parse(time);
 				java.sql.Date dateDB = new java.sql.Date(dateStr.getTime());
-				stmt=con.prepareStatement("Select MacAddress,DtnId from User where Name=?");
+				stmt=con.prepareStatement(selectQuery);
 				stmt.setString(1, fromUser);
 				rs=stmt.executeQuery();
 				if(rs.next())
@@ -226,7 +246,7 @@ public class Helper {
 				//if MAC Address of the device is not initialized. update macaddress and dtn id both
 				if(mac_address.equals("0000000"))
 				{
-					pst=con.prepareStatement("Update User set DtnId=?,MacAddress=?,TimeOfLastUpdateFromApp= ? where Name=?");
+					pst=con.prepareStatement(updateQuery1);
 					pst.setString(1, dtnId);
 					pst.setString(2,macId);
 					pst.setTimestamp(3,new java.sql.Timestamp(dateStr.getTime()));
@@ -237,7 +257,7 @@ public class Helper {
 				//if macaddress is initialized and dtn id changes allow update
 				else if(mac_address.equals(macId)&& !(dtn_id.equals(dtnId)))
 				{
-					pst=con.prepareStatement("Update User set DtnId=?,TimeOfLastUpdateFromApp= ? where Name=?");
+					pst=con.prepareStatement(updateQuery2);
 					pst.setString(1, dtnId);
 					pst.setTimestamp(2,new java.sql.Timestamp(dateStr.getTime()));
 					pst.setString(3,fromUser);
@@ -253,7 +273,7 @@ public class Helper {
 				//both matches allow update of time
 				else if(mac_address.equals(macId)&& (dtn_id.equals(dtnId)))
 				{
-					pst=con.prepareStatement("Update User set TimeOfLastUpdateFromApp= ? where Name=?");
+					pst=con.prepareStatement(updateQuery3);
 					pst.setTimestamp(1,new java.sql.Timestamp(dateStr.getTime()));
 					pst.setString(2, fromUser);
 					pst.execute();

@@ -11,7 +11,7 @@ import android.util.Log;
 public class NewMessageReceiver extends BroadcastReceiver {
 
 	private static final String TAG = "NewMessageReceiver";
-
+	int lastReceivedSeqNo;
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (intent.hasExtra("notification")) {
@@ -46,9 +46,25 @@ public class NewMessageReceiver extends BroadcastReceiver {
     	} else {
     		if(notif.getNotificationName().equals("DeviceListUpdate")) {
     			String userList = notif.getArgument("userList");
+    			String currTime=notif.getArgument("currentTime");
+    			int seqno=Integer.parseInt(notif.getArgument("sequenceNumber"));
+    			if(seqno==1)
+    			{
+    				lastReceivedSeqNo=seqno;
+    				Log.d(TAG, "Got user list as: " + userList);
+        			Provider.providerInstance.loadUserSchema(userList);	
+    			}
+    			else if(seqno > lastReceivedSeqNo)
+    			{
+    			lastReceivedSeqNo=seqno;
     			Log.d(TAG, "Got user list as: " + userList);
     			Provider.providerInstance.loadUserSchema(userList);
-    		}		
+    		}
+    			else
+    			{
+    				Log.e(TAG,"Out dated Notification discarding it");
+    			}
+    		}
     	}
     }
 

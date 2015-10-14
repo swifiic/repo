@@ -244,7 +244,7 @@ sqlProperties=new Properties();
 					mac_address=rs.getString("MacAddress");
 				}
 				//if MAC Address of the device is not initialized. update macaddress and dtn id both
-				if(mac_address.equals("0000000"))
+				if(mac_address.equals("00:00:00:00:00:00"))
 				{
 					pst=con.prepareStatement(updateQuery1);
 					pst.setString(1, dtnId);

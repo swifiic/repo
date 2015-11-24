@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="android-ibrdtn-api">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/plat/base/andi/libs/android-ibrdtn-api.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

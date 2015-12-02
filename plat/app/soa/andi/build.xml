@@ -4,7 +4,7 @@
     <!-- The local.properties file is created and updated by the 'android' tool.
          It contains the path to the SDK. It should *NOT* be checked into
          Version Control Systems. -->
-    <property file="local.properties" />
+    <!-- Abhishek - move to common swifiic include <property file="local.properties" /> -->
 
     <!-- The ant.properties file can be created by you. It is only edited by the
          'android' tool to add properties to it.
@@ -47,6 +47,9 @@
          This file is an integral part of the build system for your
          application and should be checked into Version Control Systems. -->
     <loadproperties srcFile="project.properties" />
+
+    <!-- Abhishek : override all environment using one config file for ANT builds -->
+    <loadproperties srcFile="../../../../swifiic.properties" />
 
     <!-- quick check on sdk.dir -->
     <fail

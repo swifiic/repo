@@ -1,8 +1,10 @@
 <project name="SWiFiIC" default="all" basedir=".">
 <target name="init" description="Build the platform components">
     <mkdir dir="dist" />
+    <mkdir dir="dist/apk" />
     <ant dir="plat"/>
     <copy todir="dist/lib"> <fileset dir="lib" /> </copy>
+    <copy todir="dist/scripts"> <fileset dir="scripts" /> </copy>
 </target>
 <target name="Apps" depends="init" description="Build the whole code-base">
     <ant dir="app"/>

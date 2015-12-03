@@ -42,7 +42,7 @@
         description="generate the distribution" >
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/suta-hub-${DSTAMP}.jar" basedir="${build}"/>
+    <jar jarfile="${dist}/suta-hub.jar" basedir="${build}"/>
     <copy file="${src}/suta.properties" todir="${properties}"/>
 
   </target>

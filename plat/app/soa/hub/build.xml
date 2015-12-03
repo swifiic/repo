@@ -175,6 +175,10 @@
     <fileset dir="${src.home}/../../../../../lib/hub">
       <include name="*.jar"/>
     </fileset>
+    <!-- Base64 - take internal dependency on dist/hub/lib/in-swifiic-hub.jar -->
+    <fileset dir="${dist.home}/lib/">
+      <include name="in-swifiic-hub.jar"/>
+    </fileset>
 
 
     <!-- Include all elements that Tomcat exposes to applications -->
@@ -501,10 +505,10 @@
          <include name="*.jar"/>
        </fileset>
 
+       <fileset dir="${dist.home}/lib/">
+         <include name="in-swifiic-hub.jar"/>
+       </fileset>
     </copy>
-<!--
-    <copy todir="${build.home}/WEB-INF/lib" file="${foo.jar}"/>
--->
 
     <!-- Copy static files from external dependencies as needed -->
     <!-- *** CUSTOMIZE HERE AS REQUIRED BY YOUR APPLICATION *** -->

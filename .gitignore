@@ -16,10 +16,13 @@ bin/
 gen/
 build/
 out/
+dist/
+dist.tar.gz
 
 # Local configuration file (sdk path, etc)
 /**/local.properties
 /**/project.properties
+/**/META-INF
 
 # Windows thumbnail db
 Thumbs.db

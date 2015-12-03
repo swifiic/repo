@@ -9,11 +9,9 @@ B. Install my-sql DB and note root-login etc.
 C. Install tomcat7-user [sudo apt-get install tomcat7-user] and set it up 
   E.g.
     cd /opt/swifiic
-    tomcat7-instance-create HubSrvr
+    tomcat7-instance-create -p 18080 -c 18005 HubSrvr
     cd HubSrvr/webapps/
     scp abhishek@172.16.2.133:/home/abhishek/wa15/repo/dist/*.war .
-    cd ..
-    vi conf/server.xml # set port number etc. 18080 for now
     ls
     bin/startup.sh
 

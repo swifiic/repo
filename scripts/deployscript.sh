@@ -91,7 +91,10 @@ fi
 echo "Moving files to ${base_directory}"
 sudo cp -R * ${base_directory}/
 echo "Creating SOA HubServer"
-sudo unzip hub/HubSrvr.war -d ${base_directory}/HubSrvr
+cd ${base_directory}/
+sudo tomcat7-instance-create -p 18080 -c 18005 HubSrvr
+sudo mv hub/HubSrvr.war -d ${base_directory}/HubSrvr
+
 echo "Copying Swifiic Base Hub"
 
 export Install_Path=${base_directory}
@@ -108,6 +111,8 @@ sudo echo "dbPassword 	= 	${swifiic_pass}" >> ${base_directory}/properties/dbCon
 
 
 mysql -u ${root_login} -p${root_pass} -e "source ${base_directory}/scripts/initialSchema.sql"
+mysql -u ${root_login} -p${root_pass} -e "CREATE USER 'swifiic'@'localhost' IDENTIFIED BY \'${swifiic_pass}\'; GRANT ALL PRIVILEGES ON swifiic.* TO 'swifiic'@'localhost';"
+
 
 # XXX TODO grant access to "swifiic" and ${swifiic_pass} to the schema craeted above
 

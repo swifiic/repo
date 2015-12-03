@@ -35,6 +35,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import ibrdtn.api.Base64;
+import in.swifiic.plat.helper.hub.DatabaseHelper;
+
 
 import com.mysql.jdbc.Blob;
 import com.mysql.jdbc.ExceptionInterceptor;
@@ -120,19 +122,7 @@ public final class Oprtr extends ActionProcessor {
     
     private void checkDB() throws ServletException{
         if (null == con)
-        	try {
-        		Class.forName("com.mysql.jdbc.Driver");
-        		con =DriverManager.getConnection("jdbc:mysql://localhost:3306/swifiic","swifiic","fixit");
-        		// TBD - create a lower access account and connection for other servlets
-        	} catch (SQLException e) {
-        		err.println("Sql exception in checkDB : "+e);
-        		throw new ServletException("Servlet Could not display records.", e);
-        	} catch (ClassNotFoundException e) {
-        		err.println("Classnotfound Exception in checkDB : "+e);
-        		throw new ServletException("JDBC Driver not found.", e);
-        	} 
-        //stmt = con.createStatement();
-    	
+		con = DatabaseHelper.connectToDB();
     }
 	  
     

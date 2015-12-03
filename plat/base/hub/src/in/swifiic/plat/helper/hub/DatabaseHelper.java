@@ -15,31 +15,47 @@ public class DatabaseHelper {
 	
 	public static Connection connectToDB() {
 		Connection connection = null;
+		String filePath = " Not Set ";
+		String driverClass = " Not Set ";
+		String dbUrl = " Not Set ";
+		String userName = " Not Set ";
+		String password = " Not Set ";
 		try {
 			Properties dbProperties=new Properties();
-			
-			dbProperties.load(new FileInputStream("/home/aarthi/swifiic/repo/plat/base/hub/src/dbConnection.properties"));
-			String driverClass=dbProperties.getProperty("dbDriver");
-			String dbUrl=dbProperties.getProperty("dbUrl");
-			String userName=dbProperties.getProperty("dbUserName");
-			String password=dbProperties.getProperty("dbPassword");
+			String base = System.getenv("SWIFIIC_HUB_BASE");
+			if(null != base) {
+				filePath = base + "/properties/";
+			} else {
+				System.err.println("SWIFIIC_HUB_BASE not set");
+			}
+			FileInputStream fis = new FileInputStream(filePath + "dbConnection.properties");
+			dbProperties.load(fis);
+			driverClass=dbProperties.getProperty("dbDriver");
+			dbUrl=dbProperties.getProperty("dbUrl");
+			userName=dbProperties.getProperty("dbUserName");
+			password=dbProperties.getProperty("dbPassword");
 			// Registering JDBC Driver
 			Class.forName(driverClass);
 			// Opens a connection to the database
 			connection = DriverManager.getConnection(dbUrl, userName, password);
 			return connection;
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Class not found " + e.getMessage());
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			System.err.println("SQL exception " + e.getMessage());
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			System.err.println("File not found " + e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("IO exception " + e.getMessage());
 			e.printStackTrace();
+		}
+		if(null == connection) {
+			System.err.println("Error - values of connection : filePath driverClass dbUrl userName password  are " +
+						filePath + ", " + driverClass + ", " +  dbUrl + ", " +  userName + ", " +  password);
+			
 		}
 		return connection;
 	}

@@ -32,15 +32,25 @@ public class Suta extends Base implements SwifiicHandler {
 	public static Properties sutaProperties=null;
 	static
 	{
-	try
-	{
-sutaProperties=new Properties();
-	sutaProperties.load(new FileInputStream("/home/aarthi/swifiic/repo/plat/app/suta/hub/src/suta.properties"));
-	}
-	catch(Exception e)
-	{
-		e.printStackTrace();
-	}
+                String filePath = " Not Set ";
+                try {
+                        Properties dbProperties=new Properties();
+                        String base = System.getenv("SWIFIIC_HUB_BASE");
+                        if(null != base) {
+                                filePath = base + "/properties/";
+                        } else {
+                                System.err.println("SWIFIIC_HUB_BASE not set");
+                        }
+                        FileInputStream fis = new FileInputStream(filePath + "suta.properties");
+        		sutaProperties=new Properties();
+			sutaProperties.load(fis);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		if(null == sutaProperties) {
+			 System.err.println("Error - SUTA Properties not loaded : filePath " + filePath);
+                }
+
 	}
 
 	private static final Logger logger = LogManager.getLogManager().getLogger(

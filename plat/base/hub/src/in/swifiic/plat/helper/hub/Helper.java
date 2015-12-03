@@ -30,16 +30,28 @@ public class Helper {
 	public static Properties sqlProperties=null;
 	static
 	{
+	String filePath = "not set";
 	try
 	{
-sqlProperties=new Properties();
-	sqlProperties.load(new FileInputStream("/home/aarthi/swifiic/repo/plat/base/hub/src/sqlQueries.properties"));
+	String base = System.getenv("SWIFIIC_HUB_BASE");
+	if(null != base) {
+		filePath = base + "/properties/";
+	} else {
+		System.err.println("SWIFIIC_HUB_BASE not set");
+	}
+	FileInputStream fis = new FileInputStream(filePath + "sqlQueries.properties");
+        sqlProperties=new Properties();
+	sqlProperties.load(fis);
 	}
 	catch(Exception e)
 	{
 		e.printStackTrace();
 	}
+	if(null == sqlProperties) {
+		System.err.println("Error - in loading SQL properties for query string. Filepath was :" + filePath );
 	}
+	}
+
 	private static final Logger logger = LogManager.getLogManager().getLogger("");
 	public static Action parseAction(String str) {
         Serializer serializer = new Persister();

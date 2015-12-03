@@ -34,7 +34,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.codec.binary.Base64;
+import ibrdtn.api.Base64;
 
 import com.mysql.jdbc.Blob;
 import com.mysql.jdbc.ExceptionInterceptor;
@@ -81,6 +81,7 @@ public final class Oprtr extends ActionProcessor {
 	
     
 	static final PrintStream o = System.out;
+	static final PrintStream err = System.err;
     static HashMap<String,HashSet<String>> loggedIn = new  HashMap<String,HashSet<String>>();
     final String JSESSIONID_tag = "JSESSIONID";
     Logger logger = null;
@@ -124,10 +125,10 @@ public final class Oprtr extends ActionProcessor {
         		con =DriverManager.getConnection("jdbc:mysql://localhost:3306/swifiic","swifiic","fixit");
         		// TBD - create a lower access account and connection for other servlets
         	} catch (SQLException e) {
-        		o.println("Sql exception in checkDB : "+e);
+        		err.println("Sql exception in checkDB : "+e);
         		throw new ServletException("Servlet Could not display records.", e);
         	} catch (ClassNotFoundException e) {
-        		o.println("Classnotfound Exception in checkDB : "+e);
+        		err.println("Classnotfound Exception in checkDB : "+e);
         		throw new ServletException("JDBC Driver not found.", e);
         	} 
         //stmt = con.createStatement();
@@ -235,7 +236,7 @@ public final class Oprtr extends ActionProcessor {
 		} catch (Exception ex) {
 			errorResponse(ctx,response, "Internal Error");
 			getServletContext().log("Failure in doGet try block");
-			o.println("Exception in doGet of Oprtr: ");
+			err.println("Exception in doGet of Oprtr: ");
 			ex.printStackTrace();
 		} finally {
 			try { if (null != con) con.close(); } catch (Exception ex) {} // do nothing
@@ -303,7 +304,7 @@ public final class Oprtr extends ActionProcessor {
 	        o.println("Successfully Edited...!!");
 	        successResponse(ctx,response, "Edited user with UserId: "+userKeyID);
 	    } catch(Exception ex){
-	    	o.println("Error in editUser in Oprtr: "+ex);
+	    	err.println("Error in editUser in Oprtr: "+ex);
 			errorResponse(ctx, response, ex.getMessage());
 	    }finally {
 	        if (stmt != null) try { stmt.close(); } catch (SQLException logOrIgnore) {}
@@ -315,7 +316,7 @@ public final class Oprtr extends ActionProcessor {
 
 private boolean validate(String user,String pass,HttpSession session){
 	try {
-	if (con==null) o.println("IS NULL"); 
+	if (con==null) err.println("IS NULL"); 
 	PreparedStatement stmt = con.prepareStatement("SELECT Password,Status FROM User WHERE MobileNumber = ?",
 			Statement.RETURN_GENERATED_KEYS);
     stmt.setString(1, user);
@@ -329,7 +330,7 @@ private boolean validate(String user,String pass,HttpSession session){
     else session.setAttribute(isOperator_tag,"false");
     return dbPass.equals(pass);
 	} catch(Exception e){
-		o.println("Exception in validate..!!"+e);
+		err.println("Exception in validate..!!"+e);
 	}
 	return false;
 }
@@ -438,12 +439,11 @@ private boolean validate(String user,String pass,HttpSession session){
             String imageEncoded64 = "";
 			try {
 				imageBytes = b.getBytes(1, (int) b.length());
-				byte[] intermediate =Base64.encodeBase64(imageBytes);
-				imageEncoded64 = new String(intermediate);
+				imageEncoded64 =Base64.encodeBytes(imageBytes);
 				
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (SQLException ex) {
+				err.println("Base64 of Blob failed");
+				ex.printStackTrace();
 			}
             return imageEncoded64;
         }
@@ -550,7 +550,7 @@ private boolean validate(String user,String pass,HttpSession session){
 		        successResponse(ctx,response, "Successfully inserted into OperationLedger for UserId: "+userId);
 		    
 			} catch(Exception ex){
-		    	o.println("Error in insertion into OperationLedger in Oprtr: "+ex);
+		    	err.println("Error in insertion into OperationLedger in Oprtr: "+ex);
 				errorResponse(ctx, response, ex.getMessage());
 		    }finally {
 		        if (statement != null) try { statement.close(); } catch (SQLException logOrIgnore) {}
@@ -572,13 +572,17 @@ private boolean validate(String user,String pass,HttpSession session){
 		@Override
 		public SQLException interceptException(SQLException sqlEx,
 				com.mysql.jdbc.Connection arg1) {
-			o.println("Error in Blob");
+			err.println("Error in Blob");
             return sqlEx;
 		}
        }
 	
         private byte[] getBlobFromBase64(String data){
-            byte[] imageBytes = Base64.decodeBase64(data);
+            byte[] imageBytes = null;
+            try {
+                imageBytes = Base64.decode(data);
+            } catch (Exception e) {
+            }
             return imageBytes;
         }
 
@@ -719,7 +723,7 @@ private boolean validate(String user,String pass,HttpSession session){
 	        successResponse(ctx,response, "Disabled user with UserId: "+userId);
 	    
 		} catch(Exception ex){
-	    	o.println("Error in disableUser in Oprtr: "+ex);
+	    	err.println("Error in disableUser in Oprtr: "+ex);
 			errorResponse(ctx, response, ex.getMessage());
 	    }finally {
 	        if (statement != null) try { statement.close(); } catch (SQLException logOrIgnore) {}
@@ -729,7 +733,7 @@ private boolean validate(String user,String pass,HttpSession session){
 	
 	
 	private void listTransactions(ReqCtx ctx, HttpServletResponse response) throws IOException{
-		o.println("In listTransactions ...");
+		err.println("In listTransactions ...");
 		int userId = Integer.parseInt(ctx.getArgVal(userKeyID_tag));
 		try {
 		
@@ -764,7 +768,7 @@ private boolean validate(String user,String pass,HttpSession session){
 		//out.close();
 		} catch(Exception e){
 			errorResponse(ctx, response, e.getMessage());
-			o.println("Exception in listTransactions of UserId "+userId+" : "+e);
+			err.println("Exception in listTransactions of UserId "+userId+" : "+e);
 		}
 		
 	}

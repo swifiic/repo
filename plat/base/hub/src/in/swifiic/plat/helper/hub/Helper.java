@@ -23,8 +23,7 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import com.mysql.jdbc.Blob;
-import org.apache.commons.codec.binary.Base64;
-// import com.sun.org.apache.xml.internal.security.utils.Base64;
+import ibrdtn.api.Base64;
 
 public class Helper {
 	public static Properties sqlProperties=null;
@@ -152,7 +151,7 @@ public class Helper {
 				alias = result.getString("Alias");
 				imageBlob = (Blob) result.getBlob("ProfilePic");
 				imageBytes = imageBlob.getBytes(1, (int) imageBlob.length());
-				imageEncoded64 = new String((new Base64()).encode(imageBytes));
+				imageEncoded64 = Base64.encodeBytes(imageBytes);
 				users += username + "|" + alias + "|" + imageEncoded64 + ";";
 			}
 			result.close();

@@ -26,7 +26,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import in.swifiic.plat.helper.hub.xml.Action;
 
-import org.apache.commons.codec.binary.Base64;
+import ibrdtn.api.Base64;
 
 public class Suta extends Base implements SwifiicHandler {
 	public static Properties sutaProperties=null;
@@ -169,7 +169,7 @@ public class Suta extends Base implements SwifiicHandler {
 		FileOutputStream str = null;
 		try {
 			str = new FileOutputStream(writeFile);
-			str.write((new Base64()).decode(contentB64));
+			str.write(Base64.decode(contentB64));
 
 		} catch (Exception e) {
 			logger.log(Level.INFO, "b64StringToFile", "Could not save file "

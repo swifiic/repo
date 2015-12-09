@@ -89,17 +89,19 @@ else
     echo "Success Creating Directory"
 fi
 echo "Moving files to ${base_directory}"
+#incorrect
 sudo cp -R * ${base_directory}/
 echo "Creating SOA HubServer"
 cd ${base_directory}/
-sudo tomcat7-instance-create -p 18080 -c 18005 HubSrvr
-sudo mv hub/HubSrvr.war -d ${base_directory}/HubSrvr
+sudo tomcat7-instance-create -p 18090 -c 18009 HubSrvr
+sudo mv hub/HubSrvr.war ${base_directory}/HubSrvr/webapps
 
 echo "Copying Swifiic Base Hub"
 
 export Install_Path=${base_directory}
 
-echo "export SWIFIIC_HUB_BASE=${base_directory}" | sudo tee ${base_directory}/properties/setEnv.sh
+echo "export SWIFIIC_HUB_BASE=${base_directory}" | sudo tee ${base_directory}/properties/setEnv.sh 
+#echo "export SWIFIIC_HUB_BASE=${base_directory}" > ${base_directory}/properties/setEnv.sh 
 sudo chmod 755 ${base_directory}/properties/setEnv.sh
 
 # add the password to the end of dbConnection.properties

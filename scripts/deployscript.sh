@@ -109,10 +109,10 @@ if [ "x${deploy_code}" = "x"  ]; then
         exit
 fi
 
-read -p "\nEnter login for MySQL for root access : " root_login
-read -p "\nEnter password for MySQL for root access : " root_pass
-read -p "\nChoose as  password for MySQL for SWiFiIC access : " -s swifiic_pass
-read -p "\nRe-enter your choice for password for MySQL for SWiFiIC access : " -s swifiic_pass2
+echo; read -p "Enter login for MySQL for root access : " root_login
+echo; read -p "Enter password for MySQL for root access : " root_pass
+echo; read -p "Choose as  password for MySQL for SWiFiIC access : " -s swifiic_pass
+echo; read -p "Re-enter your choice for password for MySQL for SWiFiIC access : " -s swifiic_pass2
 
 if [ "${swifiic_pass}" != "${swifiic_pass2}" ];
 then
@@ -120,7 +120,8 @@ then
 	exit
 fi
 
-echo "\n======== Starting The SWiFiIC setup under ${base_directory} using ${distFile} ====="
+echo; echo;echo
+echo ; echo "======== Starting The SWiFiIC setup under ${base_directory} using ${distFile} ====="
 mkdir /tmp/deploy
 cd /tmp/deploy
 tar -zxvf ${distFile}
@@ -150,9 +151,6 @@ cd ${base_directory}/
 sudo tomcat7-instance-create -p 18090 -c 18009 HubSrvr
 sudo mv hub/HubSrvr.war ${base_directory}/HubSrvr/webapps
 
-echo "Copying Swifiic Base Hub"
-
-export Install_Path=${base_directory}
 
 echo "export SWIFIIC_HUB_BASE=${base_directory}" | sudo tee ${base_directory}/properties/setEnv.sh 
 echo "export SWIFIIC_HUB_BASE=${base_directory}" | sudo tee >> ${base_directory}/.bashrc
@@ -163,6 +161,8 @@ sudo rm ${base_directory}/properties/dbConnection.properties
 sudo mv /tmp/dbTemp  ${base_directory}/properties/dbConnection.properties
 sudo echo "dbPassword 	= 	${swifiic_pass}" >> ${base_directory}/properties/dbConnection.properties
 
+sudo mkdir ${base_directory}/log ${base_directory}/pid
+
 
 mysql -u ${root_login} -p${root_pass} -e "source ${base_directory}/scripts/initialSchema.sql"
 mysql -u ${root_login} -p${root_pass} -e "CREATE USER 'swifiic'@'localhost' IDENTIFIED BY '${swifiic_pass}' ; GRANT ALL PRIVILEGES ON swifiic.* TO 'swifiic'@'localhost';"
@@ -171,8 +171,8 @@ sudo chown -R swifiic:swifiic ${base_directory}
 sudo chmod 775 ${base_directory}
 
 sudo mv /etc/ibrdtn/ibrdtnd.conf /etc/ibrdtn/ibrdtnd.conf.orig.$(date +%Y%m%d_%H%M%S)
-sudo cat > /etc/ibrdtn/ibrdtnd.conf << "EOF"
-local_uri = dtn://${deploy_code}.dtn
+echo "local_uri = dtn://${deploy_code}.dtn" | sudo tee /etc/ibrdtn/ibrdtnd.conf
+sudo cat >> /etc/ibrdtn/ibrdtnd.conf << "EOF"
 logfile = /var/log/ibrdtn/ibrdtn.log
 fragmentation = yes
 stats_traffic = yes
@@ -200,5 +200,6 @@ sudo chmod 777 /var/spool/ibrdtn/bundles
 rm -rf /tmp/deploy
 
 echo "======== Completed The SWiFiIC setup under ${base_directory}====="
+echo
 exit
 

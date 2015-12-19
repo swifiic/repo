@@ -5,6 +5,8 @@
   <!-- set global properties for this build -->
   <property name="src" location="src"/>
   <property name="lib" location="../../../../lib"/>
+  <property name="hub_module" value="suta"/>
+  <property name="hub_class" value="in.swifiic.plat.app.suta.hub.Suta" />
   <property name="build" location="../../../../build/suta"/>
   <property name="dist"  location="../../../../dist/suta"/>
   <property name="properties"  location="../../../../dist/properties"/>
@@ -44,6 +46,11 @@
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
     <jar jarfile="${dist}/suta-hub.jar" basedir="${build}"/>
     <copy file="${src}/suta.properties" todir="${properties}"/>
+    <echo file="${dist}/hublet-setup.sh" append="false">
+        proj="${hub_module}/${hub_module}-hub.jar"
+        classToRun="${hub_class}"
+    </echo>
+
 
   </target>
 

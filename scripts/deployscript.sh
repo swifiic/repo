@@ -194,8 +194,10 @@ net_wlan0_interface = wlan0 # listen on interface eth0
 net_wlan0_port = 4556
 EOF
 sudo mkdir -p /var/spool/ibrdtn/bundles
-sudo chmod 777 /var/spool/ibrdtn/bundles
+sudo chmod 777 /var/spool/ibrdtn/bundles  
 
+sudo mkdir -p /var/log/msngr /var/log/suta /var/log/soa
+sudo chmod 777 /var/log/msngr /var/log/suta /var/log/soa
 # cleanup the temp folder
 rm -rf /tmp/deploy
 

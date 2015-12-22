@@ -148,6 +148,12 @@ echo "Moving files to ${base_directory}"
 sudo cp -R * ${base_directory}/
 echo "Creating SOA HubServer"
 cd ${base_directory}/
+
+
+sudo mkdir /var/www/html/apk
+sudo cp apk/* /var/www/html/apk
+sudo chown -R swifiic:swifiic /var/www/html/apk
+
 sudo tomcat7-instance-create -p 18090 -c 18009 HubSrvr
 sudo mv hub/HubSrvr.war ${base_directory}/HubSrvr/webapps
 
@@ -194,10 +200,10 @@ net_wlan0_interface = wlan0 # listen on interface eth0
 net_wlan0_port = 4556
 EOF
 sudo mkdir -p /var/spool/ibrdtn/bundles
-sudo chmod 777 /var/spool/ibrdtn/bundles  
+sudo chmod -R 777 /var/spool/ibrdtn/bundles  
 
 sudo mkdir -p /var/log/msngr /var/log/suta /var/log/soa
-sudo chmod 777 /var/log/msngr /var/log/suta /var/log/soa
+sudo chmod -R 777 /var/log/msngr /var/log/suta /var/log/soa
 # cleanup the temp folder
 rm -rf /tmp/deploy
 

@@ -57,16 +57,16 @@ else
         echo "MySQL Service is running.";
 fi
 
-echo "Checking Whether Tomcat Service is Running or not"
-UP=$(pgrep tomcat7 | wc -l);
-if [ "$UP" -ne 1 ];
-then
-        echo "Tomcat is down.";
-        sudo service tomcat7 start
-
-else
-        echo "Tomcat7 is running";
-fi
+# echo "Checking Whether Tomcat Service is Running or not"
+# UP=$(pgrep tomcat7 | wc -l);
+# if [ "$UP" -ne 1 ];
+# then
+#         echo "Tomcat is down.";
+#         # sudo service tomcat7 start
+# 
+# else
+#         echo "Tomcat7 is running";
+# fi
 
 echo "Checking for IBR-DTN Daemon"
 if [ -f /etc/init.d/ibrdtn* ]; then
@@ -159,6 +159,7 @@ sudo mv hub/HubSrvr.war ${base_directory}/HubSrvr/webapps
 
 
 echo "export SWIFIIC_HUB_BASE=${base_directory}" | sudo tee ${base_directory}/properties/setEnv.sh 
+echo "export SWIFIIC_HUB_BASE=${base_directory}" | sudo tee >> ${base_directory}/HubSrvr/bin/setenv.sh
 echo "export SWIFIIC_HUB_BASE=${base_directory}" | sudo tee >> ${base_directory}/.bashrc
 
 # add the password to the end of dbConnection.properties

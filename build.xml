@@ -5,6 +5,8 @@
     <ant dir="plat"/>
     <copy todir="dist/lib"> <fileset dir="lib" /> </copy>
     <copy todir="dist/scripts"> <fileset dir="scripts" /> </copy>
+    <tar destfile="release.tar" basedir="dist/"/>
+    <gzip destfile="release.tar.gz" src="release.tar"/>
 </target>
 <target name="Apps" depends="init" description="Build the whole code-base">
     <ant dir="app"/>

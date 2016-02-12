@@ -64,7 +64,7 @@
                 android:value="in.swifiic.plat.app.suta.andi.MainActivity" />
         </activity>
         
-        <activity
+        <activity tools:replace = "android:label"
             android:name="in.swifiic.plat.helper.andi.ui.UserChooserActivity"
             android:label="User List"
             android:screenOrientation="portrait" />

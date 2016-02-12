@@ -12,28 +12,43 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.content.Context;
 import android.preference.PreferenceManager;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
 import in.swifiic.plat.helper.andi.xml.Action;
 import in.swifiic.plat.helper.andi.AppEndpointContext;
 import in.swifiic.plat.helper.andi.Constants;
 import in.swifiic.plat.helper.andi.Helper;
 
-public class MainActivity extends SwifiicActivity {
+public class MainActivity extends SwifiicActivity  {
 
     @SuppressWarnings("unused")
 	private final String TAG="MainActivity";
     private AppEndpointContext aeCtx = new AppEndpointContext("suta", "0.1", "1");
     public static SharedPreferences pref =null;
+
+    private TextView remainingCredit,currTime,transactions;
    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-    	
-    	
+
         super.onCreate(savedInstanceState);
         pref=PreferenceManager.getDefaultSharedPreferences(this);
-        setContentView(R.layout.activity_main); 
+        setContentView(R.layout.activity_main);
         sendInfoToHub();
+
+        remainingCredit = (TextView)findViewById(R.id.remainingCredit);
+        currTime = (TextView)findViewById(R.id.currTime);
+        transactions = (TextView)findViewById(R.id.transactions);
+        transactions.setMovementMethod(new ScrollingMovementMethod());
+
+        remainingCredit.setText(pref.getString("remainingCredit", "waiting"));
+        currTime.setText(pref.getString("currTime","waiting"));
+        transactions.setText(pref.getString("revisedTransactionDetails","waiting"));
 
 		Intent serviceIntent = new Intent();
 		serviceIntent.setAction("in.swifiic.plat.app.suta.andi.mgmt.TrackService");
@@ -42,6 +57,10 @@ public class MainActivity extends SwifiicActivity {
     }
     public void onResume()
     {
+        remainingCredit.setText(pref.getString("remainingCredit", "waiting"));
+        currTime.setText(pref.getString("currTime","waiting"));
+        transactions.setText(pref.getString("revisedTransactionDetails","waiting"));
+
     	super.onResume();
     	sendInfoToHub();
     }
@@ -81,12 +100,12 @@ public class MainActivity extends SwifiicActivity {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String strDate = sdf.format(c.getTime());
-        act.addArgument("dateTime",strDate);
+        act.addArgument("dateTime", strDate);
          String hubAddress = pref.getString("hub_address", "");
       
         if(null!=hubAddress)
 
         Helper.sendSutaInfo(act, hubAddress + "/suta", this);
 	}
-	
+
 }

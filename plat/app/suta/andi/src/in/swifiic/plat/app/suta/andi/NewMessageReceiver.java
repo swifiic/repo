@@ -6,12 +6,23 @@ import in.swifiic.plat.helper.andi.xml.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class NewMessageReceiver extends BroadcastReceiver {
 
+	private static Context mcontext;
+	public NewMessageReceiver(Context context){
+		mcontext = context;
+	}
+
 	private static final String TAG = "NewMessageReceiver";
 	int lastReceivedSeqNo;
+	public static SharedPreferences pref =PreferenceManager.getDefaultSharedPreferences(mcontext);
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (intent.hasExtra("notification")) {
@@ -45,20 +56,36 @@ public class NewMessageReceiver extends BroadcastReceiver {
     		Log.e(TAG,"No Provider - whatsup...?");
     	} else {
     		if(notif.getNotificationName().equals("DeviceListUpdate")) {
-    			String userList = notif.getArgument("userList");
+				WifiManager wimanager = (WifiManager) mcontext.getSystemService(Context.WIFI_SERVICE);
+
+
+				String userList = notif.getArgument("userList");
+
+				String macAddress = wimanager.getConnectionInfo().getMacAddress();
+				String accountDetails = notif.getArgument("accountDetails");
     			String currTime=notif.getArgument("currentTime");
+				// currTime is time at which Hub sends the notification
+
     			int seqno=Integer.parseInt(notif.getArgument("sequenceNumber"));
     			if(seqno==1)
     			{
     				lastReceivedSeqNo=seqno;
     				Log.d(TAG, "Got user list as: " + userList);
-        			Provider.providerInstance.loadUserSchema(userList);	
-    			}
-    			else if(seqno > lastReceivedSeqNo)
-    			{
-    			lastReceivedSeqNo=seqno;
-    			Log.d(TAG, "Got user list as: " + userList);
-    			Provider.providerInstance.loadUserSchema(userList);
+					Log.d(TAG, "Got user accountDetails as: " + accountDetails);
+
+					Provider.providerInstance.loadUserSchema(userList);
+					Provider.providerInstance.storeAccountDetails(accountDetails, macAddress, currTime);
+
+				}
+    			else if(seqno > lastReceivedSeqNo){
+
+    				lastReceivedSeqNo=seqno;
+    				Log.d(TAG, "Got user list as: " + userList);
+					Log.d(TAG, "Got user accountDetails as: " + accountDetails);
+
+					Provider.providerInstance.loadUserSchema(userList);
+					Provider.providerInstance.storeAccountDetails(accountDetails,macAddress,currTime);
+
     		}
     			else
     			{

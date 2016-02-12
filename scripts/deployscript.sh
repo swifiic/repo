@@ -172,10 +172,10 @@ sudo mkdir ${base_directory}/log ${base_directory}/pid
 
 
 mysql -u ${root_login} -p${root_pass} -e "source ${base_directory}/scripts/initialSchema.sql"
-mysql -u ${root_login} -p${root_pass} -e "CREATE USER 'swifiic'@'localhost' IDENTIFIED BY '${swifiic_pass}' ; GRANT ALL PRIVILEGES ON swifiic.* TO 'swifiic'@'localhost';"
+mysql -u ${root_login} -p${root_pass} -e "use swifiic; CREATE USER 'swifiic'@'localhost' IDENTIFIED BY '${swifiic_pass}' ; GRANT ALL PRIVILEGES ON swifiic.* TO 'swifiic'@'localhost'; FLUSH PRIVILEGES;"
 
 sudo chown -R swifiic:swifiic ${base_directory}
-sudo chmod 775 ${base_directory}
+sudo chmod -R 775 ${base_directory}
 
 sudo mv /etc/ibrdtn/ibrdtnd.conf /etc/ibrdtn/ibrdtnd.conf.orig.$(date +%Y%m%d_%H%M%S)
 echo "local_uri = dtn://${deploy_code}.dtn" | sudo tee /etc/ibrdtn/ibrdtnd.conf

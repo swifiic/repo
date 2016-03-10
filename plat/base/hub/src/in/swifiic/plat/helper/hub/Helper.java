@@ -23,7 +23,6 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import com.mysql.jdbc.Blob;
-import com.oracle.tools.packager.Log;
 
 import ibrdtn.api.Base64;
 
@@ -223,8 +222,8 @@ public class Helper {
 		String accountDetails="";
 		String transactionDetails="";
 
-		int userid;
-		int remainingCredit;
+		int userid=0;
+		int remainingCredit=0;
 		int amount;
 		String details;
 
@@ -260,7 +259,7 @@ public class Helper {
 
 		try {
 			statement2 = connection.prepareStatement(transactionDetailsSql);
-			statement2.setString(1, userid);
+			statement2.setInt(1, userid);
 			result2 = statement2.executeQuery();
 			while(result2.next()) {
 				// Retrieve by column name

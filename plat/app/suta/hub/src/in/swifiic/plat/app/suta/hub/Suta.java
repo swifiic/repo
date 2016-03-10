@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.String;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Properties;
@@ -82,9 +83,12 @@ public class Suta extends Base implements SwifiicHandler {
 			int seqno=1;
 			public void run() {
 				String userList = Helper.getAllUsers();
+				String accountDetails = Helper.getAccountDetailsForAll();
+
 				Notification notif = new Notification("DeviceListUpdate",
 						"SUTA", "TODO", "0.1", "Hub");
 				notif.addArgument("userList", userList);
+				notif.addArgument("accountDetails",accountDetails);
 				Calendar c = Calendar.getInstance();
 		        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		        String strDate = sdf.format(c.getTime());

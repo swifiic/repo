@@ -6,11 +6,11 @@ import in.swifiic.plat.helper.hub.xml.Notification;
 
 import java.io.FileInputStream;
 import java.io.StringWriter;
+import java.lang.String;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +23,13 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import com.mysql.jdbc.Blob;
+import com.oracle.tools.packager.Log;
+
 import ibrdtn.api.Base64;
 
 public class Helper {
+	private static final String TAG = "Helper";
+
 	public static Properties sqlProperties=null;
 	static
 	{
@@ -52,6 +56,8 @@ public class Helper {
 	}
 
 	private static final Logger logger = LogManager.getLogManager().getLogger("");
+
+
 	public static Action parseAction(String str) {
         Serializer serializer = new Persister();
         try {
@@ -161,6 +167,119 @@ public class Helper {
 			e.printStackTrace();
 		}
 		return users;
+	}
+
+
+
+
+	/***
+	 *getting account details fo all users
+	 * totalaccountdetails = accountDetails||accountDetails..;
+	 * where accountDetails is for single user and is computed in another function
+	 * @return
+	 */
+
+	public static String getAccountDetailsForAll(){
+		String totalAccountDetails = "";
+
+		Connection connection = DatabaseHelper.connectToDB();
+		PreparedStatement statement;
+		String userMacIdSql = sqlProperties.getProperty("user.retriveUserMacId");
+		ResultSet result;
+		String macAddress;
+		try {
+			statement = connection.prepareStatement(userMacIdSql);
+			result = statement.executeQuery();
+			while(result.next()) {
+				macAddress = result.getString("MacAddress");
+				if ( macAddress == null ||  macAddress.equals("00:00:00:00:00:00")){
+					continue;
+				}
+				totalAccountDetails += getAccountDetails(macAddress)+"||";
+			}
+			result.close();
+			statement.close();
+			DatabaseHelper.closeDB(connection);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return totalAccountDetails;
+	}
+
+
+
+
+	/***
+	getting account details for specific user,users are obtained from getAllUers()
+	 accountDetails = macAddress|remainingcredit|credit1,amount1,,credit2,amount2,,
+	*/
+
+	private static String getAccountDetails(String macAddress){
+		// transactions are Details,Amount
+		// here number of transaction details are limited by a constant in sqlqueries.properties
+		// account details contains remaining credit and transaction dtails
+
+		String accountDetails="";
+		String transactionDetails="";
+
+		int userid;
+		int remainingCredit;
+		int amount;
+		String details;
+
+		Connection connection = DatabaseHelper.connectToDB();
+		PreparedStatement statement1,statement2;
+
+		//String useridsql = sqlProperties.getProperty("user.retriveUserId")
+		//String remainingcreditsql = sqlProperties.getProperty("user.retriveCredit");
+		String idAndCreditsql = sqlProperties.getProperty("user.retriveIdAndCredit");
+		String transactionDetailsSql = sqlProperties.getProperty("opertorLedger.retriveTransactionDetails");
+
+		ResultSet result1;
+		ResultSet result2;
+
+		// retreving userid and credit
+		try {
+			// here one user name should have only one userid
+			statement1 = connection.prepareStatement(idAndCreditsql);
+			statement1.setString(1, macAddress);
+			result1 = statement1.executeQuery();
+			userid = result1.getInt("UserId");
+			remainingCredit = result1.getInt("RemainingCreditPostAudit");
+			result1.close();
+			statement1.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		accountDetails = macAddress+"|"+remainingCredit+"|";
+
+		// retreving transactions
+
+		try {
+			statement2 = connection.prepareStatement(transactionDetailsSql);
+			statement2.setString(1, userid);
+			result2 = statement2.executeQuery();
+			while(result2.next()) {
+				// Retrieve by column name
+				amount = result2.getInt("Amount");
+				details = result2.getString("Details");
+				transactionDetails += amount+","+details+",,";
+			}
+			result2.close();
+			statement2.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+
+		DatabaseHelper.closeDB(connection);
+
+		accountDetails += transactionDetails;
+
+		return  accountDetails;
 	}
 	
 	 /**

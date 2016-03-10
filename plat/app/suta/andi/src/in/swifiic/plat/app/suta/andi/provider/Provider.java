@@ -14,6 +14,7 @@ import de.tubs.ibr.dtn.util.Base64;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -24,6 +25,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 /***
@@ -42,7 +44,11 @@ import android.util.Log;
 // <appName> is variable
 
 public class Provider extends ContentProvider {
-	
+
+	private static Context mContext;
+
+
+
 	private static final String TAG = "Provider";
 
 	private static final String AUTHORITY = "in.swifiic.plat.app.suta.andi";
@@ -65,6 +71,8 @@ public class Provider extends ContentProvider {
                                              + "user_id TEXT NOT NULL, "
             								 + "name TEXT NOT NULL, "
             								 + "alias TEXT NOT NULL UNIQUE); ";
+
+
     private static final String CREATE_TABLE_APP =
             "CREATE TABLE " + DB_APP_TABLE + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
             								 + "app_id TEXT NOT NULL, "
@@ -88,15 +96,16 @@ public class Provider extends ContentProvider {
         public void onCreate(SQLiteDatabase db) {
         	Log.d("onCreate Provider", "Creating table with: " + CREATE_TABLE_USER);
             db.execSQL(CREATE_TABLE_USER);
+
             Log.d("onCreate Provider", "Creating table with: " + CREATE_TABLE_APP);
             db.execSQL(CREATE_TABLE_APP);
             Log.d("onCreate Provider", "Creating table with: " + CREATE_TABLE_MAP);
             db.execSQL(CREATE_TABLE_MAP);
-        }
+		}
 
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w("Content provider database", "Upgrading database from version " + oldVersion + " to " + newVersion +", which will destroy all old data");
+		@Override
+		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			Log.w("Content provider database", "Upgrading database from version " + oldVersion + " to " + newVersion +", which will destroy all old data");
             db.execSQL("DROP TABLE IF EXISTS " + DB_USR_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + DB_APP_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + DB_MAP_TABLE);
@@ -138,9 +147,11 @@ public class Provider extends ContentProvider {
         dbHelper = new DatabaseHelper(context);
         sutaDB = dbHelper.getWritableDatabase();
         providerInstance = this;
+		mContext = context;
         return (sutaDB == null)? false: true;
 	}
-	
+
+	// not loading just storing user details to local data base
 	// userSchema format - "username|alias;username|alias;..."
 	public void loadUserSchema(String userSchema) {
 		sutaDB.execSQL("DELETE FROM users WHERE 1=1");
@@ -185,6 +196,71 @@ public class Provider extends ContentProvider {
 		     }
 		 }
 	}
+
+
+	// stores the account details to local database
+	// Format of accountDetails = accountDetails1||accountDetails2...
+	// Format of account = macAddress|remainingCredit|Details,Ammount,,Details,Ammount,,
+	// transactionDetails = Details,Ammount,,Details,Ammount,,
+	// revisedTransactionDetails = Details		Amount\nDetails		Amount
+	public void storeAccountDetails(String accountdetails,String macAddress,String currTime){
+		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
+		SharedPreferences.Editor editor = pref.edit();
+
+		int flag = 0;
+		String macAdd;
+		String details;
+		String amount;
+		String remainingCredit="";
+		String transactionDetails="";
+		String revisedTransactionDetails="";
+		String userInfo,singleTransaction;
+		StringTokenizer st = new StringTokenizer(accountdetails, "||");
+		while(st.hasMoreTokens()) {
+			userInfo = st.nextToken();
+			StringTokenizer st2 = new StringTokenizer(userInfo, "|");
+			macAdd = st2.nextToken();
+			if (macAdd.equals(macAddress) ){
+				flag = 1;
+				remainingCredit = st2.nextToken();
+				transactionDetails = st2.nextToken();
+				StringTokenizer st3 = new StringTokenizer(transactionDetails, ",,");
+				while (st3.hasMoreTokens()){
+					singleTransaction = st3.nextToken();
+					StringTokenizer st4 = new StringTokenizer(singleTransaction, ",");
+					while (st4.hasMoreTokens()){
+						amount = st4.nextToken();
+						details = st4.nextToken();
+						revisedTransactionDetails += details+"		"+amount+"\n";
+
+					}
+
+
+				}
+
+				break;
+			}
+		}
+		if (flag == 1){
+			/*try{
+				editor.remove("remainingCredit");
+				editor.remove("currTime");
+				editor.remove("revisedTransactionDetails");
+			}
+			catch (Exception e){
+			}
+			*/
+			editor.putString("remainingCredit",remainingCredit);
+			editor.putString("currTime",currTime);
+			editor.putString("revisedTransactionDetails",revisedTransactionDetails);
+			editor.apply();
+		}
+
+	}
+
+
+
+
 	public void deletedB()
 	{
 		sutaDB.execSQL("DELETE FROM users WHERE 1=1");

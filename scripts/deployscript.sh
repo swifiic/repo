@@ -76,9 +76,9 @@ else
     needExit="true"
 fi
 
-distFile="./dist.tar.gz"
+distFile="./release.tar.gz"
 if [ ! -f ${distFile} ]; then
-    echo "dist.tar.gz not found. checking arguments"
+    echo "release.tar.gz not found. checking arguments"
     if [ ! -f ${1} ]; then
         echo "Distribution file not found. Should be in cwd or specified as argument."
         needExit="true"
@@ -125,12 +125,12 @@ echo ; echo "======== Starting The SWiFiIC setup under ${base_directory} using $
 mkdir /tmp/deploy
 cd /tmp/deploy
 tar -zxvf ${distFile}
-if [ ! -d "dist" ]; then
-    echo "Content of ${distFile} did not have a dist folder"
+if [ ! -d "scripts" ]; then
+    echo "Content of ${distFile} did not have a scripts folder"
     exit
 fi
 
-cd ./dist
+# cd ./dist - new build based on ant does not include a top level folder
 
 sudo mkdir -p ${base_directory}
 if [ $? -ne 0 ] ; then

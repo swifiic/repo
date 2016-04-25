@@ -24,7 +24,6 @@ import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
 import com.mysql.jdbc.Blob;
-import com.oracle.tools.packager.Log;
 
 import ibrdtn.api.Base64;
 
@@ -227,8 +226,8 @@ public class Helper {
 		String sLastHubValueSutaReports = "-1";
 		String sLastHubUpdateSutaGotAT = "-1";
 
-		int userid;
-		int remainingCredit;
+		int userid=0;
+		int remainingCredit=0;
 		int amount;
 		String details;
 

@@ -105,7 +105,7 @@ public class Provider extends ContentProvider {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			Log.w("Content provider database", "Upgrading database from version " + oldVersion + " to " + newVersion +", which will destroy all old data");
+			//Log.w("Content provider database", "Upgrading database from version " + oldVersion + " to " + newVersion +", which will destroy all old data");
             db.execSQL("DROP TABLE IF EXISTS " + DB_USR_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + DB_APP_TABLE);
             db.execSQL("DROP TABLE IF EXISTS " + DB_MAP_TABLE);
@@ -199,39 +199,47 @@ public class Provider extends ContentProvider {
 
 
 	// stores the account details to local database
-	// Format of accountDetails = accountDetails1||accountDetails2...
-	// Format of account = macAddress|remainingCredit|Details,Ammount,,Details,Ammount,,
-	// transactionDetails = Details,Ammount,,Details,Ammount,,
-	// revisedTransactionDetails = Details		Amount\nDetails		Amount
-	public void storeAccountDetails(String accountdetails,String macAddress,String currTime){
+	// Format of accountDetails = accountDetails1$accountDetails2$accountDetails3
+	// Format of accountDetails1 = macAddress|sTimeOfLastUpdateFromApp|sLastHubValueSutaReports|sLastHubUpdateSutaGotAT|remainingCredit|Details,Ammount:Details,Ammount:
+	// transactionDetails = Details,Ammount:Details,Ammount:
+	// revisedTransactionDetails = Details	Amount\nDetails	Amount
+	public void storeAccountDetails(String accountdetails,String macAddress,String notifSentByHubAt,String notifRecievedBySutaAt){
 		SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
 		SharedPreferences.Editor editor = pref.edit();
+
 
 		int flag = 0;
 		String macAdd;
 		String details;
 		String amount;
+
+		String sTimeOfLastUpdateFromApp = "";
+		String sLastHubValueSutaReports = "";
+		String sLastHubUpdateSutaGotAT = "";
 		String remainingCredit="";
 		String transactionDetails="";
 		String revisedTransactionDetails="";
 		String userInfo,singleTransaction;
-		StringTokenizer st = new StringTokenizer(accountdetails, "||");
+		StringTokenizer st = new StringTokenizer(accountdetails, "$");
 		while(st.hasMoreTokens()) {
 			userInfo = st.nextToken();
 			StringTokenizer st2 = new StringTokenizer(userInfo, "|");
 			macAdd = st2.nextToken();
 			if (macAdd.equals(macAddress) ){
 				flag = 1;
+				sTimeOfLastUpdateFromApp=st2.nextToken();
+				sLastHubValueSutaReports=st2.nextToken();
+				sLastHubUpdateSutaGotAT=st2.nextToken();
 				remainingCredit = st2.nextToken();
 				transactionDetails = st2.nextToken();
-				StringTokenizer st3 = new StringTokenizer(transactionDetails, ",,");
+				StringTokenizer st3 = new StringTokenizer(transactionDetails, ":");
 				while (st3.hasMoreTokens()){
 					singleTransaction = st3.nextToken();
 					StringTokenizer st4 = new StringTokenizer(singleTransaction, ",");
 					while (st4.hasMoreTokens()){
 						amount = st4.nextToken();
 						details = st4.nextToken();
-						revisedTransactionDetails += details+"		"+amount+"\n";
+						revisedTransactionDetails += details+"	"+amount+"\n";
 
 					}
 
@@ -250,10 +258,17 @@ public class Provider extends ContentProvider {
 			catch (Exception e){
 			}
 			*/
+
+			// here if values of sTimeOfLastUpdateFromApp,sLastHubValueSutaReports,sLastHubUpdateSutaGotAT are "-1"
+			// it implies that hub sent the notification, before the msg sent by suta received at hub
+			editor.putString("notifSentByHubAt",notifSentByHubAt);
+			editor.putString("notifRecievedBySutaAt",notifRecievedBySutaAt);
+			editor.putString("sTimeOfLastUpdateFromApp",sTimeOfLastUpdateFromApp);
+			editor.putString("sLastHubValueSutaReports",sLastHubValueSutaReports);
+			editor.putString("sLastHubUpdateSutaGotAT",sLastHubUpdateSutaGotAT);
 			editor.putString("remainingCredit",remainingCredit);
-			editor.putString("currTime",currTime);
 			editor.putString("revisedTransactionDetails",revisedTransactionDetails);
-			editor.apply();
+			editor.commit();
 		}
 
 	}

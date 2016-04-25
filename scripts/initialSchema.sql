@@ -120,7 +120,10 @@ CREATE TABLE IF NOT EXISTS `User` (
   `LastAuditedActivityAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `DtnId` varchar(64) DEFAULT NULL,
   `MacAddress` varchar(64) DEFAULT NULL,
+  `HubRecievedAt` datetime DEFAULT NULL,
   `TimeOfLastUpdateFromApp` datetime DEFAULT NULL,
+  `LastHubValueSutaReports` datetime DEFAULT NULL,
+  `LastHubUpdateSutaGotAT` datetime DEFAULT NULL,
   PRIMARY KEY (`UserId`),
   UNIQUE KEY `Name` (`Name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;

@@ -1,7 +1,11 @@
 package in.swifiic.plat.app.suta.andi;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.StringTokenizer;
+
 import in.swifiic.plat.app.suta.andi.R;
 import in.swifiic.plat.helper.andi.ui.SwifiicActivity;
 import in.swifiic.plat.helper.andi.ui.UserChooserActivity;
@@ -27,11 +31,13 @@ import in.swifiic.plat.helper.andi.Helper;
 public class MainActivity extends SwifiicActivity  {
 
     @SuppressWarnings("unused")
+    private final long timeDiff = 20; // in minutes
 	private final String TAG="MainActivity";
     private AppEndpointContext aeCtx = new AppEndpointContext("suta", "0.1", "1");
     public static SharedPreferences pref =null;
 
     private TextView remainingCredit,currTime,transactions;
+
    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +45,45 @@ public class MainActivity extends SwifiicActivity  {
         super.onCreate(savedInstanceState);
         pref=PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.activity_main);
-        sendInfoToHub();
+
+
+        // getting the current time and checking the difference from last updated time
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String scurTime = sdf.format(c.getTime());
+
+        String slastUpdatedTime = pref.getString("lastUpdatedTime","0");
+
+        if (slastUpdatedTime.equals("0")){
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString("lastUpdatedTime",scurTime);
+            editor.commit();
+            slastUpdatedTime = scurTime;
+        }
+
+        Date curDate = new Date();
+        Date lastDate = new Date();
+        try {
+            curDate = sdf.parse(scurTime);
+            lastDate = sdf.parse(slastUpdatedTime);
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        long diff = curDate.getTime()-lastDate.getTime();
+        long seconds = diff / 1000;
+        long minutes = seconds / 60;
+        long hours = minutes / 60;
+        long days = hours / 24;
+        if (minutes>timeDiff || minutes == 0){
+            sendInfoToHub();
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString("lastUpdatedTime",scurTime);
+            editor.commit();
+        }
+
+        //
 
         remainingCredit = (TextView)findViewById(R.id.remainingCredit);
         currTime = (TextView)findViewById(R.id.currTime);
@@ -47,7 +91,7 @@ public class MainActivity extends SwifiicActivity  {
         transactions.setMovementMethod(new ScrollingMovementMethod());
 
         remainingCredit.setText(pref.getString("remainingCredit", "waiting"));
-        currTime.setText(pref.getString("currTime","waiting"));
+        currTime.setText(pref.getString("notifSentByHubAt","waiting"));
         transactions.setText(pref.getString("revisedTransactionDetails","waiting"));
 
 		Intent serviceIntent = new Intent();
@@ -58,7 +102,7 @@ public class MainActivity extends SwifiicActivity  {
     public void onResume()
     {
         remainingCredit.setText(pref.getString("remainingCredit", "waiting"));
-        currTime.setText(pref.getString("currTime","waiting"));
+        currTime.setText(pref.getString("notifSentByHubAt","waiting"));
         transactions.setText(pref.getString("revisedTransactionDetails","waiting"));
 
     	super.onResume();
@@ -99,12 +143,21 @@ public class MainActivity extends SwifiicActivity  {
         act.addArgument("macAddress", macAddress);
         Calendar c = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String strDate = sdf.format(c.getTime());
-        act.addArgument("dateTime", strDate);
+        String notifSentBySutaAt = sdf.format(c.getTime());
+        act.addArgument("notifSentBySutaAt", notifSentBySutaAt);
+
+        //adding time at hub  for last hub update sent by hub and received by suta
+        String timeAtHubOfLastHubUpdate = pref.getString("notifSentByHubAt","-1");
+        act.addArgument("timeAtHubOfLastHubUpdate",timeAtHubOfLastHubUpdate);
+
+        //adding time at suta for last hub update sent by hub and received by suta
+        String timeAtSutaOfLastHubUpdate = pref.getString("notifRecievedBySutaAt","-1");
+        act.addArgument("timeAtSutaOfLastHubUpdate",timeAtSutaOfLastHubUpdate);
+
+
          String hubAddress = pref.getString("hub_address", "");
       
         if(null!=hubAddress)
-
         Helper.sendSutaInfo(act, hubAddress + "/suta", this);
 	}
 

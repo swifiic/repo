@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -174,7 +175,7 @@ public class Helper {
 
 	/***
 	 *getting account details fo all users
-	 * totalaccountdetails = accountDetails||accountDetails..;
+	 * totalaccountdetails = accountDetails$accountDetails
 	 * where accountDetails is for single user and is computed in another function
 	 * @return
 	 */
@@ -195,7 +196,7 @@ public class Helper {
 				if ( macAddress == null ||  macAddress.equals("00:00:00:00:00:00")){
 					continue;
 				}
-				totalAccountDetails += getAccountDetails(macAddress)+"||";
+				totalAccountDetails += getAccountDetails(macAddress)+"$";
 			}
 			result.close();
 			statement.close();
@@ -212,7 +213,7 @@ public class Helper {
 
 	/***
 	getting account details for specific user,users are obtained from getAllUers()
-	 accountDetails = macAddress|remainingcredit|credit1,amount1,,credit2,amount2,,
+	 accountDetails = macAddress|timeOfLastUpdateFromSuta|lastHubValueSutaReports|lastHubUpdateSutaGotAt|remainingcredit|credit1,amount1:credit2,amount2:
 	*/
 
 	private static String getAccountDetails(String macAddress){
@@ -222,6 +223,9 @@ public class Helper {
 
 		String accountDetails="";
 		String transactionDetails="";
+		String sTimeOfLastUpdateFromApp = "-1";
+		String sLastHubValueSutaReports = "-1";
+		String sLastHubUpdateSutaGotAT = "-1";
 
 		int userid;
 		int remainingCredit;
@@ -233,7 +237,7 @@ public class Helper {
 
 		//String useridsql = sqlProperties.getProperty("user.retriveUserId")
 		//String remainingcreditsql = sqlProperties.getProperty("user.retriveCredit");
-		String idAndCreditsql = sqlProperties.getProperty("user.retriveIdAndCredit");
+		String idAndCreditsql = sqlProperties.getProperty("user.retriveIdCreditTimes");
 		String transactionDetailsSql = sqlProperties.getProperty("opertorLedger.retriveTransactionDetails");
 
 		ResultSet result1;
@@ -247,6 +251,23 @@ public class Helper {
 			result1 = statement1.executeQuery();
 			userid = result1.getInt("UserId");
 			remainingCredit = result1.getInt("RemainingCreditPostAudit");
+			java.sql.Timestamp dbSqlTimestamp1 = result1.getTimestamp("TimeOfLastUpdateFromApp");
+			//dbSqlTimestamp1 = result1.getString("TimeOfLastUpdateFromApp");
+			java.sql.Timestamp dbSqlTimestamp2 = result1.getTimestamp("LastHubValueSutaReports");
+			//dbSqlTimestamp2 = result1.getString("LastHubValueSutaReports");
+			java.sql.Timestamp dbSqlTimestamp3 = result1.getTimestamp("LastHubUpdateSutaGotAT");
+			//dbSqlTimestamp3 = result1.getString("LastHubUpdateSutaGotAT");
+
+			if(dbSqlTimestamp1 != null){
+				sTimeOfLastUpdateFromApp = dbSqlTimestamp1.toString();
+			}
+			if (dbSqlTimestamp2 != null){
+				sLastHubValueSutaReports = dbSqlTimestamp2.toString();
+			}
+			if (dbSqlTimestamp3 != null){
+				sLastHubUpdateSutaGotAT = dbSqlTimestamp3.toString();
+			}
+
 			result1.close();
 			statement1.close();
 
@@ -254,19 +275,19 @@ public class Helper {
 			e.printStackTrace();
 		}
 
-		accountDetails = macAddress+"|"+remainingCredit+"|";
+		accountDetails = macAddress+"|"+sTimeOfLastUpdateFromApp+"|"+sLastHubValueSutaReports+"|"+sLastHubUpdateSutaGotAT+"|"+remainingCredit+"|";
 
 		// retreving transactions
 
 		try {
 			statement2 = connection.prepareStatement(transactionDetailsSql);
-			statement2.setString(1, userid);
+			statement2.setInt(1, userid);
 			result2 = statement2.executeQuery();
 			while(result2.next()) {
 				// Retrieve by column name
 				amount = result2.getInt("Amount");
 				details = result2.getString("Details");
-				transactionDetails += amount+","+details+",,";
+				transactionDetails += amount+","+details+":";
 			}
 			result2.close();
 			statement2.close();
@@ -281,6 +302,7 @@ public class Helper {
 
 		return  accountDetails;
 	}
+
 	
 	 /**
 	  * @author aarthi 
@@ -347,7 +369,10 @@ public class Helper {
 	 * @param dtnId - DTN ID of the user device
 	 * @param fromUser - Name of User
 	 */
-	public static void updateDatabase(String macId,String time,String dtnId,String fromUser)
+
+	// TODO: 25/03/16 when suta sends msg even before it is receiving first update from hub then timeAtHubOfLastHubUpdate,timeAtSutaOfLastHubUpdate will be "-1"
+			//  above case is not yet handled so gives error
+	public static void updateDatabase(String macId,String notifSentBySutaAt,String dtnId,String fromUser,String timeAtHubOfLastHubUpdate,String timeAtSutaOfLastHubUpdate)
 	{
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // your template here
 		
@@ -359,12 +384,34 @@ public class Helper {
 	        PreparedStatement pst=null;
 			ResultSet rs=null;
 			String selectQuery=sqlProperties.getProperty("user.findMacAddress");
+
 			String updateQuery1=sqlProperties.getProperty("user.updateDtnIdMacAddress");
 			String updateQuery2=sqlProperties.getProperty("user.updateDtnId");
 			String updateQuery3=sqlProperties.getProperty("user.updateTimeOfLastUpdate");
+
+			Calendar c = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String hubRecievedAt = sdf.format(c.getTime());
+			// at this time notification sent by suta is received at hub
+
 			try {
-				java.util.Date dateStr = formatter.parse(time);
-				java.sql.Date dateDB = new java.sql.Date(dateStr.getTime());
+				// here datestr's are in order as in swifiic user table
+				java.util.Date dateStr1 = formatter.parse(hubRecievedAt);
+				java.util.Date dateStr2 = formatter.parse(notifSentBySutaAt);
+				if(timeAtHubOfLastHubUpdate.equals("-1")){}
+				else{java.util.Date dateStr3 = formatter.parse(timeAtHubOfLastHubUpdate);}
+				if (timeAtSutaOfLastHubUpdate.equals("-1")){}
+				else{java.util.Date dateStr4 = formatter.parse(timeAtSutaOfLastHubUpdate);}
+
+				java.sql.Date dateDB1 = new java.sql.Date(dateStr1.getTime());
+				java.sql.Date dateDB2 = new java.sql.Date(dateStr2.getTime());
+
+				if (timeAtHubOfLastHubUpdate.equals("-1")){}
+				else{java.sql.Date dateDB3 = new java.sql.Date(dateStr3.getTime());}
+
+				if (timeAtSutaOfLastHubUpdate.equals("-1")){}
+				else{java.sql.Date dateDB4 = new java.sql.Date(dateStr4.getTime());}
+
 				stmt=con.prepareStatement(selectQuery);
 				stmt.setString(1, fromUser);
 				rs=stmt.executeQuery();
@@ -379,8 +426,23 @@ public class Helper {
 					pst=con.prepareStatement(updateQuery1);
 					pst.setString(1, dtnId);
 					pst.setString(2,macId);
-					pst.setTimestamp(3,new java.sql.Timestamp(dateStr.getTime()));
-					pst.setString(4,fromUser);
+					pst.setTimestamp(3,new java.sql.Timestamp(dateStr1.getTime()));
+					pst.setTimestamp(4,new java.sql.Timestamp(dateStr2.getTime()));
+
+					// checking if below two timestramps ="-1". if equals to "-1" => suta sends update before it got update form hub
+					if(timeAtHubOfLastHubUpdate.equals("-1")){
+						pst.setNull(5, java.sql.Types.Date);
+					}
+					else {
+						pst.setTimestamp(5, new java.sql.Timestamp(dateStr3.getTime()));
+					}
+					if (timeAtSutaOfLastHubUpdate.equals("-1")){
+						pst.setNull(6, java.sql.Types.Date);
+					}
+					else {
+						pst.setTimestamp(6, new java.sql.Timestamp(dateStr4.getTime()));
+					}
+					pst.setString(7,fromUser);
 					pst.execute();
 					return;
 				}
@@ -389,8 +451,23 @@ public class Helper {
 				{
 					pst=con.prepareStatement(updateQuery2);
 					pst.setString(1, dtnId);
-					pst.setTimestamp(2,new java.sql.Timestamp(dateStr.getTime()));
-					pst.setString(3,fromUser);
+					pst.setTimestamp(2,new java.sql.Timestamp(dateStr1.getTime()));
+					pst.setTimestamp(3,new java.sql.Timestamp(dateStr2.getTime()));
+
+					if (timeAtHubOfLastHubUpdate.equals("-1")){
+						pst.setNull(4, java.sql.Types.Date);
+					}
+					else {
+						pst.setTimestamp(4, new java.sql.Timestamp(dateStr3.getTime()));
+					}
+					if (timeAtSutaOfLastHubUpdate.equals("-1")){
+						pst.setNull(5, java.sql.Types.Date);
+
+					}
+					else {
+						pst.setTimestamp(5, new java.sql.Timestamp(dateStr4.getTime()));
+					}
+					pst.setString(6,fromUser);
 					pst.execute();
 					return;
 				}
@@ -405,7 +482,23 @@ public class Helper {
 				{
 					pst=con.prepareStatement(updateQuery3);
 					pst.setTimestamp(1,new java.sql.Timestamp(dateStr.getTime()));
-					pst.setString(2, fromUser);
+					pst.setTimestamp(2,new java.sql.Timestamp(dateStr.getTime()));
+
+					if (timeAtHubOfLastHubUpdate.equals("-1")){
+						pst.setNull(3, java.sql.Types.Date);
+
+					}
+					else {
+						pst.setTimestamp(3, new java.sql.Timestamp(dateStr.getTime()));
+					}
+					if (timeAtSutaOfLastHubUpdate.equals("-1")){
+						pst.setNull(4, java.sql.Types.Date);
+
+					}
+					else {
+						pst.setTimestamp(4, new java.sql.Timestamp(dateStr.getTime()));
+					}
+					pst.setString(5, fromUser);
 					pst.execute();
 					return;
 				}

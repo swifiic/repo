@@ -83,12 +83,14 @@ public class Suta extends Base implements SwifiicHandler {
 			int seqno=1;
 			public void run() {
 				String userList = Helper.getAllUsers();
+				//here account detais also contains heartbeat(updated)
 				String accountDetails = Helper.getAccountDetailsForAll();
 
-				Notification notif = new Notification("DeviceListUpdate",
-						"SUTA", "TODO", "0.1", "Hub");
+
+				Notification notif = new Notification("DeviceListUpdate","SUTA", "TODO", "0.1", "Hub");
 				notif.addArgument("userList", userList);
 				notif.addArgument("accountDetails",accountDetails);
+				//notif.addArgument("heartBeat",heartBeat);
 				Calendar c = Calendar.getInstance();
 		        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		        String strDate = sdf.format(c.getTime());
@@ -141,17 +143,21 @@ public class Suta extends Base implements SwifiicHandler {
 						return;
 					String actualContent = action.getArgument("message");
 					String fileName = action.getArgument("filename");
+
 					String macId = action.getArgument("macAddress");
-					String time = action.getArgument("dateTime");
+					String notifSentBySutaAt = action.getArgument("notifSentBySutaAt");
+					String timeAtHubOfLastHubUpdate = action.getArgument("timeAtHubOfLastHubUpdate");
+					String timeAtSutaOfLastHubUpdate = action.getArgument("timeAtSutaOfLastHubUpdate");
+
 					String fromUser = action.getArgument("fromUser");
 					String dtnId = Suta.this.dtnId;
-					if (macId != null && time != null && dtnId != null
+					if (macId != null && notifSentBySutaAt != null && dtnId != null
 							&& fromUser != null) {
 
 						logNew.info("SUTA ANDI INFO RECEivED.....");
-					logNew.info(macId + ":" + time + ":" + dtnId
+					logNew.info(macId + ":" + notifSentBySutaAt + ":" + dtnId
 								+ ":" + fromUser);
-						Helper.updateDatabase(macId, time, dtnId, fromUser);
+						Helper.updateDatabase(macId, notifSentBySutaAt, dtnId, fromUser,timeAtHubOfLastHubUpdate,timeAtSutaOfLastHubUpdate);
 
 					}
 					if (fileName != null && actualContent != null) {

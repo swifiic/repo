@@ -12,6 +12,9 @@ import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class NewMessageReceiver extends BroadcastReceiver {
 
 	private static Context mcontext;
@@ -57,13 +60,16 @@ public class NewMessageReceiver extends BroadcastReceiver {
     	} else {
     		if(notif.getNotificationName().equals("DeviceListUpdate")) {
 				WifiManager wimanager = (WifiManager) mcontext.getSystemService(Context.WIFI_SERVICE);
+				String macAddress = wimanager.getConnectionInfo().getMacAddress();
 
+				Calendar c = Calendar.getInstance();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				String notifRecievedBySutaAt = sdf.format(c.getTime());
+				// suta got notification at this time
 
 				String userList = notif.getArgument("userList");
-
-				String macAddress = wimanager.getConnectionInfo().getMacAddress();
 				String accountDetails = notif.getArgument("accountDetails");
-    			String currTime=notif.getArgument("currentTime");
+    			String notifSentByHubAt =notif.getArgument("currentTime");
 				// currTime is time at which Hub sends the notification
 
     			int seqno=Integer.parseInt(notif.getArgument("sequenceNumber"));
@@ -74,7 +80,7 @@ public class NewMessageReceiver extends BroadcastReceiver {
 					Log.d(TAG, "Got user accountDetails as: " + accountDetails);
 
 					Provider.providerInstance.loadUserSchema(userList);
-					Provider.providerInstance.storeAccountDetails(accountDetails, macAddress, currTime);
+					Provider.providerInstance.storeAccountDetails(accountDetails, macAddress, notifSentByHubAt,notifRecievedBySutaAt);
 
 				}
     			else if(seqno > lastReceivedSeqNo){
@@ -84,7 +90,7 @@ public class NewMessageReceiver extends BroadcastReceiver {
 					Log.d(TAG, "Got user accountDetails as: " + accountDetails);
 
 					Provider.providerInstance.loadUserSchema(userList);
-					Provider.providerInstance.storeAccountDetails(accountDetails,macAddress,currTime);
+					Provider.providerInstance.storeAccountDetails(accountDetails, macAddress, notifSentByHubAt,notifRecievedBySutaAt);
 
     		}
     			else

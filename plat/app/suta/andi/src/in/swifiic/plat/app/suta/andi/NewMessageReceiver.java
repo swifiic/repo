@@ -17,17 +17,20 @@ import java.util.Calendar;
 
 public class NewMessageReceiver extends BroadcastReceiver {
 
-	private static Context mcontext;
-	public NewMessageReceiver(Context context){
-		mcontext = context;
+	private static Context mcontext = null;
+	public NewMessageReceiver(){
 	}
 
 	private static final String TAG = "NewMessageReceiver";
 	int lastReceivedSeqNo;
-	public static SharedPreferences pref =PreferenceManager.getDefaultSharedPreferences(mcontext);
+	public static SharedPreferences pref = null; 
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		if(null == NewMessageReceiver.pref) {
+			mcontext = context;
+			NewMessageReceiver.pref = PreferenceManager.getDefaultSharedPreferences(context);
+		}
 		if (intent.hasExtra("notification")) {
         	String payload = intent.getStringExtra("notification");
             Log.d(TAG, "Handling incoming messages: " + payload);

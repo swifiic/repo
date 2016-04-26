@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -394,22 +395,6 @@ public class Helper {
 			// at this time notification sent by suta is received at hub
 
 			try {
-				// here datestr's are in order as in swifiic user table
-				java.util.Date dateStr1 = formatter.parse(hubRecievedAt);
-				java.util.Date dateStr2 = formatter.parse(notifSentBySutaAt);
-				if(timeAtHubOfLastHubUpdate.equals("-1")){}
-				else{java.util.Date dateStr3 = formatter.parse(timeAtHubOfLastHubUpdate);}
-				if (timeAtSutaOfLastHubUpdate.equals("-1")){}
-				else{java.util.Date dateStr4 = formatter.parse(timeAtSutaOfLastHubUpdate);}
-
-				java.sql.Date dateDB1 = new java.sql.Date(dateStr1.getTime());
-				java.sql.Date dateDB2 = new java.sql.Date(dateStr2.getTime());
-
-				if (timeAtHubOfLastHubUpdate.equals("-1")){}
-				else{java.sql.Date dateDB3 = new java.sql.Date(dateStr3.getTime());}
-
-				if (timeAtSutaOfLastHubUpdate.equals("-1")){}
-				else{java.sql.Date dateDB4 = new java.sql.Date(dateStr4.getTime());}
 
 				stmt=con.prepareStatement(selectQuery);
 				stmt.setString(1, fromUser);
@@ -425,83 +410,56 @@ public class Helper {
 					pst=con.prepareStatement(updateQuery1);
 					pst.setString(1, dtnId);
 					pst.setString(2,macId);
-					pst.setTimestamp(3,new java.sql.Timestamp(dateStr1.getTime()));
-					pst.setTimestamp(4,new java.sql.Timestamp(dateStr2.getTime()));
-
-					// checking if below two timestramps ="-1". if equals to "-1" => suta sends update before it got update form hub
-					if(timeAtHubOfLastHubUpdate.equals("-1")){
-						pst.setNull(5, java.sql.Types.Date);
-					}
-					else {
-						pst.setTimestamp(5, new java.sql.Timestamp(dateStr3.getTime()));
-					}
-					if (timeAtSutaOfLastHubUpdate.equals("-1")){
-						pst.setNull(6, java.sql.Types.Date);
-					}
-					else {
-						pst.setTimestamp(6, new java.sql.Timestamp(dateStr4.getTime()));
-					}
-					pst.setString(7,fromUser);
+					pst.setString(3,fromUser);
 					pst.execute();
-					return;
 				}
 				//if macaddress is initialized and dtn id changes allow update
 				else if(mac_address.equals(macId)&& !(dtn_id.equals(dtnId)))
 				{
 					pst=con.prepareStatement(updateQuery2);
 					pst.setString(1, dtnId);
-					pst.setTimestamp(2,new java.sql.Timestamp(dateStr1.getTime()));
-					pst.setTimestamp(3,new java.sql.Timestamp(dateStr2.getTime()));
-
-					if (timeAtHubOfLastHubUpdate.equals("-1")){
-						pst.setNull(4, java.sql.Types.Date);
-					}
-					else {
-						pst.setTimestamp(4, new java.sql.Timestamp(dateStr3.getTime()));
-					}
-					if (timeAtSutaOfLastHubUpdate.equals("-1")){
-						pst.setNull(5, java.sql.Types.Date);
-
-					}
-					else {
-						pst.setTimestamp(5, new java.sql.Timestamp(dateStr4.getTime()));
-					}
-					pst.setString(6,fromUser);
+					pst.setString(2,fromUser);
 					pst.execute();
-					return;
 				}
-				//dtnid matches and mac_address differs , throw error
+				//dtnid matches and mac_address differs , throw error and return
 				else if(!(mac_address.equals(macId))&& dtn_id.equals(dtnId))
 				{
 					logger.log(Level.SEVERE,"Mac Address already initalized for this dtn id ");
 					return;
 				}
-				//both matches allow update of time
-				else if(mac_address.equals(macId)&& (dtn_id.equals(dtnId)))
-				{
-					pst=con.prepareStatement(updateQuery3);
-					pst.setTimestamp(1,new java.sql.Timestamp(dateStr.getTime()));
-					pst.setTimestamp(2,new java.sql.Timestamp(dateStr.getTime()));
 
-					if (timeAtHubOfLastHubUpdate.equals("-1")){
-						pst.setNull(3, java.sql.Types.Date);
+				//Now Lets update the time as per message
+				// here datestr's are in order as in swifiic user table
+				java.util.Date dateStr1 = formatter.parse(hubRecievedAt);
+				java.util.Date dateStr2 = formatter.parse(notifSentBySutaAt);
 
-					}
-					else {
-						pst.setTimestamp(3, new java.sql.Timestamp(dateStr.getTime()));
-					}
-					if (timeAtSutaOfLastHubUpdate.equals("-1")){
-						pst.setNull(4, java.sql.Types.Date);
+				java.sql.Date dateDB1 = new java.sql.Date(dateStr1.getTime());
+				java.sql.Date dateDB2 = new java.sql.Date(dateStr2.getTime());
 
-					}
-					else {
-						pst.setTimestamp(4, new java.sql.Timestamp(dateStr.getTime()));
-					}
-					pst.setString(5, fromUser);
-					pst.execute();
-					return;
+				if (timeAtHubOfLastHubUpdate.equals("-1")){}
+				else{java.sql.Date dateDB3 = new java.sql.Date(dateStr3.getTime());}
+
+				if (timeAtSutaOfLastHubUpdate.equals("-1")){}
+				else{java.sql.Date dateDB4 = new java.sql.Date(dateStr4.getTime());}
+				pst=con.prepareStatement(updateQuery3);
+				pst.setTimestamp(1,new java.sql.Timestamp(dateStr1.getTime()));
+				pst.setTimestamp(2,new java.sql.Timestamp(dateStr2.getTime()));
+
+				if (timeAtHubOfLastHubUpdate.equals("-1")){
+					pst.setNull(3, java.sql.Types.DATE);
+				} else {
+					java.util.Date dateStr3 = formatter.parse(timeAtHubOfLastHubUpdate);
+					pst.setTimestamp(3, new java.sql.Timestamp(dateStr3.getTime()));
 				}
-						
+				if (timeAtSutaOfLastHubUpdate.equals("-1")){
+					pst.setNull(4, java.sql.Types.DATE);
+				} else {
+					java.util.Date dateStr4 = formatter.parse(timeAtSutaOfLastHubUpdate);
+					pst.setTimestamp(4, new java.sql.Timestamp(dateStr4.getTime()));
+				}
+				pst.setString(5, fromUser);
+				pst.execute();
+				return;
 			} 
 			catch (SQLException e) {
 			logger.log(Level.SEVERE,e.toString());

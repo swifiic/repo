@@ -433,6 +433,7 @@ public class Helper {
 				java.util.Date dateStr1 = formatter.parse(hubRecievedAt);
 				java.util.Date dateStr2 = formatter.parse(notifSentBySutaAt);
 
+				/**
 				java.sql.Date dateDB1 = new java.sql.Date(dateStr1.getTime());
 				java.sql.Date dateDB2 = new java.sql.Date(dateStr2.getTime());
 
@@ -441,6 +442,10 @@ public class Helper {
 
 				if (timeAtSutaOfLastHubUpdate.equals("-1")){}
 				else{java.sql.Date dateDB4 = new java.sql.Date(dateStr4.getTime());}
+				 */
+
+
+
 				pst=con.prepareStatement(updateQuery3);
 				pst.setTimestamp(1,new java.sql.Timestamp(dateStr1.getTime()));
 				pst.setTimestamp(2,new java.sql.Timestamp(dateStr2.getTime()));

@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text = "@string/AmtToCredit_debit"
+        android:text = "@string/AmtToCredit"
         android:textSize="15sp"
         android:textColor="#FFF" />
  <EditText
@@ -41,21 +41,12 @@
 <Button 
     android:id= "@+id/bCredit" 
     android:layout_height= "wrap_content"
-    android:layout_width="wrap_content"
-    android:layout_weight="1"
+    android:layout_width="match_parent"
     android:text="@string/Credit"
     android:textSize="15dp"
     />
-<Button 
-    android:id= "@+id/bDebit" 
-    android:layout_height= "wrap_content"
-    android:layout_width="wrap_content"
-    android:layout_weight ="1"
-    android:text="@string/Debit"
-    android:textSize="15dp"
-    />
 
-</LinearLayout>
+ </LinearLayout>
 <LinearLayout 
     android:layout_width="match_parent"
     android:layout_height ="wrap_content"

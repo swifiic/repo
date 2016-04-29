@@ -168,12 +168,12 @@ public class ManageUserFragment extends Fragment implements OnItemClickListener,
 					         else errorMsg = getResources().getString(R.string.CannotFetchUsers);
 							 toast(errorMsg);
 						}
-						if (response.getStatusLine().getStatusCode()==HttpURLConnection.HTTP_UNAUTHORIZED) { // 417 for EXPECTATION FAILED 
+			if (response.getStatusLine().getStatusCode()==HttpURLConnection.HTTP_UNAUTHORIZED) { // 417 for EXPECTATION FAILED
 						    ((MainActivity)getActivity()).forceLogout(getResources().getString(R.string.SessionExpired));
 								}
 							  
-						if (response.getStatusLine().getStatusCode()==HttpURLConnection.HTTP_OK){		 
-								if (listBytes!=null){
+			if (response.getStatusLine().getStatusCode()==HttpURLConnection.HTTP_OK){
+				if (listBytes!=null){
 									//for(int i=0;i<listBytes.length;i++)
 									//	System.out.println(listBytes[i]);
 									// convert the byte array into an ArrayList which contains the user data or transaction data
@@ -181,14 +181,15 @@ public class ManageUserFragment extends Fragment implements OnItemClickListener,
 											(ArrayList<HashMap<String, String>>) SerializationUtils.deserialize(listBytes);
 									ArrayList<String> transactions = new ArrayList<String>();
 									// reload the userList if this is not a transaction List
-									if (!isTransaction){
+					if (!isTransaction){
 										users.clear();
 										users.addAll(list);
 										adapter.refreshAdapter(list); // refreshes the adapter for the userlist listview
 										toast(getResources().getString(R.string.RefreshedUsers));
-									} 
-								    else {
-										if (list.size()>0) {
+					}
+					else {
+
+						if (list.size()>0) {
 											transactionDialog.setContentView(R.layout.transaction_list);
 										 	transactionDialog.setTitle(getResources().getString(R.string.Transactions));
 										 	TransactionAdapter adapter = new TransactionAdapter(getActivity()
@@ -196,12 +197,12 @@ public class ManageUserFragment extends Fragment implements OnItemClickListener,
 										 	ListView transList = (ListView) transactionDialog.findViewById(R.id.transactionList);
 										 	transList.setAdapter(adapter);
 										 	transactionDialog.show();
-										}
-								 else  toast(getResources().getString(R.string.NoTransactions));
-									}
-								}
-								else  toast(getResources().getString(R.string.NoDataReceived));
-								} 
+						}
+						else  toast(getResources().getString(R.string.NoTransactions));
+					}
+				}
+				else  toast(getResources().getString(R.string.NoDataReceived));
+			}
 					
 		}
 		
@@ -245,9 +246,10 @@ private class TransactionAdapter extends ArrayAdapter<HashMap<String,String>>{
 	   return row;
    }
    @Override
-public int getCount() {
+	public int getCount() {
 	   return list.size();
 }
+
 }
 
 // ArrayAdapter for the UserList list view	
@@ -335,10 +337,10 @@ static Bitmap scaleDown(Bitmap bmp){
  * Single tap : displays the list of user transactions
  * Double tap : prompts for deletion of the user
  * Long tap : editing the user data
- * click on the dollar (recharge) button for recharge : allows credit and debit to the user's account
+ * click on the dollar (recharge) button for recharge : allows credit  to the user's account
  */
 
-// OnClickListener to handle the recharge button click, allows credit and debit
+// OnClickListener to handle the recharge button click, allows credit
 private class MyOnClickListener implements OnClickListener {
    
 	int position=-1;// clicked row no.
@@ -348,8 +350,8 @@ private class MyOnClickListener implements OnClickListener {
 	
 	@Override
 	public void onClick(View v) {
-		// Recharge dialog that enables credit and debit options
-		// setting up the recharge dilalog for credit / debit
+		// Recharge dialog that enables credit option
+		// setting up the recharge dilalog for credit
 		rechargeDialog = new Dialog(getActivity(),android.R.style.Theme_Black);
 		rechargeDialog.setContentView(R.layout.recharge_user);
 		rechargeDialog.setTitle(getResources().getString(R.string.RechargeUser));
@@ -361,7 +363,6 @@ private class MyOnClickListener implements OnClickListener {
 		TextView tvLastAudit = (TextView) rechargeDialog.findViewById(R.id.tvLastAudit);
 		
 		Button bCredit = (Button)rechargeDialog.findViewById(R.id.bCredit);
-		Button bDebit = (Button)rechargeDialog.findViewById(R.id.bDebit);
 		
 		
 		//tv.setText((CharSequence) text);
@@ -388,17 +389,7 @@ private class MyOnClickListener implements OnClickListener {
 				else toast("Please enter amount");
 			}
 		});
-	 // handles the debit event
-	    bDebit.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (!etRecharge.getText().toString().equals("")){
-					new RechargeUserTask().execute(userId,etRecharge.getText().toString(),"Debit");
-					etRecharge.setText((CharSequence)"");
-				}
-				else toast("Please enter amount");
-			}
-		});
+
 	    
 	    // prompt the user in case of an incomplete action
 rechargeDialog.setOnKeyListener(new Dialog.OnKeyListener() {
@@ -477,9 +468,8 @@ private class DeleteUserTask extends AsyncTask<String,Void,Void>{
 	}
 }
 	
-// Credit and Debit options are carried out by this task
+// Credit is carried out by this task
 private class RechargeUserTask extends AsyncTask<String,Void,Void>{
-	boolean isDebit ; // tells whether the current transaction is debit or credit
 	String event = null;
 	
 	@Override
@@ -494,15 +484,13 @@ private class RechargeUserTask extends AsyncTask<String,Void,Void>{
 		event = params[2];
 		HttpClient httpclient = new DefaultHttpClient();
 	    HttpPost httppost = new HttpPost("http://"+url+"/HubSrvr/Oprtr");
-	    isDebit = event.equals("Debit")? true : false;  
-	  
+
 	   ArrayList<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();
 	    
 	    nameValuePairs.addAll(commonNameValuePairs);
 	    nameValuePairs.add(new BasicNameValuePair(Constants.name_tag,"RechargeUser"));
-	    if (isDebit)
-	    	nameValuePairs.add(new BasicNameValuePair(Constants.DebitUserId_tag,userId));
-	    else nameValuePairs.add(new BasicNameValuePair(Constants.CreditUserId_tag,userId));
+
+		nameValuePairs.add(new BasicNameValuePair(Constants.CreditUserId_tag,userId));
 	    
 	    nameValuePairs.add(new BasicNameValuePair(Constants.Amount_tag,recharge));
 	    nameValuePairs.add(new BasicNameValuePair(Constants.EventNotes_tag,event+" from SOA app"));
@@ -517,8 +505,8 @@ private class RechargeUserTask extends AsyncTask<String,Void,Void>{
       
       if (responseCode==HttpURLConnection.HTTP_OK){
           String msg = null; 
-    	  if (isDebit) msg = getResources().getString(R.string.DebitSuccess);
-    	  else msg = getResources().getString(R.string.CreditSuccess);
+
+    	  msg = getResources().getString(R.string.CreditSuccess);
     	  getActivity().runOnUiThread(new ToastThread(msg+" for "+userId));
     //    Toast.makeText(context.getActivity(),"Response Body => " + responseBody,Toast.LENGTH_LONG).show();
       } else if (responseCode==HttpURLConnection.HTTP_UNAUTHORIZED){
@@ -526,8 +514,7 @@ private class RechargeUserTask extends AsyncTask<String,Void,Void>{
        	     getActivity().runOnUiThread(act.new ForceLogoutThread(getResources().getString(R.string.SessionExpired)));
       }
       else {
-    	  if (isDebit) msg = getResources().getString(R.string.DebitUnsuccess);
-    	  else msg = getResources().getString(R.string.CreditUnsuccess);
+    	  msg = getResources().getString(R.string.CreditUnsuccess);
     	  getActivity().runOnUiThread(new ToastThread(msg));
       }
     }catch(HttpHostConnectException e){

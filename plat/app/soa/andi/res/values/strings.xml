@@ -59,7 +59,7 @@
     <string name="Yes">Yes</string>
     <string name="Credit">Credit</string>
     <string name="Debit">Debit</string>
-    <string name="AmtToCredit_debit">Amount to credit/debit</string>
+    <string name="AmtToCredit">Amount to credit</string>
     <string name="RechargeAmount">Recharge Amount</string>
     <string name="UserId">User Id</string>
     <string name="RemainingCredits">Remaining Credits</string>

@@ -144,6 +144,8 @@ public class GenericService extends IntentService {
                 Log.e(TAG, "Can not query for bundle", e);
             } catch (InterruptedException e) {
                 Log.e(TAG, "Can not query for bundle", e);
+            } catch (Exception e) {
+                Log.e(TAG, "Can not query for bundle:" + e.toString(), e );
             }
         } else if (Constants.MARK_DELIVERED_INTENT.equals(action)) {
             // retrieve the bundle ID of the intent

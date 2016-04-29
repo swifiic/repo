@@ -239,7 +239,7 @@ public class Provider extends ContentProvider {
 					while (st4.hasMoreTokens()){
 						amount = st4.nextToken();
 						details = st4.nextToken();
-						revisedTransactionDetails += details+"	"+amount+"\n";
+						revisedTransactionDetails += amount+"	"+details+"\n";
 
 					}
 

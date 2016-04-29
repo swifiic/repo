@@ -33,7 +33,7 @@
 	        </intent-filter>
 	    </receiver>
 	    
-   	    <receiver android:name="HubAddressReceiver" >
+   	    <receiver android:name="in.swifiic.plat.helper.andi.HubAddressReceiver" >
             <intent-filter>
                 <action android:name="swifiic.suta.hubAddressUpdate" />
             </intent-filter>

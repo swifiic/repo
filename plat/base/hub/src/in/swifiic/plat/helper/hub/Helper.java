@@ -193,9 +193,13 @@ public class Helper {
 			result = statement.executeQuery();
 			while(result.next()) {
 				macAddress = result.getString("MacAddress");
-				if ( macAddress == null ||  macAddress.equals("00:00:00:00:00:00")){
+				if(result.wasNull()){
+					macAddress="";
+				}
+				if ( macAddress == null ||  macAddress.equals("00:00:00:00:00:00") || macAddress.isEmpty()){
 					continue;
 				}
+				logger.log(Level.INFO,macAddress+"macAddress is not empty");
 				totalAccountDetails += getAccountDetails(macAddress)+"$";
 			}
 			result.close();
@@ -244,30 +248,35 @@ public class Helper {
 		ResultSet result2;
 
 		// retreving userid and credit
+		// retreving userid and credit
 		try {
 			// here one user name should have only one userid
 			statement1 = connection.prepareStatement(idAndCreditsql);
 			statement1.setString(1, macAddress);
 			result1 = statement1.executeQuery();
-			userid = result1.getInt("UserId");
-			remainingCredit = result1.getInt("RemainingCreditPostAudit");
-			java.sql.Timestamp dbSqlTimestamp1 = result1.getTimestamp("TimeOfLastUpdateFromApp");
-			//dbSqlTimestamp1 = result1.getString("TimeOfLastUpdateFromApp");
-			java.sql.Timestamp dbSqlTimestamp2 = result1.getTimestamp("LastHubValueSutaReports");
-			//dbSqlTimestamp2 = result1.getString("LastHubValueSutaReports");
-			java.sql.Timestamp dbSqlTimestamp3 = result1.getTimestamp("LastHubUpdateSutaGotAT");
-			//dbSqlTimestamp3 = result1.getString("LastHubUpdateSutaGotAT");
+			if (result1.next()) {
 
-			if(dbSqlTimestamp1 != null){
-				sTimeOfLastUpdateFromApp = dbSqlTimestamp1.toString();
-			}
-			if (dbSqlTimestamp2 != null){
-				sLastHubValueSutaReports = dbSqlTimestamp2.toString();
-			}
-			if (dbSqlTimestamp3 != null){
-				sLastHubUpdateSutaGotAT = dbSqlTimestamp3.toString();
-			}
+				userid = result1.getInt("UserId");
+				remainingCredit = result1.getInt("RemainingCreditPostAudit");
+				java.sql.Timestamp dbSqlTimestamp1 = result1.getTimestamp("TimeOfLastUpdateFromApp");
+				//dbSqlTimestamp1 = result1.getString("TimeOfLastUpdateFromApp");
+				java.sql.Timestamp dbSqlTimestamp2 = result1.getTimestamp("LastHubValueSutaReports");
+				//dbSqlTimestamp2 = result1.getString("LastHubValueSutaReports");
+				java.sql.Timestamp dbSqlTimestamp3 = result1.getTimestamp("LastHubUpdateSutaGotAT");
+				//dbSqlTimestamp3 = result1.getString("LastHubUpdateSutaGotAT");
 
+				if(dbSqlTimestamp1 != null){
+					sTimeOfLastUpdateFromApp = dbSqlTimestamp1.toString();
+				}
+				if (dbSqlTimestamp2 != null){
+					sLastHubValueSutaReports = dbSqlTimestamp2.toString();
+				}
+				if (dbSqlTimestamp3 != null){
+					sLastHubUpdateSutaGotAT = dbSqlTimestamp3.toString();
+				}
+			} else {
+				logger.log(Level.INFO," in else part ");
+			}
 			result1.close();
 			statement1.close();
 
@@ -297,6 +306,10 @@ public class Helper {
 
 
 		DatabaseHelper.closeDB(connection);
+
+		if (transactionDetails == ""){
+			transactionDetails="no ,Transactions yet:";
+		}
 
 		accountDetails += transactionDetails;
 
@@ -402,11 +415,19 @@ public class Helper {
 				if(rs.next())
 				{
 					dtn_id=rs.getString("DtnId");
+					if(rs.wasNull()){
+						dtn_id="";
+					}
 					mac_address=rs.getString("MacAddress");
+					if(rs.wasNull()){
+						mac_address="";
+					}
+
 				}
 				//if MAC Address of the device is not initialized. update macaddress and dtn id both
-				if(mac_address.equals("00:00:00:00:00:00"))
+				if(mac_address.equals("00:00:00:00:00:00") || mac_address == null|| mac_address.isEmpty())
 				{
+					logger.log(Level.INFO,"mac address is null or 00:..");
 					pst=con.prepareStatement(updateQuery1);
 					pst.setString(1, dtnId);
 					pst.setString(2,macId);
@@ -424,7 +445,7 @@ public class Helper {
 				//dtnid matches and mac_address differs , throw error and return
 				else if(!(mac_address.equals(macId))&& dtn_id.equals(dtnId))
 				{
-					logger.log(Level.SEVERE,"Mac Address already initalized for this dtn id ");
+					logger.log(Level.SEVERE,"Mac Address already initalized for this dtn id with different value ");
 					return;
 				}
 
@@ -432,19 +453,6 @@ public class Helper {
 				// here datestr's are in order as in swifiic user table
 				java.util.Date dateStr1 = formatter.parse(hubRecievedAt);
 				java.util.Date dateStr2 = formatter.parse(notifSentBySutaAt);
-
-				/**
-				java.sql.Date dateDB1 = new java.sql.Date(dateStr1.getTime());
-				java.sql.Date dateDB2 = new java.sql.Date(dateStr2.getTime());
-
-				if (timeAtHubOfLastHubUpdate.equals("-1")){}
-				else{java.sql.Date dateDB3 = new java.sql.Date(dateStr3.getTime());}
-
-				if (timeAtSutaOfLastHubUpdate.equals("-1")){}
-				else{java.sql.Date dateDB4 = new java.sql.Date(dateStr4.getTime());}
-				 */
-
-
 
 				pst=con.prepareStatement(updateQuery3);
 				pst.setTimestamp(1,new java.sql.Timestamp(dateStr1.getTime()));

@@ -30,7 +30,8 @@
    	<string name="NoTransactions">No Transactions</string>
    	<string name="refresh_users">Refresh Users</string>
     <string name="RefreshedUsers">Refreshed Users</string>
-    <string name="Username">Mobile Number</string>
+    <string name="Username">User name</string>
+    <string name="MobileNumber">Mobile Number</string>
     <string name="Password">Password</string>
     <string name="Login">Login</string>
     <string name="RememberMe">Remember me</string>
@@ -68,7 +69,6 @@
     <string name="FirstName">First Name</string>
     <string name="ShortAlias">short-alias</string>
     <string name="AddressMultiLine">Address Multi-line</string>
-    <string name="MobileNumber">Mobile Number</string>
     <string name="MACAddress">MAC Address</string>
     <string name="NotesMultiline">Notes Multi-line</string>
     <string name="Transactions">Transactions</string>

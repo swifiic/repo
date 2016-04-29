@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text = "@string/Username"
+        android:text = "@string/MobileNumber"
         android:textSize="20sp"
         android:textColor="#FFF" />
  <AutoCompleteTextView

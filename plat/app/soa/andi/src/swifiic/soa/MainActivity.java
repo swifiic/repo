@@ -69,8 +69,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		tabs =  new String[]{getResources().getString(R.string.Recharge),
 				getResources().getString(R.string.addUser),
 				getResources().getString(R.string.Users),
-				getResources().getString(R.string.swifiic),
-				getResources().getString(R.string.place_holder) };
+				getResources().getString(R.string.swifiic)};
+
 		// Adding Tabs
 		for (String tab_name : tabs) {
 			actionBar.addTab(actionBar.newTab().setText(tab_name).setTabListener(this));
@@ -295,6 +295,5 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	public void toast(String s){
 		Toast.makeText(MainActivity.this,s, Toast.LENGTH_SHORT).show();
 	}
-
 
 }

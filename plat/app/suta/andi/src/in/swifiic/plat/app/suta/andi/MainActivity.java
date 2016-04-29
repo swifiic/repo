@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.content.Context;
 import android.preference.PreferenceManager;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,8 +31,9 @@ import in.swifiic.plat.helper.andi.Helper;
 
 public class MainActivity extends SwifiicActivity  {
 
+
     @SuppressWarnings("unused")
-    private final long timeDiff = 20; // in minutes
+    private final long timeDiff = 1*(60*1000); // in milli seconds
 	private final String TAG="MainActivity";
     private AppEndpointContext aeCtx = new AppEndpointContext("suta", "0.1", "1");
     public static SharedPreferences pref =null;
@@ -71,16 +73,17 @@ public class MainActivity extends SwifiicActivity  {
             e.printStackTrace();
         }
 
+        // diff will be in milli seconds
         long diff = curDate.getTime()-lastDate.getTime();
-        long seconds = diff / 1000;
-        long minutes = seconds / 60;
-        long hours = minutes / 60;
-        long days = hours / 24;
-        if (minutes>timeDiff || minutes == 0){
+
+        Log.d(TAG,"diff = "+diff);
+        // diff  will be zero for the first time
+        if (diff>timeDiff || (diff == 0)){
             sendInfoToHub();
             SharedPreferences.Editor editor = pref.edit();
             editor.putString("lastUpdatedTime",scurTime);
             editor.commit();
+
         }
 
         //
@@ -106,7 +109,7 @@ public class MainActivity extends SwifiicActivity  {
         transactions.setText(pref.getString("revisedTransactionDetails","waiting"));
 
     	super.onResume();
-    	sendInfoToHub();
+    	//sendInfoToHub();
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -14,8 +14,8 @@
         android:layout_weight="0.13"
         android:layout_gravity="center_horizontal"
         android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/textView"
-        android:layout_alignEnd="@+id/textView" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
     
     <TextView 
         android:id="@+id/appname"
@@ -25,8 +25,8 @@
         android:text="SUTA v0.1"
         android:layout_gravity="center_horizontal"
         android:layout_below="@+id/swifficver"
-        android:layout_toRightOf="@+id/currTime"
-        android:layout_toEndOf="@+id/currTime" />
+        android:layout_alignRight="@+id/swifficver"
+        android:layout_alignEnd="@+id/swifficver" />
     
     
     <TextView 
@@ -36,8 +36,8 @@
         android:text="SWiFiIC Vers: 0.1"
         android:layout_gravity="center_horizontal"
         android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/appname"
-        android:layout_alignStart="@+id/appname" />
+        android:layout_toRightOf="@+id/imageView1"
+        android:layout_toEndOf="@+id/imageView1" />
 
     <TextView
         android:text="@string/updatedAt"
@@ -54,10 +54,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=" "
-        android:textSize="20dp"
+        android:textSize="18dp"
+        android:layout_toEndOf="@+id/appname"
         android:layout_alignTop="@+id/textView5"
-        android:layout_toRightOf="@+id/textView"
-        android:layout_toEndOf="@+id/textView" />
+        android:layout_toRightOf="@+id/appname" />
 
 
 
@@ -77,7 +77,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=" "
-        android:textSize="20dp"
+        android:textSize="18dp"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/textView"
         android:layout_toEndOf="@+id/textView" />
@@ -98,7 +98,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=" "
-        android:textSize="20dp"
+        android:textSize="18dp"
         android:maxLines = "6"
         android:scrollbars = "vertical"
         android:layout_below="@+id/textView3"

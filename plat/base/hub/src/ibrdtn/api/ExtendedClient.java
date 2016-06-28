@@ -1005,7 +1005,11 @@ public class ExtendedClient extends Client {
 
         // query bundle
         Integer respCode = query("bundle delivered " + id.toString());
-        if ( respCode != 200) {
+        if(respCode == 404 ) {
+        	// Abhishek - many a time the bundle is not being found when we try to mark it Delivered
+        	//     Supressing this exception June 2016
+        	System.err.println("markDelivered: 404 error for bundle Id:" + id.toString());
+        } else if ( respCode != 200) {
             // error
             throw new APIException("bundle delivered failed - code:"+ respCode);
         }

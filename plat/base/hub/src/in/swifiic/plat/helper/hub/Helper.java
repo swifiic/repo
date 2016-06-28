@@ -422,7 +422,10 @@ public class Helper {
 					if(rs.wasNull()){
 						mac_address="";
 					}
-
+				} else {
+					// UserName does not match - log and return
+					logger.log(Level.SEVERE, "Invalid user name " + fromUser + " for DTN ID " + dtnId + " and MAC: " + macId);
+					return;
 				}
 				//if MAC Address of the device is not initialized. update macaddress and dtn id both
 				if(mac_address == null || mac_address.isEmpty() || mac_address.equals("00:00:00:00:00:00") )

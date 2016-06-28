@@ -425,7 +425,7 @@ public class Helper {
 
 				}
 				//if MAC Address of the device is not initialized. update macaddress and dtn id both
-				if(mac_address.equals("00:00:00:00:00:00") || mac_address == null|| mac_address.isEmpty())
+				if(mac_address == null || mac_address.isEmpty() || mac_address.equals("00:00:00:00:00:00") )
 				{
 					logger.log(Level.INFO,"mac address is null or 00:..");
 					pst=con.prepareStatement(updateQuery1);
@@ -480,7 +480,8 @@ public class Helper {
 			}
 			catch(Exception e)
 			{
-				logger.log(Level.SEVERE,e.toString());
+				logger.log(Level.SEVERE,"updateDatabase " + e.toString());
+				e.printStackTrace();
 			}
 	}
 	

@@ -1004,9 +1004,10 @@ public class ExtendedClient extends Client {
         }
 
         // query bundle
-        if (query("bundle delivered " + id.toString()) != 200) {
+        Integer respCode = query("bundle delivered " + id.toString());
+        if ( respCode != 200) {
             // error
-            throw new APIException("bundle delivered failed");
+            throw new APIException("bundle delivered failed - code:"+ respCode);
         }
     }
 

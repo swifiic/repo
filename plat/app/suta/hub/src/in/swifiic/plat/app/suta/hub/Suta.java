@@ -35,7 +35,6 @@ public class Suta extends Base implements SwifiicHandler {
 	{
                 String filePath = " Not Set ";
                 try {
-                        Properties dbProperties=new Properties();
                         String base = System.getenv("SWIFIIC_HUB_BASE");
                         if(null != base) {
                                 filePath = base + "/properties/";
@@ -75,7 +74,6 @@ public class Suta extends Base implements SwifiicHandler {
 	static boolean exitFlag = false;
 
 	public static void main(String args[]) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		final Suta suta = new Suta();
 		
 		// schedule the task to run starting now and then every hour...
@@ -97,8 +95,8 @@ public class Suta extends Base implements SwifiicHandler {
 		        notif.addArgument("currentTime",strDate);
 		        notif.addArgument("sequenceNumber",seqno+"");
 		     
-		        System.out.println("Notification Sent with Sequence Number"+seqno+"at"+strDate);
-		        logNew.info("Notification Sent with Sequence Number"+seqno+"at"+strDate);
+		        System.out.println("Notification Sent with Sequence Number " + seqno + " at " + strDate);
+		        logNew.info("Notification Sent with Sequence Number " + seqno + " at " + strDate);
 				String payload = Helper.serializeNotification(notif);
 				suta.sendGrp("dtn://in.swifiic.plat.app.suta.andi/mc", payload);
 				logNew.info("Sending payload to  dtn://in.swifiic.plat.app.suta.andi/mc"
@@ -150,7 +148,7 @@ public class Suta extends Base implements SwifiicHandler {
 					String timeAtSutaOfLastHubUpdate = action.getArgument("timeAtSutaOfLastHubUpdate");
 
 					String fromUser = action.getArgument("fromUser");
-					String dtnId = Suta.this.dtnId;
+
 					if (macId != null && notifSentBySutaAt != null && dtnId != null
 							&& fromUser != null) {
 

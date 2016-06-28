@@ -27,6 +27,7 @@ public class DTNClient {
     private EventClient eventClient = null;
     private ibrdtn.api.sab.CallbackHandler sabHandler = null;
     private String endpoint = null;
+    private SwifiicHandler hndlr = null;
 
     /**
      * Constructor allowing to choose between different payload types and API handling strategies.
@@ -34,10 +35,11 @@ public class DTNClient {
      * @param endpoint the application's primary EID
      * @param type the expected payload format
      */
-    public DTNClient(String endpoint, SwifiicHandler hndlr) {
+    public DTNClient(String endpoint, SwifiicHandler handler) {
         executor = Executors.newSingleThreadExecutor();
 
         this.endpoint = endpoint;
+        hndlr = handler;
 
         exClient = new ExtendedClient();
 
@@ -77,6 +79,27 @@ public class DTNClient {
         logger.log(Level.INFO, "Sending {0}", bundle);
 
         final Bundle finalBundle = bundle;
+        if(! exClient.isConnected()) {
+        	logger.log(Level.WARNING, "During send found client as disconnected - attempting reconnect");
+        	try {
+        		this.exClient.close();
+        		exClient = null;
+        		System.gc();
+        		Thread.sleep(1000); // delay for a second
+        		
+        		exClient = new ExtendedClient();
+
+                sabHandler = new AbstractAPIHandler(exClient, executor, hndlr);    
+                exClient.setHandler(sabHandler);
+                exClient.setHost(Constants.HOST);
+                exClient.setPort(Constants.PORT);
+        		
+        		connect();
+        	} catch (Exception ex) {
+        		logger.log(Level.SEVERE, "Could not reconnect to Client " + ex.getLocalizedMessage());
+        	}
+        }
+
         final ExtendedClient finalClient = this.exClient;
 
         executor.execute(new Runnable() {

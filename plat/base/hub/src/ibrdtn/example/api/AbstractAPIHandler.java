@@ -158,8 +158,10 @@ public class AbstractAPIHandler implements ibrdtn.api.sab.CallbackHandler {
 	                sb.append(String.format("%02X ", b));
 	            }
 	
+	            int length = 20;
+	            if(sb.toString().length()<20) length = sb.toString().length();
 	            logger.log(Level.INFO, "Payload received: \n\t{0} \n\t [{1}]",
-	                    new Object[]{sb.toString().substring(0, 20).concat("..."), new String(bytes)});
+	                    new Object[]{sb.toString().substring(0, length).concat("..."), new String(bytes)});
 	        } catch (IOException ex) {
 	            logger.log(Level.SEVERE, "Unable to decode payload");
 	        }

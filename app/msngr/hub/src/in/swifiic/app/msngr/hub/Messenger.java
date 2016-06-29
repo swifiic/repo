@@ -23,6 +23,8 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import ibrdtn.api.ExtendedClient;
+
 
 public class Messenger extends Base implements SwifiicHandler {
 	
@@ -47,25 +49,36 @@ logNew.info(dtnClient.getConfiguration());
     	Messenger messenger = new Messenger();
     	String input;
     	while(true) {
-		    System.out.print("Enter \"exit\" to exit application: ");
+		System.out.print("Enter \"exit\" to exit application: ");
 	    	input = br.readLine();
+		while(null == input) {
+			input = br.readLine();
+		}
 	    	if(input.equalsIgnoreCase("exit")) {
 	    		messenger.exit();
 	    	}
+		ExtendedClient ec = messenger.getDtnClientInstance().getEC();
+		if(!ec.isConnected()){
+			System.err.println("Messenger attempting reconnect with the service");
+			messenger.getDtnClientInstance().reconnect();
+		}
 	    }
     }
 
 	@Override
 	public void handlePayload(String payload, final Context ctx,String srcurl) {
-		final String message = payload;
+		final String message = new String(payload);
 		System.out.println(srcurl);
-		//System.out.println("Got Message:" + payload);
+		System.err.println("Got Message:" + message);
+		System.err.println("Got Payload:" + payload);
 		logNew.info("\n Got Message:" +payload);
 		executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
+		        System.err.println("In run function Message:" + message);
                 	Action action = Helper.parseAction(message);
+			if(null == action) throw new Exception("Failed to parse message:" + message);
                 	Notification notif = new Notification(action);
                 	notif.updateNotificatioName("DeliverMessage");
                 	
@@ -74,19 +87,18 @@ logNew.info(dtnClient.getConfiguration());
                 	
               
                 	
-                	// A user may have multiple devices
-                	List<String> deviceList = Helper.getDevicesForUser(toUser, ctx); 
+                	// A user may have multiple devices - deprecated for now - only one device per user
+                	String deviceDtnId = Helper.getDeviceDtnIdForUser(toUser, ctx); 
                  	
                 	String response = Helper.serializeNotification(notif);
-                	for(int i = deviceList.size()-1; i >= 0; --i) {
-                		send(deviceList.get(i) + "/in.swifiic.app.msngr.andi" /*"/in.swifiic.android.app.msngr"*/, response);
+                	send(deviceDtnId + "/in.swifiic.app.msngr.andi" , response);
                 		// Mark bundle as delivered...                    
                         logger.log(Level.INFO, "Attempted to send to {1}, had received \n{0}\n and responsed with \n {2}", 
-                        				new Object[] {message, deviceList.get(i) + "/in.swifiic.app.msngr.andi" /*"/in.swifiic.android.app.msngr"*/, response});
-                	}
+                        				new Object[] {message, deviceDtnId + "/in.swifiic.app.msngr.andi", response});
                 	boolean status = Helper.debitUser(fromUser);
                 } catch (Exception e) {
                     logger.log(Level.SEVERE, "Unable to process message and send response\n" + e.getMessage());
+		    e.printStackTrace();
 		    logNew.info("Unable to process message and send response\n" + e.getMessage());
                 }
             }

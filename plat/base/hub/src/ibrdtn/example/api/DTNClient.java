@@ -70,6 +70,29 @@ public class DTNClient {
     }
 
     /**
+     * Reconnect  to service if prior error
+     */
+    public void reconnect() {
+    	try {
+    		this.exClient.close();
+    		exClient = null;
+    		System.gc();
+    		Thread.sleep(1000); // delay for a second
+    		
+    		exClient = new ExtendedClient();
+
+            sabHandler = new AbstractAPIHandler(exClient, executor, hndlr);    
+            exClient.setHandler(sabHandler);
+            exClient.setHost(Constants.HOST);
+            exClient.setPort(Constants.PORT);
+    		
+    		connect();
+    	} catch (Exception ex) {
+    		logger.log(Level.SEVERE, "Could not reconnect to Client " + ex.getLocalizedMessage());
+    	}
+    	
+    }
+    /**
      * Sends the given Bundle to the daemon.
      *
      * @param bundle
@@ -81,23 +104,7 @@ public class DTNClient {
         final Bundle finalBundle = bundle;
         if(! exClient.isConnected()) {
         	logger.log(Level.WARNING, "During send found client as disconnected - attempting reconnect");
-        	try {
-        		this.exClient.close();
-        		exClient = null;
-        		System.gc();
-        		Thread.sleep(1000); // delay for a second
-        		
-        		exClient = new ExtendedClient();
-
-                sabHandler = new AbstractAPIHandler(exClient, executor, hndlr);    
-                exClient.setHandler(sabHandler);
-                exClient.setHost(Constants.HOST);
-                exClient.setPort(Constants.PORT);
-        		
-        		connect();
-        	} catch (Exception ex) {
-        		logger.log(Level.SEVERE, "Could not reconnect to Client " + ex.getLocalizedMessage());
-        	}
+        	reconnect();
         }
 
         final ExtendedClient finalClient = this.exClient;

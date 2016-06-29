@@ -17,8 +17,8 @@ public class Base {
         return dtnClient;
     }
 
-    public void setDtnClient(DTNClient client) {
-        this.dtnClient = client;
+    public DTNClient getDtnClientInstance() {
+        return this.dtnClient ;
     }
     
     protected void exit() {

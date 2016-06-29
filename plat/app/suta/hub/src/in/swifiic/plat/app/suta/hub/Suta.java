@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import in.swifiic.plat.helper.hub.xml.Action;
 
 import ibrdtn.api.Base64;
+import ibrdtn.api.ExtendedClient;
 
 public class Suta extends Base implements SwifiicHandler {
 	public static Properties sutaProperties=null;
@@ -57,7 +58,6 @@ public class Suta extends Base implements SwifiicHandler {
 			"");
 	public static org.apache.logging.log4j.Logger logNew = org.apache.logging.log4j.LogManager
 			.getLogger("in.swifiic.plat.app.suta.hub.Suta");
-	private static String dtnId = null;
 	private DTNClient dtnClient;
 
 	protected ExecutorService executor = Executors.newCachedThreadPool();
@@ -80,6 +80,11 @@ public class Suta extends Base implements SwifiicHandler {
 		final Runnable runnable = new Runnable() {
 			int seqno=1;
 			public void run() {
+				ExtendedClient ec = suta.getDtnClientInstance().getEC();
+				if(!ec.isConnected()){
+					System.err.println("SUTA attempting reconnect with the service");
+					suta.getDtnClientInstance().reconnect();
+				}
 				String userList = Helper.getAllUsers();
 				//here account detais also contains heartbeat(updated)
 				String accountDetails = Helper.getAccountDetailsForAll();
@@ -128,7 +133,7 @@ public class Suta extends Base implements SwifiicHandler {
 	public void handlePayload(String payload, final Context ctx, String url) {
 		int i;
 		i = url.lastIndexOf("/");
-		dtnId = url.substring(0, i);
+		final String dtnId = url.substring(0, i);
 		final String message = payload;
 		executor.execute(new Runnable() {
 
@@ -139,6 +144,11 @@ public class Suta extends Base implements SwifiicHandler {
 					Action action = Helper.parseAction(message);
 					if (null == action)
 						return;
+					String opName = action.getOperationName();
+					if(opName.compareTo("DeviceListUpdate")==0)
+						return;
+					
+					// We are looking for Op Name "SendInfo" "SendMessage"
 					String actualContent = action.getArgument("message");
 					String fileName = action.getArgument("filename");
 

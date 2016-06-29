@@ -84,21 +84,20 @@ public class Helper {
         return null;
 	}
 
-	public static List<String> getDevicesForUser(String user, Context ctx) {
-		List<String> deviceList = new ArrayList<String>();
+	public static String getDeviceDtnIdForUser(String user, Context ctx) {
 		Connection connection = DatabaseHelper.connectToDB();
 		PreparedStatement statement;
 		String sql=sqlProperties.getProperty("user.findDtnId");
 		ResultSet result;
+		String returnVal = null;
 		try {
 			statement = connection.prepareStatement(sql);
 			statement.setString(1, user);
 			result = statement.executeQuery();
 			// Extract data from result set
-			while(result.next()) {
+			if(result.next()) {
 				// Retrieve by column name
-				String dtnId = result.getString("DtnId");
-				deviceList.add(dtnId);
+				returnVal = result.getString("DtnId");
 			}
 			result.close();
 			statement.close();
@@ -106,32 +105,9 @@ public class Helper {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return deviceList;
+		return returnVal;
 	}
 	
-	public static List<String> getDevicesForAllUsers() {
-		List<String> deviceList = new ArrayList<String>();
-		Connection connection = DatabaseHelper.connectToDB();
-		PreparedStatement statement;
-		String sql=sqlProperties.getProperty("user.findAllDtnIds");
-		ResultSet result;
-		try {
-			statement = connection.prepareStatement(sql);
-			result = statement.executeQuery();
-			// Extract data from result set
-			while(result.next()) {
-				// Retrieve by column name
-				String dtnId = result.getString("DtnId");
-				deviceList.add(dtnId);
-			}
-			result.close();
-			statement.close();
-			DatabaseHelper.closeDB(connection);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return deviceList;
-	}
 	
 	/***
 	 * @author aarthi

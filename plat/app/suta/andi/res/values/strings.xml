@@ -9,7 +9,7 @@
     <string name="transactions">Transactions :</string>
 
   <!-- abhishek for build details intial values are place holders -->
-    <string name="app_build_date">20151209</string>
-    <string name="app_build_ctx">jarvis /home/stark/AndroidStudioProjects/repo/plat/app/suta/andi stark</string>
+    <string name="app_build_date">20170811</string>
+    <string name="app_build_ctx">nic-ThinkPad /home/nic/repo/plat/app/suta/andi nic</string>
 
 </resources>

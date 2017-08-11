@@ -11,7 +11,7 @@
     <string name="hello_world">Hello world!</string>
 
   <!-- abhishek for build details intial values are place holders -->
-    <string name="app_build_date">20151209</string>
-    <string name="app_build_ctx">jarvis /home/stark/AndroidStudioProjects/repo/app/msngr/andi stark</string>
+    <string name="app_build_date">20170811</string>
+    <string name="app_build_ctx">nic-ThinkPad /home/nic/repo/app/msngr/andi nic</string>
 
 </resources>

@@ -11,7 +11,7 @@ get_abs_filename() {
 needExit="false"
 echo "Checking Whether Prerequisites are present"
 echo "Checking for Java"
-type java >/dev/null 2>&1 
+type java >/dev/null 2>&1
 if [ $? -ne 0 ] ; then
     echo "Java is not Present. sudo apt-get install openjdk-7-jdk"
     needExit="true"
@@ -21,15 +21,15 @@ fi
 
 # we may need a better check than this for tomcat7-user
 echo "Checking for Tomcat User"
-if [ -f /etc/init.d/tomcat7* ]; then
+if [ -f /etc/init.d/tomcat8* ]; then
     echo " Tomcat is installed"
-else 
+else
     echo " Tomcat is not installed. Install using sudo apt-get install tomcat7-user"
     needExit="true"
 fi
 
 echo "Checking for MySQL"
-type mysql >/dev/null 2>&1 
+type mysql >/dev/null 2>&1
 if [ $? -ne 0 ] ; then
     echo "MySQL is not Present. sudo apt-get install mysql-server"
     needExit="true"
@@ -38,7 +38,7 @@ else
 fi
 
 echo "Checking for Apache"
-type apache2 >/dev/null 2>&1 
+type apache2 >/dev/null 2>&1
 if [ $? -ne 0 ] ; then
     echo "Apache is not Present. Install using sudo apt-get install apache2 php5 phpmyadmin"
     needExit="true"
@@ -63,7 +63,7 @@ fi
 # then
 #         echo "Tomcat is down.";
 #         # sudo service tomcat7 start
-# 
+#
 # else
 #         echo "Tomcat7 is running";
 # fi
@@ -71,7 +71,7 @@ fi
 echo "Checking for IBR-DTN Daemon"
 if [ -f /etc/init.d/ibrdtn* ]; then
     echo " IBR-DTN is installed"
-else 
+else
     echo " IBR-DTN is not installed. Install IBR-DTN from https://trac.ibr.cs.tu-bs.de/project-cm-2012-ibrdtn/wiki/download#DebianUbuntuRepository"
     needExit="true"
 fi
@@ -85,7 +85,7 @@ if [ ! -f ${distFile} ]; then
     else
         distFile=${1}
     fi
-fi 
+fi
 
 distFile=$(get_abs_filename "${distFile}")
 
@@ -96,7 +96,7 @@ fi
 
 read -p "Enter the base directory for SWIFiIC Installation Eg. /opt : " base_directory
 read -p "Enter deployment identifier (e.g. location code / pin) : " deploy_code
- 
+
 # deploy_code and base_directory should not be empty
 if [ "x${base_directory}" = "x"  ]; then
 	echo "Empty base folder"
@@ -154,11 +154,11 @@ sudo mkdir /var/www/html/apk
 sudo cp apk/* /var/www/html/apk
 sudo chown -R swifiic:swifiic /var/www/html/apk
 
-sudo tomcat7-instance-create -p 18090 -c 18009 HubSrvr
+sudo tomcat8-instance-create -p 18090 -c 18009 HubSrvr
 sudo mv hub/HubSrvr.war ${base_directory}/HubSrvr/webapps
 
 
-echo "export SWIFIIC_HUB_BASE=${base_directory}" | sudo tee ${base_directory}/properties/setEnv.sh 
+echo "export SWIFIIC_HUB_BASE=${base_directory}" | sudo tee ${base_directory}/properties/setEnv.sh
 echo "export SWIFIIC_HUB_BASE=${base_directory}" | sudo tee >> ${base_directory}/HubSrvr/bin/setenv.sh
 echo "export SWIFIIC_HUB_BASE=${base_directory}" | sudo tee >> ${base_directory}/.bashrc
 
@@ -201,7 +201,7 @@ net_wlan0_interface = wlan0 # listen on interface eth0
 net_wlan0_port = 4556
 EOF
 sudo mkdir -p /var/spool/ibrdtn/bundles
-sudo chmod -R 777 /var/spool/ibrdtn/bundles  
+sudo chmod -R 777 /var/spool/ibrdtn/bundles
 
 sudo mkdir -p /var/log/msngr /var/log/suta /var/log/soa
 sudo chmod -R 777 /var/log/msngr /var/log/suta /var/log/soa
@@ -211,4 +211,3 @@ rm -rf /tmp/deploy
 echo "======== Completed The SWiFiIC setup under ${base_directory}====="
 echo
 exit
-

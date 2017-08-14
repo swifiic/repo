@@ -30,6 +30,7 @@ import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.CookieHandler;
@@ -252,8 +253,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 					builder.appendQueryParameter(bnvp.getName(), bnvp.getValue());
 				}
 				String query = builder.build().getEncodedQuery();
-				try (BufferedWriter bw = new BufferedWriter(conn.getOutputStream())) {
-					bw.write(query);
+				try {
+					BufferedOutputStream bos = new BufferedOutputStream(conn.getOutputStream());
+					bos.write(query.getBytes("utf-8"));
+					bos.flush();
+					bos.close();
 				} catch (IOException e) {
 
 				}

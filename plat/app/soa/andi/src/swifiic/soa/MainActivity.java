@@ -27,7 +27,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.HttpHostConnectException;
-import org.apache.http.impl.client.DefaultHttpClient;
+//import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.BufferedOutputStream;
@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -239,13 +240,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 						new ArrayList<BasicNameValuePair>(AuthenticationActivity.getCurNamevaluePairs());
 				//runOnUiThread(new ToastThread(nmPairs.con
 				nmPairs.add(new BasicNameValuePair("name","Logout"));
+
 				java.net.URL url = new URL("http://" + URL + "/hubSrvr/Oprtr");
 				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 				conn.setDoOutput(true);
-				conn.setChunkedStreamingMode(50); //??? What value to be used here?
 				conn.setRequestMethod("POST");
-				conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-				conn.setRequestProperty("charset", "utf-8");
 
 				Uri.Builder builder = new Uri.Builder();
 
@@ -263,10 +262,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 				}
 
 			}
-			catch(HttpHostConnectException e){
+			catch(MalformedURLException e) {
 				runOnUiThread(new ToastThread(getResources().getString(R.string.HostConnRefused)));
-
-
 			}
 			catch(Exception e){
 				e.printStackTrace();

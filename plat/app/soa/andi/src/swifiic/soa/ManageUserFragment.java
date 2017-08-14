@@ -1,7 +1,10 @@
 package swifiic.soa;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -33,6 +36,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -477,15 +481,18 @@ private class RechargeUserTask extends AsyncTask<String,Void,Void>{
 		String url = null;
 		HttpResponse response = null;
 	try {
-	    if (settings.contains(URL)) url = settings.getString(URL,null);
-		else throw new Exception("URL not set in settings!!");
+
+	    if (settings.contains(URL)) {
+			url = settings.getString(URL,null);
+		} else {
+			throw new Exception("URL not set in settings!!");
+		}
+
 		String userId = params[0];
 		String recharge = params[1];
 		event = params[2];
-		HttpClient httpclient = new DefaultHttpClient();
-	    HttpPost httppost = new HttpPost("http://"+url+"/HubSrvr/Oprtr");
 
-	   ArrayList<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();
+		ArrayList<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();
 	    
 	    nameValuePairs.addAll(commonNameValuePairs);
 	    nameValuePairs.add(new BasicNameValuePair(Constants.name_tag,"RechargeUser"));
@@ -495,11 +502,29 @@ private class RechargeUserTask extends AsyncTask<String,Void,Void>{
 	    nameValuePairs.add(new BasicNameValuePair(Constants.Amount_tag,recharge));
 	    nameValuePairs.add(new BasicNameValuePair(Constants.EventNotes_tag,event+" from SOA app"));
 	    nameValuePairs.add(new BasicNameValuePair(Constants.Details_tag,event));
-	    
-	    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-        response = httpclient.execute(httppost);
+
+		java.net.URL targetUrl = new URL("http://" + URL + "/hubSrvr/Oprtr");
+		HttpURLConnection conn = (HttpURLConnection) targetUrl.openConnection();
+		conn.setDoOutput(true);
+		conn.setRequestMethod("POST");
+
+		Uri.Builder builder = new Uri.Builder();
+
+		for (BasicNameValuePair bnvp: nameValuePairs) {
+			builder.appendQueryParameter(bnvp.getName(), bnvp.getValue());
+		}
+
+		String query = builder.build().getEncodedQuery();
+		try {
+			BufferedOutputStream bos = new BufferedOutputStream(conn.getOutputStream());
+			bos.write(query.getBytes("utf-8"));
+			bos.flush();
+			bos.close();
+		} catch (IOException e) {
+
+		}
         
-     int responseCode = response.getStatusLine().getStatusCode();
+     int responseCode = conn.getResponseCode();
        Log.v("ERROR", "Response Code => " + responseCode);
        String s = null;
       

@@ -1,8 +1,11 @@
 package swifiic.soa;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
@@ -21,6 +24,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -336,10 +340,6 @@ public class AddUserFragment extends Fragment implements OnClickListener,OnFocus
 				addrProofStr = AddUserFragment.getEncodedStr(addrProof, false);
 				customerStr = AddUserFragment.getEncodedStr(customerPic, false);
 
-
-				HttpClient httpclient = new DefaultHttpClient();
-				HttpPost httppost = new HttpPost("http://" + url + "/HubSrvr/Oprtr");
-
 				// Add your data
 				ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(curNameValuePairs);
 
@@ -357,15 +357,35 @@ public class AddUserFragment extends Fragment implements OnClickListener,OnFocus
 				if (userId != null) {
 					nameValuePairs.add(new BasicNameValuePair(Constants.userKeyID_tag, Integer.toString(userId)));
 					nameValuePairs.add(new BasicNameValuePair(Constants.name_tag, "EditUser"));
-				} else
+				} else {
 					nameValuePairs.add(new BasicNameValuePair(Constants.name_tag, "AddUser"));
+				}
 
-				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+				java.net.URL targetUrl = new URL("http://" + url + "/HubSrvr/Oprtr");
+				HttpURLConnection conn = (HttpURLConnection) targetUrl.openConnection();
+				conn.setDoOutput(true);
+				conn.setRequestMethod("POST");
+
+				Uri.Builder builder = new Uri.Builder();
+
+				for (NameValuePair bnvp: nameValuePairs) {
+					builder.appendQueryParameter(bnvp.getName(), bnvp.getValue());
+				}
+
+				String query = builder.build().getEncodedQuery();
+				Log.d("SOA", query);
+				try {
+					BufferedOutputStream bos = new BufferedOutputStream(conn.getOutputStream());
+					bos.write(query.getBytes("utf-8"));
+					bos.flush();
+					bos.close();
+				} catch (IOException e) {
+
+				}
 
 				// Execute HTTP Post Request
-				response = httpclient.execute(httppost);
 				boolean isEditTask = userId != null;
-				int responseCode = response.getStatusLine().getStatusCode();
+				int responseCode = conn.getResponseCode();
 				if (responseCode == HttpURLConnection.HTTP_OK) {
 					String msg = null;
 					if (isEditTask) {

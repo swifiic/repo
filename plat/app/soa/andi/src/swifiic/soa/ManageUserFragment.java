@@ -430,45 +430,44 @@ rechargeDialog.setOnKeyListener(new Dialog.OnKeyListener() {
 	
 // Delete User task to disable  user
 private class DeleteUserTask extends AsyncTask<String,Void,Void>{
-	
 	@Override
 	protected Void doInBackground(String... params) {
 		String url = null;
 		HttpResponse response = null;
 		try {	
-		if (settings.contains(URL)) url = settings.getString(URL,null);
-		else throw new Exception("URL not set in settings!!");
-		String userId = params[0];
-		HttpClient httpclient = new DefaultHttpClient();
-	    HttpPost httppost = new HttpPost("http://"+url+"/HubSrvr/Oprtr");
-	
-	    ArrayList<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();
-	    
-	    nameValuePairs.addAll(commonNameValuePairs);
-	    nameValuePairs.add(new BasicNameValuePair(Constants.name_tag,"DeleteUser"));
-	    nameValuePairs.add(new BasicNameValuePair(Constants.userKeyID_tag,userId));
-	    httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-        response = httpclient.execute(httppost);
-    
-        int responseCode = response.getStatusLine().getStatusCode();
-        Log.v("ERROR", "Response Code => " + responseCode);
-      if (responseCode==HttpURLConnection.HTTP_OK){
-    	  getActivity().runOnUiThread(new ToastThread(getResources().getString(R.string.DisableSuccess)));
-     } else if (responseCode==HttpURLConnection.HTTP_UNAUTHORIZED) {
-    	 MainActivity act = (MainActivity)getActivity();
-   	     getActivity().runOnUiThread(act.new ForceLogoutThread(getResources().getString(R.string.SessionExpired)));
-     }
-      else  {
-    	  getActivity().runOnUiThread(new ToastThread(getResources().getString(R.string.DisableUnsuccess)));
-      }
-    } 
-		catch(HttpHostConnectException e){
-		  getActivity().runOnUiThread(new ToastThread(getResources().getString(R.string.HostConnRefused))); 
-		}
-		catch(Exception e){
-    	getActivity().runOnUiThread(new ToastThread("Exception in disabling user : "+e));
-    }
-		   return null;
+			if (settings.contains(URL)) {
+				url = settings.getString(URL,null);
+			} else {
+				throw new Exception("URL not set in settings!!");
+			}
+			String userId = params[0];
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httppost = new HttpPost("http://"+url+"/HubSrvr/Oprtr");
+
+			ArrayList<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();
+
+			nameValuePairs.addAll(commonNameValuePairs);
+			nameValuePairs.add(new BasicNameValuePair(Constants.name_tag,"DeleteUser"));
+			nameValuePairs.add(new BasicNameValuePair(Constants.userKeyID_tag,userId));
+			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			response = httpclient.execute(httppost);
+
+			int responseCode = response.getStatusLine().getStatusCode();
+			Log.v("ERROR", "Response Code => " + responseCode);
+			if (responseCode==HttpURLConnection.HTTP_OK) {
+				getActivity().runOnUiThread(new ToastThread(getResources().getString(R.string.DisableSuccess)));
+			} else if (responseCode==HttpURLConnection.HTTP_UNAUTHORIZED) {
+				MainActivity act = (MainActivity)getActivity();
+				getActivity().runOnUiThread(act.new ForceLogoutThread(getResources().getString(R.string.SessionExpired)));
+			} else  {
+				getActivity().runOnUiThread(new ToastThread(getResources().getString(R.string.DisableUnsuccess)));
+			}
+	    } catch(HttpHostConnectException e){
+			getActivity().runOnUiThread(new ToastThread(getResources().getString(R.string.HostConnRefused)));
+		} catch(Exception e){
+    		getActivity().runOnUiThread(new ToastThread("Exception in disabling user : "+e));
+    	}
+		return null;
 	}
 }
 	
@@ -503,7 +502,7 @@ private class RechargeUserTask extends AsyncTask<String,Void,Void>{
 	    nameValuePairs.add(new BasicNameValuePair(Constants.EventNotes_tag,event+" from SOA app"));
 	    nameValuePairs.add(new BasicNameValuePair(Constants.Details_tag,event));
 
-		java.net.URL targetUrl = new URL("http://" + URL + "/hubSrvr/Oprtr");
+		java.net.URL targetUrl = new URL("http://" + URL + "/HubSrvr/Oprtr");
 		HttpURLConnection conn = (HttpURLConnection) targetUrl.openConnection();
 		conn.setDoOutput(true);
 		conn.setRequestMethod("POST");

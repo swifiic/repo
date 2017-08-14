@@ -12,6 +12,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
     compile fileTree(dir: '../../../../lib/common', include: '*.jar')
     compile project(':plat:base:andi')
+    compile 'com.google.android.gms:play-services-appindexing:8.4.0'
 }
 
 

@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -233,15 +234,15 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	public class LogOutTask extends AsyncTask<Void,Void,Void>{
 		@Override
 		protected Void doInBackground(Void[] params) {
-
+			Log.d("newTag", "LoggingOutNow");
 			try {
-				String URL = AuthenticationActivity.getUrl();
+				String authUrl = AuthenticationActivity.getUrl();
 				ArrayList<BasicNameValuePair> nmPairs =
 						new ArrayList<BasicNameValuePair>(AuthenticationActivity.getCurNamevaluePairs());
 				//runOnUiThread(new ToastThread(nmPairs.con
 				nmPairs.add(new BasicNameValuePair("name","Logout"));
 
-				java.net.URL url = new URL("http://" + URL + "/hubSrvr/Oprtr");
+				java.net.URL url = new URL("http://" + authUrl + "/HubSrvr/Oprtr");
 				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 				conn.setDoOutput(true);
 				conn.setRequestMethod("POST");
@@ -251,7 +252,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 				for (BasicNameValuePair bnvp: nmPairs) {
 					builder.appendQueryParameter(bnvp.getName(), bnvp.getValue());
 				}
+
 				String query = builder.build().getEncodedQuery();
+				Log.d("newTag", query);
+
 				try {
 					BufferedOutputStream bos = new BufferedOutputStream(conn.getOutputStream());
 					bos.write(query.getBytes("utf-8"));

@@ -318,6 +318,7 @@ public class AddUserFragment extends Fragment implements OnClickListener,OnFocus
 		protected Void doInBackground(Void... params) {
 			String url = null;
 			//getActivity().runOnUiThread(new ToastThread("In doInBckgrnd of AsyncTask"));
+			Log.d("myNewTag", "started-editing");
 			HttpResponse response = null;
 			try {
 				if (settings.contains(URL)) url = settings.getString(URL, null);

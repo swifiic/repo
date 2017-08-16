@@ -16,7 +16,7 @@
     <TextView android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Functioning yet to come"
+        android:text="Functionality yet to come"
         android:textSize="20sp"
         android:id="@+id/textView2"
         android:layout_marginTop="77dp"

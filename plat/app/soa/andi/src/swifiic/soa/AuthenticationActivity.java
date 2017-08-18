@@ -1,14 +1,22 @@
 package swifiic.soa;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -36,6 +44,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -224,47 +233,78 @@ public class AuthenticateTask extends AsyncTask<Void,Void,Void>{
 			String pass = etPwd.getText().toString().trim();
 
 			ArrayList<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>(curNameValuePairs);
-			nameValuePairs.add(new BasicNameValuePair(Constants.name_tag,"Login"));
-			nameValuePairs.add(new BasicNameValuePair(Constants.userId_tag,userId));
-			nameValuePairs.add(new BasicNameValuePair(Constants.Password_tag,pass));
+			nameValuePairs.add(new BasicNameValuePair(Constants.name_tag, "Login"));
+			nameValuePairs.add(new BasicNameValuePair(Constants.userId_tag, userId));
+			nameValuePairs.add(new BasicNameValuePair(Constants.Password_tag, pass));
 	/*
 			SchemeRegistry schemeRegistry = new SchemeRegistry();
 			schemeRegistry.register(new Scheme("https",
 						SSLSocketFactory.getSocketFactory(), 443));*/
-	//------------------
+			//------------------
 			/*
 			HttpParams par = new BasicHttpParams();
 			SingleClientConnManager mgr = new SingleClientConnManager(par, schemeRegistry);
 			HttpClient httpclient = new DefaultHttpClient(mgr, par);*/
-	   //-------------------
+			//-------------------
 			//HttpClient httpclient = new MyHttpClient(getApplicationContext());
-			HttpClient httpclient = new DefaultHttpClient();//();
-			//HttpClient httpclient = createHttpClient();
-			HttpPost httppost = new HttpPost("http://"+url+"/HubSrvr/Oprtr");
-
-			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-			HttpResponse response = httpclient.execute(httppost);
+//			HttpClient httpclient = new DefaultHttpClient();//();
+//			//HttpClient httpclient = createHttpClient();
+//			HttpPost httppost = new HttpPost("http://"+url+"/HubSrvr/Oprtr");
+//
+//			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+//			HttpResponse response = httpclient.execute(httppost);
 
 			java.net.URL targetUrl = new URL("http://" + url + "/HubSrvr/Oprtr");
 			HttpURLConnection conn = (HttpURLConnection) targetUrl.openConnection();
 			conn.setDoOutput(true);
+			conn.setDoInput(true);
 			conn.setRequestMethod("POST");
 
-			int responseCode = response.getStatusLine().getStatusCode();
-			Log.v("ERROR", "Response Code => " + responseCode);
-			if (responseCode==HttpURLConnection.HTTP_OK) {
-				Header[] headers = response.getAllHeaders();
+			Uri.Builder builder = new Uri.Builder();
+
+			for (NameValuePair bnvp : nameValuePairs) {
+				builder.appendQueryParameter(bnvp.getName(), bnvp.getValue());
+			}
+
+			String query = builder.build().getEncodedQuery();
+			Log.d("SOA", query);
+			try {
+				BufferedOutputStream bos = new BufferedOutputStream(conn.getOutputStream());
+				bos.write(query.getBytes("utf-8"));
+				bos.flush();
+				bos.close();
+			} catch (IOException e) {
+				Log.d("SOA", "Could not send HTTP POST");
+			}
+			int responseCode = conn.getResponseCode();
+
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+//				Header[] headers = response.getAllHeaders();
+
 				String cookie = null,cookieID=null;
-				for (int i = 0; i < headers.length; i++) {
-					System.out.println(headers[i] + "");
-					if (headers[i].toString().startsWith("Set-Cookie: ")) {// JSESSIONID")){
-						cookie = headers[i].toString().substring(12);
-						if (cookie.startsWith(Constants.JSESSIONID)) {
-							cookieID = cookie.substring(11,11+32);
+
+				Map<String, List<String>> headers = conn.getHeaderFields();
+
+				for (Map.Entry<String, List<String>> entry: headers.entrySet()) {
+					if (entry.getKey() == "Set-Cookie") {
+						cookie = entry.getValue().get(0);
+						if (cookie.startsWith((Constants.JSESSIONID))) {
+							cookieID = cookie.substring(11, 11+32);
 							break;
 						}
 					}
 				}
+
+//				for (int i = 0; i < headers.length; i++) {
+//					System.out.println(headers[i] + "");
+//					if (headers[i].toString().startsWith("Set-Cookie: ")) {// JSESSIONID")){
+//						cookie = headers[i].toString().substring(12);
+//						if (cookie.startsWith(Constants.JSESSIONID)) {
+//							cookieID = cookie.substring(11,11+32);
+//							break;
+//						}
+//					}
+//				}
 
 				SharedPreferences.Editor editor = settings.edit();
 				editor.putString(Constants.USERNAME,userId);

@@ -1,6 +1,7 @@
 package swifiic.soa;
 
 import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -218,77 +219,81 @@ public class AuthenticateTask extends AsyncTask<Void,Void,Void>{
 	protected Void doInBackground(Void... params) {
 		String url = null;
 		try {
-		url = getUrl();	
-		String userId = etUser.getText().toString().trim();
-		String pass = etPwd.getText().toString().trim();
-		
-		ArrayList<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>(curNameValuePairs);
-    	nameValuePairs.add(new BasicNameValuePair(Constants.name_tag,"Login"));
-    	nameValuePairs.add(new BasicNameValuePair(Constants.userId_tag,userId));
-    	nameValuePairs.add(new BasicNameValuePair(Constants.Password_tag,pass));
-/*    	
-    	SchemeRegistry schemeRegistry = new SchemeRegistry();
-    	schemeRegistry.register(new Scheme("https", 
-    	            SSLSocketFactory.getSocketFactory(), 443));*/
-//------------------
-    	/*
-    	HttpParams par = new BasicHttpParams();
-    	SingleClientConnManager mgr = new SingleClientConnManager(par, schemeRegistry);
-    	HttpClient httpclient = new DefaultHttpClient(mgr, par);*/
-   //-------------------
-    	//HttpClient httpclient = new MyHttpClient(getApplicationContext());
-    	HttpClient httpclient = new DefaultHttpClient();//();
-    	//HttpClient httpclient = createHttpClient();
-    	HttpPost httppost = new HttpPost("http://"+url+"/HubSrvr/Oprtr");
-		
-		httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-        HttpResponse response = httpclient.execute(httppost);
-	
-        int responseCode = response.getStatusLine().getStatusCode();
-            Log.v("ERROR", "Response Code => " + responseCode);
-          if (responseCode==HttpURLConnection.HTTP_OK){
-        	  Header[] headers = response.getAllHeaders();
-              String cookie = null,cookieID=null;
-  			for (int i = 0; i < headers.length; i++) {
-                  System.out.println(headers[i] + "");
-                  if (headers[i].toString().startsWith("Set-Cookie: ")){// JSESSIONID")){
-                      cookie = headers[i].toString().substring(12);
-                      if (cookie.startsWith(Constants.JSESSIONID)) {
-                          cookieID = cookie.substring(11,11+32);
-                          break;
-                      }
-                  } }
-  			
-        	 SharedPreferences.Editor editor = settings.edit();
-		     editor.putString(Constants.USERNAME,userId);
-		     editor.putString(Constants.JSESSIONID,cookieID);
-		     editor.commit();
-		     // Remember the user if the 'RememberMe' checkbox is checked!!
-		     curNameValuePairs.add(new BasicNameValuePair(Constants.JSESSIONID,cookieID));
-		     curNameValuePairs.add(new BasicNameValuePair(Constants.userId_tag,userId));
-		     
-		     if (cbRememberMe.isChecked()) {
-		    	 users.put(userId,pass);
-		    	 helper.addUser(userId, pass);
-		     }
-		    runOnUiThread(new ToastThread(getResources().getString(R.string.Logged_in)));
-			startActivity(new Intent(AuthenticationActivity.this,MainActivity.class)); 
-			AuthenticationActivity.this.finish();
+			url = getUrl();
+			String userId = etUser.getText().toString().trim();
+			String pass = etPwd.getText().toString().trim();
+
+			ArrayList<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>(curNameValuePairs);
+			nameValuePairs.add(new BasicNameValuePair(Constants.name_tag,"Login"));
+			nameValuePairs.add(new BasicNameValuePair(Constants.userId_tag,userId));
+			nameValuePairs.add(new BasicNameValuePair(Constants.Password_tag,pass));
+	/*
+			SchemeRegistry schemeRegistry = new SchemeRegistry();
+			schemeRegistry.register(new Scheme("https",
+						SSLSocketFactory.getSocketFactory(), 443));*/
+	//------------------
+			/*
+			HttpParams par = new BasicHttpParams();
+			SingleClientConnManager mgr = new SingleClientConnManager(par, schemeRegistry);
+			HttpClient httpclient = new DefaultHttpClient(mgr, par);*/
+	   //-------------------
+			//HttpClient httpclient = new MyHttpClient(getApplicationContext());
+			HttpClient httpclient = new DefaultHttpClient();//();
+			//HttpClient httpclient = createHttpClient();
+			HttpPost httppost = new HttpPost("http://"+url+"/HubSrvr/Oprtr");
+
+			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			HttpResponse response = httpclient.execute(httppost);
+
+			java.net.URL targetUrl = new URL("http://" + url + "/HubSrvr/Oprtr");
+			HttpURLConnection conn = (HttpURLConnection) targetUrl.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+
+			int responseCode = response.getStatusLine().getStatusCode();
+			Log.v("ERROR", "Response Code => " + responseCode);
+			if (responseCode==HttpURLConnection.HTTP_OK) {
+				Header[] headers = response.getAllHeaders();
+				String cookie = null,cookieID=null;
+				for (int i = 0; i < headers.length; i++) {
+					System.out.println(headers[i] + "");
+					if (headers[i].toString().startsWith("Set-Cookie: ")) {// JSESSIONID")){
+						cookie = headers[i].toString().substring(12);
+						if (cookie.startsWith(Constants.JSESSIONID)) {
+							cookieID = cookie.substring(11,11+32);
+							break;
+						}
+					}
+				}
+
+				SharedPreferences.Editor editor = settings.edit();
+				editor.putString(Constants.USERNAME,userId);
+				editor.putString(Constants.JSESSIONID,cookieID);
+				editor.commit();
+				// Remember the user if the 'RememberMe' checkbox is checked!!
+				curNameValuePairs.add(new BasicNameValuePair(Constants.JSESSIONID,cookieID));
+				curNameValuePairs.add(new BasicNameValuePair(Constants.userId_tag,userId));
+
+				if (cbRememberMe.isChecked()) {
+					users.put(userId,pass);
+					helper.addUser(userId, pass);
+				}
+
+				runOnUiThread(new ToastThread(getResources().getString(R.string.Logged_in)));
+				startActivity(new Intent(AuthenticationActivity.this,MainActivity.class));
+				AuthenticationActivity.this.finish();
+			} else {
+			runOnUiThread(new ToastThread(getResources().getString(R.string.cannot_login)));
 			}
-            else {
-		    	 runOnUiThread(new ToastThread(getResources().getString(R.string.cannot_login))); 
-		     }
-				} 
-		catch(HttpHostConnectException e){
-			runOnUiThread(new ToastThread(getResources().getString(R.string.HostConnRefused))); 
-		}
-		catch(Exception e){
+		} catch(HttpHostConnectException e){
+			runOnUiThread(new ToastThread(getResources().getString(R.string.HostConnRefused)));
+		} catch(Exception e){
 			e.printStackTrace();
-			runOnUiThread(new ToastThread("Exception : "+e)); 
+			runOnUiThread(new ToastThread("Exception : "+e));
 		}
-		authenticateThreadRunning = false;	
+		authenticateThreadRunning = false;
 		return null;
-			}
+	}
 }
 
 

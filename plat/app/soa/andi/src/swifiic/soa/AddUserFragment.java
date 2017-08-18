@@ -362,6 +362,7 @@ public class AddUserFragment extends Fragment implements OnClickListener,OnFocus
 					nameValuePairs.add(new BasicNameValuePair(Constants.name_tag, "AddUser"));
 				}
 
+//				This block is used in many places for doing http POST requests. Maybe it should be moved to another class?
 				java.net.URL targetUrl = new URL("http://" + url + "/HubSrvr/Oprtr");
 				HttpURLConnection conn = (HttpURLConnection) targetUrl.openConnection();
 				conn.setDoOutput(true);
@@ -385,8 +386,10 @@ public class AddUserFragment extends Fragment implements OnClickListener,OnFocus
 				}
 
 				// Execute HTTP Post Request
-				boolean isEditTask = userId != null;
 				int responseCode = conn.getResponseCode();
+
+				boolean isEditTask = userId != null;
+
 				if (responseCode == HttpURLConnection.HTTP_OK) {
 					String msg = null;
 					if (isEditTask) {

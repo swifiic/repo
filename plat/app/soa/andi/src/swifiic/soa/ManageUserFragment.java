@@ -441,19 +441,46 @@ private class DeleteUserTask extends AsyncTask<String,Void,Void>{
 				throw new Exception("URL not set in settings!!");
 			}
 			String userId = params[0];
-			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost("http://"+url+"/HubSrvr/Oprtr");
 
 			ArrayList<BasicNameValuePair> nameValuePairs = new ArrayList<BasicNameValuePair>();
-
+			Log.d("SOA", "DoingDELETETASK");
 			nameValuePairs.addAll(commonNameValuePairs);
 			nameValuePairs.add(new BasicNameValuePair(Constants.name_tag,"DeleteUser"));
 			nameValuePairs.add(new BasicNameValuePair(Constants.userKeyID_tag,userId));
-			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-			response = httpclient.execute(httppost);
 
-			int responseCode = response.getStatusLine().getStatusCode();
-			Log.v("ERROR", "Response Code => " + responseCode);
+//			HttpClient httpclient = new DefaultHttpClient();
+//			HttpPost httppost = new HttpPost("http://"+url+"/HubSrvr/Oprtr");
+//
+//			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+//			response = httpclient.execute(httppost);
+//			int responseCode = response.getStatusLine().getStatusCode();
+
+			java.net.URL targetUrl = new URL("http://" + url + "/HubSrvr/Oprtr");
+			HttpURLConnection conn = (HttpURLConnection) targetUrl.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+
+			Uri.Builder builder = new Uri.Builder();
+
+			for (NameValuePair bnvp: nameValuePairs) {
+				builder.appendQueryParameter(bnvp.getName(), bnvp.getValue());
+			}
+
+			String query = builder.build().getEncodedQuery();
+			Log.d("SOA", "myQUERY:"+query);
+			try {
+				BufferedOutputStream bos = new BufferedOutputStream(conn.getOutputStream());
+				bos.write(query.getBytes("utf-8"));
+				bos.flush();
+				bos.close();
+			} catch (IOException e) {
+
+			}
+
+			int responseCode = conn.getResponseCode();
+
+
+			Log.d("SOA", "Response Code => " + responseCode);
 			if (responseCode==HttpURLConnection.HTTP_OK) {
 				getActivity().runOnUiThread(new ToastThread(getResources().getString(R.string.DisableSuccess)));
 			} else if (responseCode==HttpURLConnection.HTTP_UNAUTHORIZED) {

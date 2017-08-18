@@ -282,18 +282,30 @@ public class AuthenticateTask extends AsyncTask<Void,Void,Void>{
 //				Header[] headers = response.getAllHeaders();
 
 				String cookie = null,cookieID=null;
-
+				Log.d("SOA", "RANDOM MSG");
 				Map<String, List<String>> headers = conn.getHeaderFields();
+				cookie = headers.get("Set-Cookie").get(0);
+				cookieID = cookie.substring(11, 11+32);
 
-				for (Map.Entry<String, List<String>> entry: headers.entrySet()) {
-					if (entry.getKey() == "Set-Cookie") {
-						cookie = entry.getValue().get(0);
-						if (cookie.startsWith((Constants.JSESSIONID))) {
-							cookieID = cookie.substring(11, 11+32);
-							break;
-						}
-					}
-				}
+				Log.d("SOA", "HEADERSIZE" + headers.size());
+				Log.d("SOA", "CONTAINSKEY?" + cookie);
+				Log.d("SOA", "CONTAINSKEY1?" + cookieID);
+
+//				for (Map.Entry<String, List<String>> entry: headers.entrySet()) {
+////					Log.d("SOA", entry.getKey() + ":");
+//
+//					if (entry.getKey()+"" == "Set-Cookie") {
+//						cookie = entry.getValue().get(0);
+//						Log.d("SOA", "Tasty: " + cookie);
+//						if (cookie.startsWith((Constants.JSESSIONID))) {
+//							cookieID = cookie.substring(11, 11+32);
+//							Log.d("SOA", "COOKIED"+cookieID);
+//							break;
+//						}
+//					}
+////					Log.d("SOA", entry.getKey() + ": " + entry.getValue().get(0));
+//
+//				}
 
 //				for (int i = 0; i < headers.length; i++) {
 //					System.out.println(headers[i] + "");
@@ -323,7 +335,7 @@ public class AuthenticateTask extends AsyncTask<Void,Void,Void>{
 				startActivity(new Intent(AuthenticationActivity.this,MainActivity.class));
 				AuthenticationActivity.this.finish();
 			} else {
-			runOnUiThread(new ToastThread(getResources().getString(R.string.cannot_login)));
+				runOnUiThread(new ToastThread(getResources().getString(R.string.cannot_login)));
 			}
 		} catch(HttpHostConnectException e){
 			runOnUiThread(new ToastThread(getResources().getString(R.string.HostConnRefused)));

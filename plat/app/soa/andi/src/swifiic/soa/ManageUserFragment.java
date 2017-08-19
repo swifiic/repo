@@ -1,8 +1,11 @@
 package swifiic.soa;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Date;
@@ -129,12 +132,6 @@ public class ManageUserFragment extends Fragment implements OnItemClickListener,
 		       isTransaction = true;
 			   userId = params[1];  // userId is set only incase of transactions
 			}
-			HttpClient httpclient = new DefaultHttpClient();
-		    HttpPost httppost = new HttpPost("http://"+url+"/HubSrvr/Oprtr");
-		    httppost.getParams().setParameter(
-		    	    CoreProtocolPNames.USE_EXPECT_CONTINUE,
-		    	    Boolean.FALSE);
-		    
 		    ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		    nameValuePairs.addAll(commonNameValuePairs);
 	        // Adding the user Id for transactions and the request Tag 
@@ -146,13 +143,55 @@ public class ManageUserFragment extends Fragment implements OnItemClickListener,
 		      	
 		    //  if (cookie_id!=null) 
 		    	//  nameValuePairs.add(new BasicNameValuePair(AuthenticationActivity.JSESSION_ID,cookie_id));
-		      
-		      	httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-		        response = httpclient.execute(httppost);
-		       
-		        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			    response.getEntity().writeTo(baos);
-			    listBytes = baos.toByteArray();
+
+//				HttpClient httpclient = new DefaultHttpClient();
+//				HttpPost httppost = new HttpPost("http://"+url+"/HubSrvr/Oprtr");
+////				httppost.getParams().setParameter(
+////						CoreProtocolPNames.USE_EXPECT_CONTINUE,
+////						Boolean.FALSE);
+//		      	httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+//		        response = httpclient.execute(httppost);
+
+				java.net.URL targetUrl = new URL("http://" + url + "/HubSrvr/Oprtr");
+				HttpURLConnection conn = (HttpURLConnection) targetUrl.openConnection();
+				conn.setDoOutput(true);
+				conn.setDoInput(true);
+				conn.setRequestMethod("POST");
+
+				Uri.Builder builder = new Uri.Builder();
+
+				for (NameValuePair bnvp: nameValuePairs) {
+					builder.appendQueryParameter(bnvp.getName(), bnvp.getValue());
+				}
+
+				String query = builder.build().getEncodedQuery();
+				Log.d("SOA", query);
+				try {
+					BufferedOutputStream bos = new BufferedOutputStream(conn.getOutputStream());
+					bos.write(query.getBytes("utf-8"));
+					bos.flush();
+					bos.close();
+				} catch (IOException e) {
+
+				}
+				Log.d("SOA", "DEBUGCODE" + conn.getResponseCode());
+//				int responseCode = conn.getResponseCode();
+				if (200 <= conn.getResponseCode() && conn.getResponseCode() <= 299) {
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					byte[] buff = new byte[64*1024]; //or some size, can try out different sizes for performance
+					BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
+					BufferedOutputStream out = new BufferedOutputStream(baos);
+					int n = 0;
+					while ((n = in.read(buff)) >= 0) {
+						out.write(buff, 0, n);
+					}
+					Log.d("SOA", baos.toString());
+					listBytes = baos.toByteArray();
+				}
+
+//			  	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//				response.getEntity().writeTo(baos);
+//			    listBytes = baos.toByteArray();
 			} 
 			catch(HttpHostConnectException e){
 				 getActivity().runOnUiThread(new ToastThread(getResources().getString(R.string.HostConnRefused))); 

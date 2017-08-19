@@ -9,7 +9,7 @@
     <string name="transactions">Transactions :</string>
 
   <!-- abhishek for build details intial values are place holders -->
-    <string name="app_build_date">20170818</string>
+    <string name="app_build_date">20170819</string>
     <string name="app_build_ctx">nic-ThinkPad /home/nic/swifiic/repo/plat/app/suta/andi nic</string>
 
 </resources>

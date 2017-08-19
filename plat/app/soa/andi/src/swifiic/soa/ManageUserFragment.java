@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.SerializationUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.http.HttpResponse;
@@ -117,6 +118,7 @@ public class ManageUserFragment extends Fragment implements OnItemClickListener,
 		boolean isTransaction = false;
 		HttpResponse response = null;
 		byte[] listBytes = null;
+		int responseCode;
 		@Override
 		protected byte[] doInBackground(String... params) {
 		//	getActivity().runOnUiThread(new ToastThread("In getUsers"));
@@ -140,17 +142,6 @@ public class ManageUserFragment extends Fragment implements OnItemClickListener,
 		    		nameValuePairs.add(new BasicNameValuePair(Constants.name_tag,"GetTransactions"));
 			   }
 		      else  nameValuePairs.add(new BasicNameValuePair(Constants.name_tag,"ListUser"));
-		      	
-		    //  if (cookie_id!=null) 
-		    	//  nameValuePairs.add(new BasicNameValuePair(AuthenticationActivity.JSESSION_ID,cookie_id));
-
-//				HttpClient httpclient = new DefaultHttpClient();
-//				HttpPost httppost = new HttpPost("http://"+url+"/HubSrvr/Oprtr");
-////				httppost.getParams().setParameter(
-////						CoreProtocolPNames.USE_EXPECT_CONTINUE,
-////						Boolean.FALSE);
-//		      	httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-//		        response = httpclient.execute(httppost);
 
 				java.net.URL targetUrl = new URL("http://" + url + "/HubSrvr/Oprtr");
 				HttpURLConnection conn = (HttpURLConnection) targetUrl.openConnection();
@@ -175,23 +166,13 @@ public class ManageUserFragment extends Fragment implements OnItemClickListener,
 
 				}
 				Log.d("SOA", "DEBUGCODE" + conn.getResponseCode());
-//				int responseCode = conn.getResponseCode();
-				if (200 <= conn.getResponseCode() && conn.getResponseCode() <= 299) {
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					byte[] buff = new byte[64*1024]; //or some size, can try out different sizes for performance
-					BufferedInputStream in = new BufferedInputStream(conn.getInputStream());
-					BufferedOutputStream out = new BufferedOutputStream(baos);
-					int n = 0;
-					while ((n = in.read(buff)) >= 0) {
-						out.write(buff, 0, n);
-					}
-					Log.d("SOA", baos.toString());
-					listBytes = baos.toByteArray();
+				responseCode = conn.getResponseCode();
+				if (200 <= responseCode && responseCode <= 299) {
+					listBytes = IOUtils.toByteArray(conn.getInputStream());
 				}
 
-//			  	ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//				response.getEntity().writeTo(baos);
-//			    listBytes = baos.toByteArray();
+				Log.d("SOA", "DEBUGBYTES" + listBytes.length);
+
 			} 
 			catch(HttpHostConnectException e){
 				 getActivity().runOnUiThread(new ToastThread(getResources().getString(R.string.HostConnRefused))); 
@@ -205,17 +186,17 @@ public class ManageUserFragment extends Fragment implements OnItemClickListener,
 		protected void onPostExecute(byte[] result) {
 			super.onPostExecute(result);
 		    if (result==null) return ;
-			if (response.getStatusLine().getStatusCode()==417) { // 417 for EXPECTATION FAILED 
+			if (responseCode==417) { // 417 for EXPECTATION FAILED
 							String errorMsg = null;
 					         if (isTransaction) errorMsg = getResources().getString(R.string.CannotFetchTransactions);
 					         else errorMsg = getResources().getString(R.string.CannotFetchUsers);
 							 toast(errorMsg);
 						}
-			if (response.getStatusLine().getStatusCode()==HttpURLConnection.HTTP_UNAUTHORIZED) { // 417 for EXPECTATION FAILED
+			if (responseCode==HttpURLConnection.HTTP_UNAUTHORIZED) { // 417 for EXPECTATION FAILED
 						    ((MainActivity)getActivity()).forceLogout(getResources().getString(R.string.SessionExpired));
 								}
 							  
-			if (response.getStatusLine().getStatusCode()==HttpURLConnection.HTTP_OK){
+			if (responseCode==HttpURLConnection.HTTP_OK){
 				if (listBytes!=null){
 									//for(int i=0;i<listBytes.length;i++)
 									//	System.out.println(listBytes[i]);

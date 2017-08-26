@@ -1,0 +1,9 @@
+SUTA - SWiFiIC User Terminal App 
+
+This app acts as a data provider for other apps of the SWiFiIC Ecosystem.
+
+
+
+NOTE: This app may not run sometimes when using Eclipse - as for some reason 
+Eclipse doesn't acknowledge the in-swifiic-andi library and won't compile it 
+with the app. Manually edit .project file to add the library to the project.

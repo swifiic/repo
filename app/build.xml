@@ -1,0 +1,9 @@
+<project name="SWiFiIC-Apps" default="Apps" basedir=".">
+<target name="Apps" description="Build End User App">
+    <ant dir="msngr"/>
+</target>
+<target name="clean" description="cleanup the old build">
+    <ant dir="msngr" target="clean"/>
+</target>
+</project>
+

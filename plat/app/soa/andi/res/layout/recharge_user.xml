@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+ 
+ <LinearLayout 
+     android:layout_height="match_parent"
+     android:layout_width="match_parent"
+     
+     android:orientation="vertical"
+     >
+ <LinearLayout 
+     android:layout_height="wrap_content"
+     android:layout_width="match_parent"
+     android:weightSum="2"
+     android:orientation="horizontal"
+     >
+ <TextView
+        android:id="@+id/tvTransactions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text = "@string/AmtToCredit"
+        android:textSize="15sp"
+        android:textColor="#FFF" />
+ <EditText
+        android:id="@+id/etRecharge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:inputType="numberSigned"
+        android:hint = "@string/RechargeAmount"
+         />
+</LinearLayout>
+ <LinearLayout 
+     android:layout_height="wrap_content"
+     android:layout_width="match_parent"
+     android:weightSum="2"
+     android:orientation="horizontal"
+     >
+<Button 
+    android:id= "@+id/bCredit" 
+    android:layout_height= "wrap_content"
+    android:layout_width="match_parent"
+    android:text="@string/Credit"
+    android:textSize="15dp"
+    />
+
+ </LinearLayout>
+<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height ="wrap_content"
+    android:orientation="vertical"
+    >
+<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height ="wrap_content"
+    android:orientation="horizontal"
+    >
+<TextView 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text = "@string/UserId"
+   	android:textSize="20sp"
+   	android:layout_weight="1"
+    />
+<TextView 
+	android:id="@+id/tvUserIdInRecharge"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="20sp"
+   	android:textColor ="@android:color/holo_green_light"
+    android:layout_weight="1"
+    />
+</LinearLayout>
+
+<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height ="wrap_content"
+    android:orientation="horizontal"
+    >
+<TextView 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text = "@string/Username"
+   	android:textSize="20sp"
+   	android:layout_weight="1"
+    />
+<TextView 
+	android:id="@+id/tvUserNameInRecharge"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="20sp"
+    android:textColor ="@android:color/holo_green_light"
+    android:layout_weight="1"
+    />
+</LinearLayout>
+<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height ="wrap_content"
+    android:orientation="horizontal"
+    >
+<TextView 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text = "@string/RemainingCredits"
+   	android:textSize="20sp"
+   	android:layout_weight="1"
+    />
+<TextView 
+	android:id="@+id/tvRemCredits"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textSize="20sp"
+    android:textColor ="@android:color/holo_green_light"
+    android:layout_weight="1"
+    />
+</LinearLayout>
+<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height ="wrap_content"
+    android:orientation="horizontal"
+    >
+<TextView 
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text = "@string/LastAudit"
+   	android:textSize="20sp"
+   	android:layout_weight="1"
+    />
+<TextView 
+	android:id="@+id/tvLastAudit"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textColor ="@android:color/holo_green_light"
+    android:textSize="20sp"
+    android:layout_weight="1"
+    />
+</LinearLayout>
+</LinearLayout>      
+</LinearLayout>      
+</RelativeLayout>
+    
+ 

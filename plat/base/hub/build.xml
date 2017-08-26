@@ -1,0 +1,64 @@
+<project name="in-swifiic-hub" default="dist" basedir=".">
+    <description>
+        simple build file for Hub
+    </description>
+  <!-- set global properties for this build -->
+ <property name="src" location="src"/>
+  <property name="src1" location="src/ibrdtn"/>
+  <property name="src2" location="src/in"/>
+  <property name="lib" location="../../../lib"/>
+  <property name="build" location="../../../build/hub"/>
+  <property name="dist"  location="../../../dist/hub"/>
+  <property name="properties" location="../../../dist/properties"/>
+
+ <path id="external.jars">
+                <fileset dir="${lib}" includes="hub/*jar"/>
+                <fileset dir="${lib}" includes="common/*jar"/>
+  </path>
+  <path id="project.classpath">
+                <pathelement location="${src}"/>
+                <path refid="external.jars" />
+  </path>
+
+	
+  <target name="init">
+    <!-- Create the time stamp sets the variable ${DSTAMP}; not used presently-->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+    
+  </target>
+
+  <target name="compile" depends="init"
+        description="compile the source " >
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src1}:${src2}" destdir="${build}" classpathref="project.classpath" debug="true"/>
+	 <copy todir="${build}">
+    <fileset dir="${src}">
+      <exclude name="**/*.java"/>
+    </fileset>
+  </copy>
+
+  
+
+  </target>
+
+  <target name="dist" depends="compile"
+        description="generate the distribution" >
+    <!-- Create the distribution directory -->
+    <mkdir dir="${dist}/lib"/>
+    <mkdir dir="${properties}"/>
+
+    <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
+    <jar jarfile="${dist}/lib/in-swifiic-hub.jar" basedir="${build}"/>
+    <copy file="${src}/dbConnection.properties" todir="${properties}"/>
+    <copy file="${src}/sqlQueries.properties" todir="${properties}"/>
+  </target>
+
+  <target name="clean"
+        description="clean up" >
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+</project>

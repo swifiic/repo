@@ -1,0 +1,10 @@
+<resources>
+
+    <string name="title_activity_settings">Settings</string>
+	<string name="pref_title_hub_address">SWiFiIC Hub Address</string>
+	<string name="pref_default_hub_address">dtn://aarthi-hub.dtn</string>
+	<string name="pref_title_my_identity">User Name</string>
+	<string name="pref_default_my_identity">aarthi</string>
+		<string name="pref_default_reset">Set Reset in SUTA - Devlopment only</string>
+		
+</resources>

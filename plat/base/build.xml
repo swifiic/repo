@@ -1,0 +1,11 @@
+<project name="SWiFiIC-plat" default="All" basedir=".">
+<target name="All" description="Build the library components">
+    <ant dir="hub" target="dist"/>
+    <ant dir="andi" target="debug"/>
+</target>
+<target name="clean" description="clean sub folders">
+    <ant dir="hub" target="clean"/>
+    <ant dir="andi" target="clean"/>
+</target>
+</project>
+

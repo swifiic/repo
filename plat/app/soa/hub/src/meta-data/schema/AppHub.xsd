@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema attributeFormDefault="unqualified" 
+                elementFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:element name="AppDef">
+
+    <xs:complexType>
+       <xs:sequence>
+       	 <xs:element name="rolesNeeded" maxOccurs="3" type="RoleType">
+      		<xs:annotation>
+      			<xs:documentation>
+      				Types of roles users can have
+      			</xs:documentation>
+      		</xs:annotation>
+      	 </xs:element>
+
+
+      	<!--
+      		1.  Name: UserMgtApp
+      		2.  Version: 0.1
+      		3.  Roles: Operator
+      		4.  User ID Mapping to roles: Out of band / hard coded
+      		5.  Role Billing Paradigm: Monthly
+      		6.  Role Visibility: None
+      		7.  Audit Visibility: Private
+      		8.  Number of activities
+      		
+      		Behavioral Notes: 
+      		- All activities are “Synchronous” and need except Login, they need Client-State to be Authenticated.
+      		- Server will only allow one Login for User Management App at a time.
+      		- Client device App may not enforce password every time – it may trigger logins behind the scene on launch or may   prompt for password – if App settings demand so.
+      		
+      	-->
+
+      	 <xs:element name="activity" minOccurs="0" type="Operations" maxOccurs="unbounded"/>
+      	 <xs:element name="notification" minOccurs="0" type="Operations" maxOccurs="unbounded"/>
+       </xs:sequence>
+
+	   <xs:attribute type="xs:string" name="appName" use="required"/>
+	   <xs:attribute type="xs:string" name="appVer" use="required"/>
+	   <xs:attribute type="xs:string" name="appId" use="required"/>
+	   <xs:attribute type="Billing" name="defBilling" />
+	   <xs:attribute type="Visibility" name="roleVisibility" />
+	   <xs:attribute type="Visibility" name="logVisibility" />
+
+    </xs:complexType>
+</xs:element> <!-- name="AppDef" -->
+
+
+
+<xs:element name="PDU">
+  <xs:complexType>   <!-- is it really needed? -->
+     <xs:choice>
+              <!-- to add 
+              o Max Delay - In future may move to DTN PDU
+              o Max Expected Cost - In future may move to DTN PDU
+              o Client State: Authenticated, Don’t Care // optional - TBD
+              o Ledger_Entry_Id request, commit; - TBD
+              o Response_Code: Accept/Reject/UserPending/DeliveryPending/ optional - for request
+              o Response_Context: Reject Reason (badArgs, invalidContext, badVer, permDenied…), 
+              o Number of Arguments: can be intuitively decoded based on appId, activityId
+              o Cost Paradigm
+               -->
+            
+      	 <xs:element name="activity" minOccurs="0" type="Operations" maxOccurs="unbounded"/>
+      	 <xs:element name="notification" minOccurs="0" type="Operations" maxOccurs="unbounded"/>
+
+     </xs:choice>
+
+	   		       <xs:attribute type="xs:string" name="version" use="required" />
+	   		            <!--  Protocol id for AppHub - for backward compatability -->
+	   		       
+	   		       <xs:attribute type="xs:string" name="userId" use="required" />
+	   		             <!--  userId(alphanum)/AccountNum -->
+
+	   		       <xs:attribute type="xs:string" name="deviceId" use="required"/> <!-- Hostname(dtn://...) -->
+	   		       
+	   		       <xs:attribute type="xs:string" name="appId" use="required"/>
+	   		       		<!-- Pre-configured Name for App / AppHub Module (alphanum) -->
+
+	   		       <xs:attribute type="xs:string" name="appVer" use="required"/>
+	   		       		<!-- To handle app upgrades -->
+	   		       
+	   		       
+	   		       <xs:attribute type="Billing" name="billing" />
+
+	   		       <xs:attribute type="Visibility" name="pduLogVisibility" />
+    </xs:complexType>
+ </xs:element> <!-- name="PDUDef" -->
+
+
+  <xs:simpleType name="RoleType">
+  	<xs:restriction base="xs:string">
+      <xs:enumeration value="Admin"/>   <!-- only for AppHub Admins -->
+      <xs:enumeration value="Operator"/> <!-- also for type Provider -->
+      <xs:enumeration value="User"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Billing">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Monthly"/>   
+      <xs:enumeration value="None"/> <!-- aka free -->
+      <xs:enumeration value="PerEvent"/>
+      <xs:enumeration value="Low"/>
+      <xs:enumeration value="Medium"/>
+      <xs:enumeration value="High"/>
+      <!-- TBD daily, per minute etc. -->
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Visibility">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="OperatorOnly"/> <!-- Operator will see all -->   
+      <xs:enumeration value="Admin"/> 
+      <xs:enumeration value="AdminAndUser"/> <!-- either sender or receiver -->
+      <xs:enumeration value="AdminAndCreator"/> <!-- only the sender - not the receivers -->
+      <xs:enumeration value="User"/> <!-- Operator and User making the call / involved in the call -->
+      <xs:enumeration value="Public"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="OperationMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SyncOperator"/> <!--  highest priority - need to be at App Hub delay within 100 msec -->
+      <xs:enumeration value="SyncApp"/>   
+      <xs:enumeration value="AsyncBestEffort"/> <!-- least priority - OK to loose -->
+      <xs:enumeration value="AsyncNotifyAndAck"/> <!-- user notification / app notification - returning Ack is Best Effort -->
+      <xs:enumeration value="AsyncNotifyNoAck"/>  <!-- user notification / app notification - sender does not wait on Ack --> 
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="DelayType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Critical"/>
+      <xs:enumeration value="HiPri"/>
+      <xs:enumeration value="MedPri"/>
+      <xs:enumeration value="LowPri"/> 
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="DiscardType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="OnlyOnDeliveryOrTimeout"/> <!-- or ack of delivery -->
+      <xs:enumeration value="OnLowSpaceWarnThreshold"/>
+      <xs:enumeration value="OnLowCriticalThreshold"/> 
+    </xs:restriction>
+  </xs:simpleType>
+
+       
+
+  <xs:complexType name="Operations">
+      <xs:sequence>
+           
+           <xs:element name="argument" minOccurs="0" maxOccurs="32">
+             <xs:complexType>
+	           <xs:attribute type="xs:string" name="argName"/>
+    	       <xs:attribute type="xs:string" name="argValue"/>
+    	       <xs:attribute type="xs:boolean" name="optional"/>
+    	       <xs:attribute type="xs:boolean" name="output"/>
+    	     </xs:complexType>
+           </xs:element>
+           
+           <xs:element name="fileData" type="xs:base64Binary" minOccurs="0" maxOccurs="1"/>
+           <!-- ref: http://www.xml.com/pub/a/98/07/binary/binary.html other option is xs:hexBinary -->
+           
+           
+           <xs:element name="behavior" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                  <xs:documentation>Behavioral Notes / how to deal with in / out arguments etc.</xs:documentation>
+                </xs:annotation>
+           </xs:element>
+           
+      </xs:sequence>
+           <xs:attribute name="name" type="xs:string" use="required"/>
+           <xs:attribute name="mode" type="OperationMode" />
+           <xs:attribute name="delay" type="DelayType" />
+           <xs:attribute name="discradPolicy" type="DiscardType" />
+           <xs:attribute name="logVisibility" type="Visibility" />
+           <xs:attribute name="operationAccess" type="Visibility" />
+           <xs:attribute name="billing" type="Billing" />
+           <xs:attribute name="coupledOperations" type="xs:string" >
+                <xs:annotation>
+                  <xs:documentation>
+                      Comma separated list for operation that causes this to be 
+                      triggered and operation that will be triggered by this.
+                      If more than one operation are involved, they are pipe (|) separated.
+                  </xs:documentation>
+                </xs:annotation>
+           </xs:attribute> <!-- if an activity causes a subsequent notification -->
+  </xs:complexType>
+  
+
+
+
+
+</xs:schema>

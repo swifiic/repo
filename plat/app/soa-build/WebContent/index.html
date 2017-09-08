@@ -1,0 +1,78 @@
+<html>
+<head>
+	<title>SWiFiIC Operator Service</title>
+</head>
+<body>
+	<h1>
+		<center><b><u>LOGIN PAGE</u></b></center>
+	</h1>
+	
+	<br><br>
+	
+	<center>
+		<form action="./Oprtr" method="post">
+		<font size=3>
+			<table>
+				<tr><td>userId</td> <td><input type="text" name="userId" value="9848022338"></td></tr>
+				<tr><td>Password</td><td><input type="password" name="Password" value="inDclear"></td></tr>
+				<tr><td><input type="submit" value="Login"></td></tr>
+			</table>
+				<input type="hidden" name="clntSessId" value="somejunkSession">
+				<input type="hidden" name="secret" value="secretVal">
+				<input type="hidden" name="version" value="0.1">
+				<input type="hidden" name="deviceId" value="28:CC:01:D8:FB:82">
+				<input type="hidden" name="appId" value="Oprtr"> Maybe 2
+				<input type="hidden" name="appVer" value="0.1">
+				<input type="hidden" name="pduLogVisibility" value="OperatorOnly">
+				<input type="hidden" name="billing" value="None">
+				<input type="hidden" name="name" value="Login">
+				
+		</font> </form> </center>
+
+<activity name="AddUser" mode="SyncOperator" operationAccess="OperatorOnly">
+      <argument argName="mobNum" argValue="+91... Mobile number - for SMS etc. in future" />
+      <argument argName="usrEmail" argValue="Email Address - optional" />
+      <argument argName="usrName" argValue="Complete Name" />
+      
+      <argument argName="address" argValue="Complete Address" />
+      <argument argName="notes" argValue="Notes for user creation" />
+      <argument argName="initialCredit" argValue="amount to be credited to user's account (numeric string)" />
+      
+      <argument argName="photoFileId" argValue="fileId assigned for photo file upload" optional="true" />
+      <argument argName="idProofFileId" argValue="fileId assigned for idProof scan file upload" optional="true" />
+      <argument argName="addressProofFileId" argValue="fileId assigned for address scan file upload" optional="true" />
+      <argument argName="deviceId" argValue="unique ID for device (MAC of first interface)" optional="true" />
+      
+<center>
+		<form action="./Oprtr" method="post">
+		<font size=3>
+			<table>
+				<tr><td>Cell Number</td> <td><input type="tel" name="mobNum"></td></tr>
+				<tr><td>user Name</td> <td><input type="text" name="usrName" value="dummy"></td></tr>
+				<tr><td>Alias</td> <td><input type="text" name="alias" value="dum"></td></tr>
+				<tr><td>usrEmail</td> <td><input type="email" name="usrEmail" value="abc@def.in"></td></tr>
+				<tr><td>address</td><td><input type="text" name="address" value="some address"></td></tr>
+				<tr><td>Credit</td><td><input type="number" name="initialCredit" value="10"></td></tr>
+				<tr><td>Device ID</td><td><input type="text" name="custDeviceId" value="b0:ee:45:75:9f:9b"></td></tr>
+				<tr><td><input type="submit" value="AddUser"></td></tr>
+			</table>
+			<input type="hidden" name="notes" value="dummy notes for UT">
+				Fields not provided are photoFileId, idProofFileId and addressProofFileId
+				<input type="text" name="userId" value="+919618258456">
+				<input type="hidden" name="clntSessId" value="somejunkSession">
+				<input type="hidden" name="secret" value="secretVal">
+				<input type="hidden" name="version" value="0.1">
+				<input type="hidden" name="deviceId" value="28:CC:01:D8:FB:82">
+				<input type="hidden" name="appId" value="Oprtr"> Maybe 2
+				<input type="hidden" name="appVer" value="0.1">
+				<input type="hidden" name="pduLogVisibility" value="OperatorOnly">
+				<input type="hidden" name="billing" value="None">
+				<input type="hidden" name="name" value="AddUser">
+				
+		</font> </form> </center>      
+		SammyGrand - 28:CC:01:D8:FB:82
+		acer - b0:ee:45:75:9f:9b
+		LG optimus-5C:DA:D4:DD:8C:36
+		nexus10 - 08:d4:2b:18:0c:e4
+</body>
+</html>

@@ -482,7 +482,8 @@
 -->
 
   <target name="prepare">
-
+    <!-- abhishek - for copying the files -->
+    <mkdir dir="${dist.home}/lib/"/> 
     <!-- Create build directories as needed -->
     <mkdir  dir="${build.home}"/>
     <mkdir  dir="${build.home}/WEB-INF"/>

@@ -38,6 +38,8 @@
         </copy>
   </target>
 
+  <!--target name="build" depends="dist"\ -->
+
   <target name="dist" depends="compile"
         description="generate the distribution" >
 

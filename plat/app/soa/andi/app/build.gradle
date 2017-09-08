@@ -1,0 +1,57 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        applicationId "swifiic.soa"
+        versionCode 1
+        minSdkVersion 14
+        targetSdkVersion 20
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            applicationVariants.all { variant ->
+                renameAPK(variant, defaultConfig, 'R')
+            }
+        }
+        debug {
+            applicationVariants.all { variant ->
+                renameAPK(variant, defaultConfig, 'T')
+            }
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+
+def renameAPK(variant, defaultConfig, buildType) {
+ variant.outputs.each { output ->
+     def formattedDate = new Date().format('yyMMdd')
+
+     def file = output.packageApplication.outputFile
+     def fileName = applicationName + "_V" + defaultConfig.versionCode + "_" + formattedDate + "_" + buildType + ".apk"
+     output.packageApplication.outputFile = new File(file.parent, fileName)
+ }
+}
+
+configurations {
+    compile.exclude module: 'stax'
+    compile.exclude module: 'stax-api'
+    compile.exclude module: 'xpp3'
+}
+
+dependencies {
+    compile 'joda-time:joda-time:2.1'
+    compile 'org.simpleframework:simple-xml:2.7.+'
+    compile 'commons-io:commons-io:+'
+    compile 'org.apache.commons:commons-lang3:3.6'
+    compile 'com.android.support:support-core-utils:25.0.1'
+    compile 'com.android.support:support-fragment:25.0.1'
+}

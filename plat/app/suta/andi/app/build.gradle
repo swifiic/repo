@@ -1,0 +1,56 @@
+apply plugin: 'com.android.application'
+android {
+    compileSdkVersion 22
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        applicationId "in.swifiic.plat.app.suta.andi"
+        versionCode 1
+        minSdkVersion 14
+        targetSdkVersion 22
+    }
+
+    buildTypes {
+     release {
+         minifyEnabled false
+         proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+         applicationVariants.all { variant ->
+             renameAPK(variant, defaultConfig, 'R')
+         }
+     }
+     debug {
+         applicationVariants.all { variant ->
+             renameAPK(variant, defaultConfig, 'T')
+         }
+     }
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+def renameAPK(variant, defaultConfig, buildType) {
+ variant.outputs.each { output ->
+     def formattedDate = new Date().format('yyMMdd')
+
+     def file = output.packageApplication.outputFile
+     def fileName = applicationName + "_V" + defaultConfig.versionCode + "_" + formattedDate + "_" + buildType + ".apk"
+     output.packageApplication.outputFile = new File(file.parent, fileName)
+ }
+}
+
+dependencies {
+    compile project(':base')
+}
+
+def dist = project.tasks.create("dist")
+android.applicationVariants.all { variant ->
+  def task = project.tasks.create("dist${variant.name}Apk", Copy)
+  task.from(file('build/outputs/apk/'))
+  task.into('../../../../../dist/apk')
+
+  task.dependsOn variant.assemble
+  dist.dependsOn task
+}
+
+

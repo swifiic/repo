@@ -44,23 +44,31 @@ public class Messenger extends Base implements SwifiicHandler {
 
 	}
 
+	// fix any exceptions which may occur here
 	public static void main(String args[]) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		Messenger messenger = new Messenger();
 		String input;
+		// System.out.print("Enter \"exit\" to exit application: ");
 		while(true) {
-			System.out.print("Enter \"exit\" to exit application: ");
-			input = br.readLine();
-			while(null == input) {
-				input = br.readLine();
-			}
-			if(input.equalsIgnoreCase("exit")) {
-				messenger.exit();
-			}
-			ExtendedClient ec = messenger.getDtnClientInstance().getEC();
+			// input = br.readLine(); // what if input is null?
+			// // while(null == input) {
+			// // 	input = br.readLine();
+			// // }
+			// if(input.equalsIgnoreCase("exit")) {
+			// 	messenger.exit();
+			// } else {
+			// 	continue;
+			// }
+			ExtendedClient ec = messenger.getDtnClientInstance().getEC(); // does instance need to be received each time?
 			if(!ec.isConnected()){
 				System.err.println("Messenger attempting reconnect with the service");
 				messenger.getDtnClientInstance().reconnect();
+			}
+			try {
+				Thread.currentThread().sleep(1000);
+			} catch (InterruptedException e) {
+				System.out.println("Thread interrupted " + e);
 			}
 		}
 	}
@@ -88,12 +96,12 @@ public class Messenger extends Base implements SwifiicHandler {
 
 
 					// A user may have multiple devices - deprecated for now - only one device per user
-					String deviceDtnId = Helper.getDeviceDtnIdForUser(toUser, ctx); 
+					String deviceDtnId = Helper.getDeviceDtnIdForUser(toUser, ctx);
 
 					String response = Helper.serializeNotification(notif);
 					send(deviceDtnId + "/in.swifiic.app.msngr.andi" , response);
-					// Mark bundle as delivered...                    
-					logger.log(Level.INFO, "Attempted to send to {1}, had received \n{0}\n and responsed with \n {2}", 
+					// Mark bundle as delivered...
+					logger.log(Level.INFO, "Attempted to send to {1}, had received \n{0}\n and responsed with \n {2}",
 							new Object[] {message, deviceDtnId + "/in.swifiic.app.msngr.andi", response});
 					boolean status = Helper.debitUser(fromUser);
 					} catch (Exception e) {

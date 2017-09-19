@@ -8,6 +8,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.LogManager;
 import java.util.logging.SimpleFormatter;
 
 import ibrdtn.api.object.Bundle;
@@ -22,50 +23,42 @@ public class Base {
 
 	private static final Logger LOGGER = Logger.getLogger(Base.class.getName());
 	private static Formatter simpleFormatter = null;
-	private static Handler fileHandler = null;
+	private static FileHandler fileHandler = null;
+	private final String logDirPath = "/home/nic/logfolder/";
+	private final String statusLogFilePath = logDirPath + "mylogfile";
+	private final String msgLogFilePath = logDirPath + "msg_log";
+	private String derivedClass = null;
 
-	public Base() {
-		// File file = new File("/home/nic/logfolder/xdx");
-		//
-		// if (file.createNewFile()){
-		// System.out.println("File is created!");
-		// }
-		//
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
+	private DTNClient dtnClient;
+
+	private void logMessage(String className, String message, String filePath) {
 		try {
-			fileHandler = new FileHandler("/home/nic/logfolder/mylogfile");
-			simpleFormatter = new SimpleFormatter();
-			fileHandler.setFormatter(simpleFormatter);
+			fileHandler = new FileHandler(filePath, true);
+			fileHandler.setFormatter(new SimpleFormatter());
 			fileHandler.setLevel(Level.ALL);
 			LOGGER.addHandler(fileHandler);
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "FileHandler Exception", e);
 		}
-
 		LOGGER.setLevel(Level.ALL);
+		LOGGER.info(className + ": " + message);
 
-		LOGGER.info("Anonymous class initiated");
+		try {
+			fileHandler.close();
+		} catch (SecurityException e) {
+			LOGGER.log(Level.SEVERE, "Unable to close file handler!");
+		}
+	}
+
+	public Base() {
+		derivedClass = "Anonymous class";
+		logMessage(derivedClass, "initiated.", statusLogFilePath);
 	}
 
 	public Base (String className) {
-		try {
-			fileHandler = new FileHandler("./mylogfile2");
-			fileHandler.setFormatter(simpleFormatter);
-			fileHandler.setLevel(Level.ALL);
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "FileHandler Exception2", e);
-		}
-		simpleFormatter = new SimpleFormatter();
-
-		LOGGER.setLevel(Level.ALL);
-
-		LOGGER.addHandler(fileHandler);
-		LOGGER.info(className + " class initiated");
+		derivedClass = className;
+		logMessage(derivedClass, "initiated.", statusLogFilePath);
 	}
-
-	private DTNClient dtnClient;
 
 	public DTNClient getDtnClient(String PRIMARY_EID, SwifiicHandler hndlr) {
 		dtnClient = new DTNClient(PRIMARY_EID, hndlr);
@@ -91,11 +84,13 @@ public class Base {
 
         final Bundle finalBundle = bundle;
 
-        System.out.println("Sending a bundle to: " + destination.toString() + "\n with data: " + message);
+		logMessage(derivedClass, "Sending a group bundle to: " + destination.toString() + "\n with data: " + message, msgLogFilePath);
+        // System.out.println("Sending a bundle to: " + destination.toString() + "\n with data: " + message);
+
         dtnClient.send(finalBundle);
     }
 
-    protected void sendGrp(String destinationAddress, String message) {
+    protected void sendGrp(String destinationAddress, String message) { //is this used for multicast messages? answer: yes
     	EID destination = new GroupEndpoint(destinationAddress);
 
         // Create bundle to send
@@ -104,7 +99,7 @@ public class Base {
         bundle.appendBlock(new PayloadBlock(message.getBytes()));
 
         final Bundle finalBundle = bundle;
-
+		logMessage(derivedClass, "Sending a group bundle to: " + destination.toString() + "\n with data: " + message, msgLogFilePath);
         //System.out.println("Sending a bundle to  Group: " + destination.toString() + "\n with data: " + message);
         dtnClient.send(finalBundle);
     }

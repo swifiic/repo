@@ -67,6 +67,7 @@ public class Suta extends Base implements SwifiicHandler {
 
 	public Suta() {
 		// Initialize connection to daemon
+		super("Suta");
 		dtnClient = getDtnClient(PRIMARY_EID, this);
 		logger.log(Level.SEVERE, "LOGT_TEST");
 		logger.log(Level.INFO, dtnClient.getConfiguration());

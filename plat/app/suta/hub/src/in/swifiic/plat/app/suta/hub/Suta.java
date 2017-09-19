@@ -31,6 +31,7 @@ import ibrdtn.api.Base64;
 import ibrdtn.api.ExtendedClient;
 
 public class Suta extends Base implements SwifiicHandler {
+	// super();
 	public static Properties sutaProperties=null;
 	static
 	{
@@ -67,6 +68,7 @@ public class Suta extends Base implements SwifiicHandler {
 	public Suta() {
 		// Initialize connection to daemon
 		dtnClient = getDtnClient(PRIMARY_EID, this);
+		logger.log(Level.SEVERE, "LOGT_TEST");
 		logger.log(Level.INFO, dtnClient.getConfiguration());
 		logNew.info(dtnClient.getConfiguration());
 	}
@@ -75,7 +77,7 @@ public class Suta extends Base implements SwifiicHandler {
 
 	public static void main(String args[]) throws IOException {
 		final Suta suta = new Suta();
-		
+
 		// schedule the task to run starting now and then every hour...
 		final Runnable runnable = new Runnable() {
 			int seqno=1;
@@ -99,7 +101,7 @@ public class Suta extends Base implements SwifiicHandler {
 		        String strDate = sdf.format(c.getTime());
 		        notif.addArgument("currentTime",strDate);
 		        notif.addArgument("sequenceNumber",seqno+"");
-		     
+
 		        System.out.println("Notification Sent with Sequence Number " + seqno + " at " + strDate);
 		        logNew.info("Notification Sent with Sequence Number " + seqno + " at " + strDate);
 				String payload = Helper.serializeNotification(notif);
@@ -121,7 +123,7 @@ public class Suta extends Base implements SwifiicHandler {
 
 	}
 
-	
+
 	@Override
 	/***
 	 * @author aarthi
@@ -147,7 +149,7 @@ public class Suta extends Base implements SwifiicHandler {
 					String opName = action.getOperationName();
 					if(opName.compareTo("DeviceListUpdate")==0)
 						return;
-					
+
 					// We are looking for Op Name "SendInfo" "SendMessage"
 					String actualContent = action.getArgument("message");
 					String fileName = action.getArgument("filename");

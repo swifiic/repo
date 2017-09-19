@@ -197,7 +197,7 @@ p2p_ctrlpath = /var/run/wpa_supplicant/wlan0
 routing = epidemic
 routing_forwarding = yes
 net_wlan0_type = tcp # we want to use TCP as protocol
-net_wlan0_interface = wlan0 # listen on interface eth0
+net_wlan0_interface = wlp3s0 # listen on interface eth0
 net_wlan0_port = 4556
 EOF
 sudo mkdir -p /var/spool/ibrdtn/bundles

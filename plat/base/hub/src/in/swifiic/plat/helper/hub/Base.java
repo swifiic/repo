@@ -1,6 +1,7 @@
 package in.swifiic.plat.helper.hub;
 
 import java.io.IOException;
+import java.io.*;
 
 import java.util.logging.Formatter;
 import java.util.logging.FileHandler;
@@ -23,37 +24,46 @@ public class Base {
 	private static Formatter simpleFormatter = null;
 	private static Handler fileHandler = null;
 
-	Base() {
+	public Base() {
+		// File file = new File("/home/nic/logfolder/xdx");
+		//
+		// if (file.createNewFile()){
+		// System.out.println("File is created!");
+		// }
+		//
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
 		try {
-			fileHandler = new FileHandler("/home/nic/mylogfile");
+			fileHandler = new FileHandler("/home/nic/logfolder/mylogfile");
 			fileHandler.setFormatter(simpleFormatter);
 			fileHandler.setLevel(Level.ALL);
+			LOGGER.addHandler(fileHandler);
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "FileHandler Exception", e);
+			LOGGER.log(Level.SEVERE, "FileHandler Exception2", e);
 		}
 		simpleFormatter = new SimpleFormatter();
 
 		LOGGER.setLevel(Level.ALL);
 
-		LOGGER.addHandler(fileHandler);
 		LOGGER.info("Anon class initiated");
 	}
 
-	Base (String className) {
-		try {
-			fileHandler = new FileHandler("/home/nic/mylogfile");
-			fileHandler.setFormatter(simpleFormatter);
-			fileHandler.setLevel(Level.ALL);
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, "FileHandler Exception", e);
-		}
-		simpleFormatter = new SimpleFormatter();
-
-		LOGGER.setLevel(Level.ALL);
-
-		LOGGER.addHandler(fileHandler);
-		LOGGER.info(className + " class initiated");
-	}
+	// public Base (String className) {
+	// 	try {
+	// 		fileHandler = new FileHandler("./mylogfile2");
+	// 		fileHandler.setFormatter(simpleFormatter);
+	// 		fileHandler.setLevel(Level.ALL);
+	// 	} catch (IOException e) {
+	// 		LOGGER.log(Level.SEVERE, "FileHandler Exception2", e);
+	// 	}
+	// 	simpleFormatter = new SimpleFormatter();
+	//
+	// 	LOGGER.setLevel(Level.ALL);
+	//
+	// 	LOGGER.addHandler(fileHandler);
+	// 	LOGGER.info(className + " class initiated");
+	// }
 
 	private DTNClient dtnClient;
 

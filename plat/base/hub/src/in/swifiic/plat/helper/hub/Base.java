@@ -36,9 +36,24 @@ public class Base {
 		// }
 		try {
 			fileHandler = new FileHandler("/home/nic/logfolder/mylogfile");
+			simpleFormatter = new SimpleFormatter();
 			fileHandler.setFormatter(simpleFormatter);
 			fileHandler.setLevel(Level.ALL);
 			LOGGER.addHandler(fileHandler);
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, "FileHandler Exception", e);
+		}
+
+		LOGGER.setLevel(Level.ALL);
+
+		LOGGER.info("Anonymous class initiated");
+	}
+
+	public Base (String className) {
+		try {
+			fileHandler = new FileHandler("./mylogfile2");
+			fileHandler.setFormatter(simpleFormatter);
+			fileHandler.setLevel(Level.ALL);
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "FileHandler Exception2", e);
 		}
@@ -46,24 +61,9 @@ public class Base {
 
 		LOGGER.setLevel(Level.ALL);
 
-		LOGGER.info("Anon class initiated");
+		LOGGER.addHandler(fileHandler);
+		LOGGER.info(className + " class initiated");
 	}
-
-	// public Base (String className) {
-	// 	try {
-	// 		fileHandler = new FileHandler("./mylogfile2");
-	// 		fileHandler.setFormatter(simpleFormatter);
-	// 		fileHandler.setLevel(Level.ALL);
-	// 	} catch (IOException e) {
-	// 		LOGGER.log(Level.SEVERE, "FileHandler Exception2", e);
-	// 	}
-	// 	simpleFormatter = new SimpleFormatter();
-	//
-	// 	LOGGER.setLevel(Level.ALL);
-	//
-	// 	LOGGER.addHandler(fileHandler);
-	// 	LOGGER.info(className + " class initiated");
-	// }
 
 	private DTNClient dtnClient;
 

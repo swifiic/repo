@@ -31,7 +31,6 @@ import ibrdtn.api.Base64;
 import ibrdtn.api.ExtendedClient;
 
 public class Suta extends Base implements SwifiicHandler {
-	// super();
 	public static Properties sutaProperties=null;
 	static
 	{

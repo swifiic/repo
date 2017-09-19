@@ -76,8 +76,13 @@
     
     
     <!-- abhishek for build details intial values are place holders -->
+<<<<<<< HEAD
     <string name="app_build_date">20170919</string>
     <string name="app_build_ctx">nic-ThinkPad /home/nic/swifiic/repo/plat/app/soa/andi root</string>
+=======
+    <string name="app_build_date">20170819</string>
+    <string name="app_build_ctx">nic-ThinkPad /home/nic/swifiic/repo/plat/app/soa/andi nic</string>
+>>>>>>> 02fc46f629ab71f0112c295090a18c17f506d24d
     
     
     

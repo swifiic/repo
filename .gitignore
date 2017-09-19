@@ -19,6 +19,9 @@ out/
 dist/
 dist.tar.gz
 
+release.tar
+release.tar.gz
+
 # Local configuration file (sdk path, etc)
 /**/local.properties
 /**/project.properties

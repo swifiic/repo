@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="IpAddress">Ip Address</string>
-	
-    
+
+
     <string name="URL">URL</string>
     <string name="app_name">SOA</string>
     <string name="action_settings">Settings</string>
@@ -73,23 +73,17 @@
     <string name="NotesMultiline">Notes Multi-line</string>
     <string name="Transactions">Transactions</string>
     <string name="DtnId">Dtn Id</string>
-    
-    
+
+
     <!-- abhishek for build details intial values are place holders -->
-<<<<<<< HEAD
     <string name="app_build_date">20170919</string>
     <string name="app_build_ctx">nic-ThinkPad /home/nic/swifiic/repo/plat/app/soa/andi root</string>
-=======
-    <string name="app_build_date">20170819</string>
-    <string name="app_build_ctx">nic-ThinkPad /home/nic/swifiic/repo/plat/app/soa/andi nic</string>
->>>>>>> 02fc46f629ab71f0112c295090a18c17f506d24d
-    
-    
-    
-    
-    
-    
-    
-   
+
+
+
+
+
+
+
 
 </resources>

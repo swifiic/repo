@@ -1,6 +1,5 @@
 package in.swifiic.plat.helper.hub;
 
-<<<<<<< HEAD
 import java.io.IOException;
 import java.io.*;
 
@@ -12,8 +11,6 @@ import java.util.logging.Logger;
 import java.util.logging.LogManager;
 import java.util.logging.SimpleFormatter;
 
-=======
->>>>>>> 02fc46f629ab71f0112c295090a18c17f506d24d
 import ibrdtn.api.object.Bundle;
 import ibrdtn.api.object.EID;
 import ibrdtn.api.object.GroupEndpoint;

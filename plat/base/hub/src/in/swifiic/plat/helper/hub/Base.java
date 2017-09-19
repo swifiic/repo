@@ -1,5 +1,14 @@
 package in.swifiic.plat.helper.hub;
 
+import java.io.IOException;
+
+import java.util.logging.Formatter;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
+
 import ibrdtn.api.object.Bundle;
 import ibrdtn.api.object.EID;
 import ibrdtn.api.object.GroupEndpoint;
@@ -9,9 +18,45 @@ import ibrdtn.example.api.Constants;
 import ibrdtn.example.api.DTNClient;
 
 public class Base {
-	
+
+	private static final Logger LOGGER = Logger.getLogger(Base.class.getName());
+	private static Formatter simpleFormatter = null;
+	private static Handler fileHandler = null;
+
+	Base() {
+		try {
+			fileHandler = new FileHandler("/home/nic/mylogfile");
+			fileHandler.setFormatter(simpleFormatter);
+			fileHandler.setLevel(Level.ALL);
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, "FileHandler Exception", e);
+		}
+		simpleFormatter = new SimpleFormatter();
+
+		LOGGER.setLevel(Level.ALL);
+
+		LOGGER.addHandler(fileHandler);
+		LOGGER.info("Anon class initiated");
+	}
+
+	Base (String className) {
+		try {
+			fileHandler = new FileHandler("/home/nic/mylogfile");
+			fileHandler.setFormatter(simpleFormatter);
+			fileHandler.setLevel(Level.ALL);
+		} catch (IOException e) {
+			LOGGER.log(Level.SEVERE, "FileHandler Exception", e);
+		}
+		simpleFormatter = new SimpleFormatter();
+
+		LOGGER.setLevel(Level.ALL);
+
+		LOGGER.addHandler(fileHandler);
+		LOGGER.info(className + " class initiated");
+	}
+
 	private DTNClient dtnClient;
-	
+
 	public DTNClient getDtnClient(String PRIMARY_EID, SwifiicHandler hndlr) {
 		dtnClient = new DTNClient(PRIMARY_EID, hndlr);
         return dtnClient;
@@ -20,12 +65,12 @@ public class Base {
     public DTNClient getDtnClientInstance() {
         return this.dtnClient ;
     }
-    
+
     protected void exit() {
         dtnClient.shutdown();
         System.exit(0);
     }
-    
+
     protected void send(String destinationAddress, String message) {
         EID destination = new SingletonEndpoint(destinationAddress);
 
@@ -35,9 +80,9 @@ public class Base {
         bundle.appendBlock(new PayloadBlock(message.getBytes()));
 
         final Bundle finalBundle = bundle;
-        
+
         System.out.println("Sending a bundle to: " + destination.toString() + "\n with data: " + message);
-        dtnClient.send(finalBundle);    	
+        dtnClient.send(finalBundle);
     }
 
     protected void sendGrp(String destinationAddress, String message) {
@@ -49,8 +94,8 @@ public class Base {
         bundle.appendBlock(new PayloadBlock(message.getBytes()));
 
         final Bundle finalBundle = bundle;
-        
+
         //System.out.println("Sending a bundle to  Group: " + destination.toString() + "\n with data: " + message);
-        dtnClient.send(finalBundle);    	
+        dtnClient.send(finalBundle);
     }
 }

@@ -31,7 +31,7 @@ public class Base {
 
 	private DTNClient dtnClient;
 
-	private void logMessage(String className, String message, String filePath) {
+	public void logMessage(String className, String message, String filePath) { //make syncronized
 		try {
 			fileHandler = new FileHandler(filePath, true);
 			fileHandler.setFormatter(new SimpleFormatter());
@@ -40,7 +40,7 @@ public class Base {
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, "FileHandler Exception", e);
 		}
-		LOGGER.setLevel(Level.ALL);
+		LOGGER.setLevel(Level.ALL); //take this from a file (or load at runtime);
 		LOGGER.info(className + ": " + message);
 
 		try {
@@ -55,7 +55,7 @@ public class Base {
 		logMessage(derivedClass, "initiated.", statusLogFilePath);
 	}
 
-	public Base (String className) {
+	public Base(String className) {
 		derivedClass = className;
 		logMessage(derivedClass, "initiated.", statusLogFilePath);
 	}
@@ -84,7 +84,7 @@ public class Base {
 
         final Bundle finalBundle = bundle;
 
-		logMessage(derivedClass, "Sending a group bundle to: " + destination.toString() + "\n with data: " + message, msgLogFilePath);
+		logMessage(derivedClass, "Sending a bundle to: " + destination.toString() + "\n with data: " + message, msgLogFilePath);
         // System.out.println("Sending a bundle to: " + destination.toString() + "\n with data: " + message);
 
         dtnClient.send(finalBundle);

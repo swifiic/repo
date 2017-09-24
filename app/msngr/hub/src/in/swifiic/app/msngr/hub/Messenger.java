@@ -37,7 +37,7 @@ public class Messenger extends Base implements SwifiicHandler {
 	protected String PRIMARY_EID = "Msngr";
 	public static org.apache.logging.log4j.Logger logNew=org.apache.logging.log4j.LogManager.getLogger("in.swifiic.app.msngr.hub.Messenger");
 	public Messenger() {
-		super(PRIMARY_EID);
+		super("Msngr");
 		// Initialize connection to daemon
 		dtnClient = getDtnClient(PRIMARY_EID, this);
 		logger.log(Level.INFO, dtnClient.getConfiguration());

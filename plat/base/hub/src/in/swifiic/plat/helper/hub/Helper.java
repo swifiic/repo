@@ -3,7 +3,6 @@ package in.swifiic.plat.helper.hub;
 import in.swifiic.plat.helper.hub.SwifiicHandler.Context;
 import in.swifiic.plat.helper.hub.xml.Action;
 import in.swifiic.plat.helper.hub.xml.Notification;
-import in.swifiic.plat.helper.hub.SwifiicLogger;
 
 import java.io.FileInputStream;
 import java.io.StringWriter;

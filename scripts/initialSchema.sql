@@ -103,7 +103,7 @@ CREATE TABLE  IF NOT EXISTS `HubLog` (
     `SourceDTNId` varchar(64),
     `DestDTNId` varchar(64),
     `Message` text,
-    `LogTime` datetime
+    `LogTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `User`;

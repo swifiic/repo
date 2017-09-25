@@ -292,6 +292,26 @@ public class Helper {
 		return  accountDetails;
 	}
 
+	public static void logHubMessage(String AppId, String SourceDTNId, String DestDTNId, String Message) {
+		Connection conn = DatabaseHelper.connectToDB();
+
+		if (conn != null) {
+			String insertQuery = sqlProperties.getProperty("hublog.logMessage");
+			try {
+				PreparedStatement statement = conn.prepareStatement(insertQuery);
+				statement.setString(1, AppId);
+				statement.setString(2, SourceDTNId);
+				statement.setString(3, DestDTNId);
+				statement.setString(4, Message);
+				//do we need to set timestamp?
+				statement.execute();
+				statement.close();
+				DatabaseHelper.closeDB(conn);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	 /**
 	  * @author aarthi

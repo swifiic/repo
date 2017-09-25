@@ -97,7 +97,14 @@ CREATE TABLE IF NOT EXISTS `OperatorLedger` (
   PRIMARY KEY (`LogId`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=269 ;
 
-
+DROP TABLE IF EXISTS `HubLog`;
+CREATE TABLE  IF NOT EXISTS `HubLog` (
+    `AppId` varchar(64),
+    `SourceDTNId` varchar(64),
+    `DestDTNId` varchar(64),
+    `Message` text,
+    `LogTime` datetime
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1;
 
 DROP TABLE IF EXISTS `User`;
 CREATE TABLE IF NOT EXISTS `User` (

@@ -121,8 +121,7 @@ public class Messenger extends Base implements SwifiicHandler {
 							new Object[] {message, deviceDtnId + "/in.swifiic.app.msngr.andi", response});
 					boolean status = Helper.debitUser(fromUser);
 				} catch (Exception e) {
-					SwifiicLogger.logMessage(PRIMARY_EID, "Unable to process message and
-											send response\n" + e.getMessage(), errorFileName);
+					SwifiicLogger.logMessage(PRIMARY_EID, "Unable to process message and send response\n" + e.getMessage(), errorFileName);
 					// logger.log(Level.SEVERE, "Unable to process message and send response\n" + e.getMessage());
 					e.printStackTrace();
 					// logNew.info("Unable to process message and send response\n" + e.getMessage());

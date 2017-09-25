@@ -5,6 +5,7 @@ import in.swifiic.plat.helper.hub.Base;
 import in.swifiic.plat.helper.hub.Helper;
 import in.swifiic.plat.helper.hub.SwifiicHandler;
 import in.swifiic.plat.helper.hub.xml.Notification;
+import in.swifiic.plat.helper.hub.SwifiicLogger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,45 +33,44 @@ import ibrdtn.api.ExtendedClient;
 
 public class Suta extends Base implements SwifiicHandler {
 	public static Properties sutaProperties=null;
-	static
-	{
-                String filePath = " Not Set ";
-                try {
-                        String base = System.getenv("SWIFIIC_HUB_BASE");
-                        if(null != base) {
-                                filePath = base + "/properties/";
-                        } else {
-                                System.err.println("SWIFIIC_HUB_BASE not set");
-                        }
-                        FileInputStream fis = new FileInputStream(filePath + "suta.properties");
-        		sutaProperties=new Properties();
+	static	{
+		String filePath = " Not Set ";
+		try {
+			String base = System.getenv("SWIFIIC_HUB_BASE");
+			if(null != base) {
+			    filePath = base + "/properties/";
+			} else {
+			    System.err.println("SWIFIIC_HUB_BASE not set");
+			}
+			FileInputStream fis = new FileInputStream(filePath + "suta.properties");
+			sutaProperties=new Properties();
 			sutaProperties.load(fis);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		if(null == sutaProperties) {
-			 System.err.println("Error - SUTA Properties not loaded : filePath " + filePath);
-                }
-
+			System.err.println("Error - SUTA Properties not loaded : filePath " + filePath);
+		}
 	}
 
-	private static final Logger logger = LogManager.getLogManager().getLogger(
-			"");
-	public static org.apache.logging.log4j.Logger logNew = org.apache.logging.log4j.LogManager
-			.getLogger("in.swifiic.plat.app.suta.hub.Suta");
+	private static final Logger logger = LogManager.getLogManager().getLogger("");
+	public static org.apache.logging.log4j.Logger logNew = org.apache.logging.log4j.LogManager.getLogger("in.swifiic.plat.app.suta.hub.Suta");
 	private DTNClient dtnClient;
-
 	protected ExecutorService executor = Executors.newCachedThreadPool();
 	// Following is the name of the endpoint to register with
-	protected String PRIMARY_EID = "suta";
+	private static final String logFileName = "suta_log";
+	private static final String errorFileName = "suta_error";
+	protected static String PRIMARY_EID = "suta";
 
 	public Suta() {
 		// Initialize connection to daemon
-		super("Suta");
+		super(PRIMARY_EID);
 		dtnClient = getDtnClient(PRIMARY_EID, this);
-		logger.log(Level.SEVERE, "LOGT_TEST");
-		logger.log(Level.INFO, dtnClient.getConfiguration());
-		logNew.info(dtnClient.getConfiguration());
+		SwifiicLogger.logMessage(PRIMARY_EID, dtnClient.getConfiguration(), logFileName);
+
+		// logger.log(Level.SEVERE, "LOGT_TEST");
+		// logger.log(Level.INFO, dtnClient.getConfiguration());
+		// logNew.info(dtnClient.getConfiguration());
 	}
 
 	static boolean exitFlag = false;
@@ -85,12 +85,12 @@ public class Suta extends Base implements SwifiicHandler {
 				ExtendedClient ec = suta.getDtnClientInstance().getEC();
 				if(!ec.isConnected()){
 					System.err.println("SUTA attempting reconnect with the service");
+					SwifiicLogger.logMessage(PRIMARY_EID, "SUTA attempting reconnect with the service", errorFileName);
 					suta.getDtnClientInstance().reconnect();
 				}
 				String userList = Helper.getAllUsers();
 				//here account detais also contains heartbeat(updated)
 				String accountDetails = Helper.getAccountDetailsForAll();
-
 
 				Notification notif = new Notification("DeviceListUpdate","SUTA", "TODO", "0.1", "Hub");
 				notif.addArgument("userList", userList);
@@ -102,8 +102,10 @@ public class Suta extends Base implements SwifiicHandler {
 		        notif.addArgument("currentTime",strDate);
 		        notif.addArgument("sequenceNumber",seqno+"");
 
-		        System.out.println("Notification Sent with Sequence Number " + seqno + " at " + strDate);
-		        logNew.info("Notification Sent with Sequence Number " + seqno + " at " + strDate);
+		        // System.out.println("Notification Sent with Sequence Number " + seqno + " at " + strDate);
+		        // logNew.info("Notification Sent with Sequence Number " + seqno + " at " + strDate);
+				SwifiicLogger.logMessage(PRIMARY_EID, "Notification Sent with Sequence Number " + seqno + " at " + strDate, logFileName);
+
 				String payload = Helper.serializeNotification(notif);
 				suta.sendGrp("dtn://in.swifiic.plat.app.suta.andi/mc", payload);
 				logNew.info("Sending payload to  dtn://in.swifiic.plat.app.suta.andi/mc"
@@ -137,8 +139,10 @@ public class Suta extends Base implements SwifiicHandler {
 		i = url.lastIndexOf("/");
 		final String dtnId = url.substring(0, i);
 		final String message = payload;
-		executor.execute(new Runnable() {
 
+		SwifiicLogger.logMessage(PRIMARY_EID, "Payload received:\n" + payload, logFileName);
+
+		executor.execute(new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -171,8 +175,10 @@ public class Suta extends Base implements SwifiicHandler {
 
 					}
 					if (fileName != null && actualContent != null) {
-						logNew.info("Log file received with message "
-								+ fileName + "\n");
+						// logNew.info("Log file received with message "
+						// 		+ fileName + "\n");
+						SwifiicLogger.logMessage(PRIMARY_EID, "Log file received with message "
+											+ fileName + "\n", logFileName);
 						String folderpath = sutaProperties.getProperty("suta.trackAppFilePath");
 						String filepath = folderpath + fileName;
 						b64StringToFile(actualContent, filepath);
@@ -192,10 +198,12 @@ public class Suta extends Base implements SwifiicHandler {
 			str.write(Base64.decode(contentB64));
 
 		} catch (Exception e) {
-			logger.log(Level.INFO, "b64StringToFile", "Could not save file "
-					+ e.getLocalizedMessage());
-			logNew.error("b64StringToFile:Could not save file "
-					+ e.getLocalizedMessage());
+			SwifiicLogger.logMessage(PRIMARY_EID, "b64StringToFile: Could not save file "
+										+ e.getLocalizedMessage(), errorFileName);
+			// logger.log(Level.INFO, "b64StringToFile", "Could not save file "
+			// 		+ e.getLocalizedMessage());
+			// logNew.error("b64StringToFile:Could not save file "
+			// 		+ e.getLocalizedMessage());
 		} finally {
 			try {
 				if (null != str)

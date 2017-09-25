@@ -3,6 +3,7 @@ package in.swifiic.plat.helper.hub;
 import in.swifiic.plat.helper.hub.SwifiicHandler.Context;
 import in.swifiic.plat.helper.hub.xml.Action;
 import in.swifiic.plat.helper.hub.xml.Notification;
+import in.swifiic.plat.helper.hub.SwifiicLogger;
 
 import java.io.FileInputStream;
 import java.io.StringWriter;
@@ -65,17 +66,17 @@ public class Helper {
         	Action action = serializer.read(Action.class,str);
         	return action;
         } catch(Exception e) {
-        	// This should not happen unless APP tries a random string 
+        	// This should not happen unless APP tries a random string
         	// String given from Generic Service was already tested for success
         }
         return null;
 	}
-	
+
 	public static String serializeNotification(Notification notif) {
         try {
         	 StringWriter writer = new StringWriter();
-        	 Serializer serializer = new Persister();  
-       	     serializer.write(notif, writer);  
+        	 Serializer serializer = new Persister();
+       	     serializer.write(notif, writer);
 
         	 return writer.getBuffer().toString();
         } catch(Exception e) {
@@ -107,8 +108,8 @@ public class Helper {
 		}
 		return returnVal;
 	}
-	
-	
+
+
 	/***
 	 * @author aarthi
 	 * Format username|alias;username|alias;...
@@ -292,9 +293,9 @@ public class Helper {
 		return  accountDetails;
 	}
 
-	
+
 	 /**
-	  * @author aarthi 
+	  * @author aarthi
 	  * This function is added for billing purpose whenever a message is sent from swifiic messenger.
 	  * It is taking the UserName as parameter and inserting an entry in OperatorLedger Table.
 	  * @param fromUser
@@ -308,14 +309,14 @@ public class Helper {
         Connection con=DatabaseHelper.connectToDB();
         if(con!=null)
         	System.out.println("Connection Successful");
-      
+
 		PreparedStatement stmt=null;
 		ResultSet rs=null;
 	    PreparedStatement pst=null;
 		int userId=0;
 		String query=sqlProperties.getProperty("user.findUserId");
 		String insertQuery=sqlProperties.getProperty("opertorLedger.insert");
-		
+
 		Boolean res;
 		try {
 			stmt=con.prepareStatement(query);
@@ -348,7 +349,7 @@ public class Helper {
 			e.printStackTrace();
 		}
 		return res;
-	
+
 	}
 	/***
 	 * @author aarthi
@@ -364,7 +365,7 @@ public class Helper {
 	public static void updateDatabase(String macId,String notifSentBySutaAt,String dtnId,String fromUser,String timeAtHubOfLastHubUpdate,String timeAtSutaOfLastHubUpdate)
 	{
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // your template here
-		
+
 		String dtn_id=null,mac_address=null;
 		 Connection con=DatabaseHelper.connectToDB();
 	        if(con!=null)
@@ -452,7 +453,7 @@ public class Helper {
 				pst.setString(5, fromUser);
 				pst.execute();
 				return;
-			} 
+			}
 			catch (SQLException e) {
 			logger.log(Level.SEVERE,e.toString());
 				//e.printStackTrace();
@@ -463,5 +464,5 @@ public class Helper {
 				e.printStackTrace();
 			}
 	}
-	
+
 }

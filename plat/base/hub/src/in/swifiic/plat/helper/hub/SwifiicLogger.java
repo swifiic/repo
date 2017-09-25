@@ -14,14 +14,15 @@ public final class SwifiicLogger {
     private static final Logger LOGGER = Logger.getLogger(Base.class.getName());
     private static Formatter simpleFormatter = null;
     private static FileHandler fileHandler = null;
+	private static final String logDirPath = "/home/nic/logfolder/";
 
 	private SwifiicLogger() {
 
 	}
-
 	public static void logMessage(String className, String message, String filePath) { //make syncronized
-       try {
-           fileHandler = new FileHandler(filePath, true);
+		String fullPath = logDirPath + filePath;
+	   try {
+           fileHandler = new FileHandler(fullPath, true);
            fileHandler.setFormatter(new SimpleFormatter());
            fileHandler.setLevel(Level.ALL);
            LOGGER.addHandler(fileHandler);
@@ -37,4 +38,5 @@ public final class SwifiicLogger {
            LOGGER.log(Level.SEVERE, "Unable to close file handler!");
        }
    }
+
 }

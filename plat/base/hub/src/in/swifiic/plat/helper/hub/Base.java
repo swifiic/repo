@@ -15,9 +15,8 @@ import ibrdtn.example.api.DTNClient;
 public class Base {
 	private DTNClient dtnClient;
 
-	private final String logDirPath = "/home/nic/logfolder/";
-	private final String statusLogFilePath = logDirPath + "mylogfile";
-	private final String msgLogFilePath = logDirPath + "msg_log";
+	private final String statusLogFilePath = "base_log";
+	private final String msgLogFilePath = "msg_log";
 	private String derivedClass = null;
 
 	public Base() {

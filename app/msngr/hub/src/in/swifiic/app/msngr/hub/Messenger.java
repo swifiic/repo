@@ -34,7 +34,7 @@ public class Messenger extends Base implements SwifiicHandler {
 	protected ExecutorService executor = Executors.newCachedThreadPool();
 
 	// Following is the name of the endpoint to register with
-	protected String PRIMARY_EID = "Msngr";
+	protected static String PRIMARY_EID = "Msngr";
 	public static org.apache.logging.log4j.Logger logNew=org.apache.logging.log4j.LogManager.getLogger("in.swifiic.app.msngr.hub.Messenger");
 	public Messenger() {
 		super("Msngr");

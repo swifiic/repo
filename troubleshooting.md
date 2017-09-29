@@ -8,7 +8,7 @@
    
    
 ## Troubleshooting
-  ![picture alt](https://github.com/swifiic/repo/blob/aayush/troubleShooting/IBR-DTN.jpg "for IBR-DTN")
-  ![picture alt](https://github.com/swifiic/repo/blob/aayush/troubleShooting/SOA.jpg)
-  ![picture alt](https://github.com/swifiic/repo/blob/aayush/troubleShooting/SUTA.jpg)
-  ![picture alt](https://github.com/swifiic/repo/blob/aayush/troubleShooting/Msngr.jpg)
+  ![picture alt](https://github.com/aayush4vedi/repo/blob/master/troubleShooting/ibrdtn.jpg "for IBR-DTN")
+  ![picture alt](https://github.com/aayush4vedi/repo/blob/master/troubleShooting/soa%20(2).jpg)
+  ![picture alt](https://github.com/aayush4vedi/repo/blob/master/troubleShooting/suta.jpg)
+  ![picture alt](https://github.com/aayush4vedi/repo/blob/master/troubleShooting/msngr.jpg)

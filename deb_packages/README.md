@@ -8,8 +8,7 @@
   - [ ] jre
  
 ## Installation
-  1. Add the follwoing line in  
-  > /etc/apt/sources.list 
+  1. Add the follwoing line in */etc/apt/sources.list* 
   
   ``` https://github.com/aayush4vedi/deb_packages/raw/master ./```
   2. Update
@@ -26,15 +25,15 @@
 ```
 
  # Fix it by this steps ..  
-1- Clean up..
-  * ```sudo apt-get clean ```
-  * ```sudo apt-get autoclean ```
-  * ```sudo apt-get purge ```
-  * ```sudo apt-get autoremove -y```
-  * ```sudo rm -fv /var/lib/apt/lists/* ```
+  1. Clean up..
+    * ```sudo apt-get clean ```
+    * ```sudo apt-get autoclean ```
+    * ```sudo apt-get purge ```
+    * ```sudo apt-get autoremove -y```
+    * ```sudo rm -fv /var/lib/apt/lists/* ```
 
-2- Full update..
-  * ``` sudo apt-get update ```
-  * ``` sudo apt-get dist-upgrade -y ```
+  2. Full update..
+    * ``` sudo apt-get update ```
+    * ``` sudo apt-get dist-upgrade -y ```
 
-3. Reboot 
+  3. Reboot 

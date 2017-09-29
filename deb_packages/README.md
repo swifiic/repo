@@ -1,5 +1,6 @@
 # deb_packages for swifiic
   Package name: ***swiffic***
+  
   **About:** The package will install following dependencies, required for swifiic setup:
     - [ ] tomcat8
     - [ ] mysql-server
@@ -9,10 +10,13 @@
 ## Installation
   1. Add the follwoing line in  
   > /etc/apt/sources.list 
+  
   ``` https://github.com/aayush4vedi/deb_packages/raw/master ./```
   2. Update
+  
   ``` sudo apt-get update && sudo apt-get dist-upgrade -y ```
   3. Install(root access required)
+  
   ``` apt-get install swifiic ```
 
 
@@ -29,7 +33,9 @@
 ```sudo apt-get purge ```
 ```sudo apt-get autoremove -y```
 ```sudo rm -fv /var/lib/apt/lists/* ```
+
 2- Full update..
 ``` sudo apt-get update ```
 ``` sudo apt-get dist-upgrade -y ```
+
 3. Reboot 

@@ -5,12 +5,12 @@
   - [ ] tomcat8
   - [ ] mysql-server
   - [ ] openjdk-8-jdk
-  - [ ] jre
+  - [ ] default-jre
  
 ## Installation
   1. Add the follwoing line in */etc/apt/sources.list* 
   
-      ``` https://github.com/aayush4vedi/deb_packages/raw/master ./```
+      ``` deb https://github.com/aayush4vedi/deb_packages/raw/master ./```
   2. Update
   
       ``` sudo apt-get update && sudo apt-get dist-upgrade -y ```
@@ -24,7 +24,7 @@
 - Error “E:Encountered a section with no Package: header, E:Problem with MergeList …….” 
 ```
 
- # Fix it by this steps ..  
+ # Fix it by these steps ..  
   1. Clean up..
     * ```sudo apt-get clean ```
     * ```sudo apt-get autoclean ```

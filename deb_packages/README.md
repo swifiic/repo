@@ -1,12 +1,11 @@
 # deb_packages for swifiic
-  Package name: ***swiffic***
+  Package name: ***swifiic***
   
   **About:** The package will install following dependencies, required for swifiic setup:
-  
-    - [ ] tomcat8
-    - [ ] mysql-server
-    - [ ] openjdk-8-jdk
-    - [ ] jre
+      - [ ] tomcat8
+      - [ ] mysql-server
+      - [ ] openjdk-8-jdk
+      - [ ] jre
  
 ## Installation
   1. Add the follwoing line in  

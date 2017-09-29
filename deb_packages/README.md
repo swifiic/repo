@@ -24,7 +24,7 @@
 - Error “E:Encountered a section with no Package: header, E:Problem with MergeList …….” 
 ```
 
- ##3 Fix it by these steps ..  
+ ### Fix it by these steps ..  
   1. Clean up..
     * ```sudo apt-get clean ```
     * ```sudo apt-get autoclean ```

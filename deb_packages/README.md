@@ -2,10 +2,10 @@
   Package name: ***swifiic***
   
   **About:** The package will install following dependencies, required for swifiic setup:
-      - [ ] tomcat8
-      - [ ] mysql-server
-      - [ ] openjdk-8-jdk
-      - [ ] jre
+  - [ ] tomcat8
+  - [ ] mysql-server
+  - [ ] openjdk-8-jdk
+  - [ ] jre
  
 ## Installation
   1. Add the follwoing line in  
@@ -22,12 +22,10 @@
 
 ## Troubleshooting
 ```diff
-- Error “E:Encountered a section with no Package: header, E:Problem with MergeList …….” ```
-
+- Error “E:Encountered a section with no Package: header, E:Problem with MergeList …….” 
+```
 
  # Fix it by this steps ..  
-
-
 1- Clean up..
   * ```sudo apt-get clean ```
   * ```sudo apt-get autoclean ```

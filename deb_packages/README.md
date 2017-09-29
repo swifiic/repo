@@ -1,5 +1,5 @@
 # deb_packages for swifiic
-  Package name: ***swifiic***
+  (1) Package name: ***swifiic***
   
   **About:** The package will install following dependencies, required for swifiic setup:
   - [ ] tomcat8

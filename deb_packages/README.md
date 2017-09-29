@@ -10,13 +10,13 @@
 ## Installation
   1. Add the follwoing line in */etc/apt/sources.list* 
   
-  ``` https://github.com/aayush4vedi/deb_packages/raw/master ./```
+      ``` https://github.com/aayush4vedi/deb_packages/raw/master ./```
   2. Update
   
-  ``` sudo apt-get update && sudo apt-get dist-upgrade -y ```
+      ``` sudo apt-get update && sudo apt-get dist-upgrade -y ```
   3. Install(root access required)
   
-  ``` apt-get install swifiic ```
+       ``` apt-get install swifiic ```
 
 
 ## Troubleshooting

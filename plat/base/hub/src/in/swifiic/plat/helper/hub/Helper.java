@@ -296,11 +296,8 @@ public class Helper {
 
 	// arnavdhamija
 
-	public static void logHubMessage(String AppId, String SourceDTNId, String DestDTNId, String Message) {
+	public static void logHubMessage(String AppId, String SourceDTNId, String DestDTNId) {
 		Connection conn = DatabaseHelper.connectToDB();
-		System.err.println("ATLOGHUB");
-		SwifiicLogger.logMessage("Helper.java", "@logHubMessage!!"+AppId+SourceDTNId+DestDTNId+Message, "helper_log");
-
 		if (conn != null) {
 			String insertQuery = sqlProperties.getProperty("hublog.logMessage");
 			try {
@@ -308,7 +305,6 @@ public class Helper {
 				statement.setString(1, AppId);
 				statement.setString(2, SourceDTNId);
 				statement.setString(3, DestDTNId);
-				statement.setString(4, Message);
 				//do we need to set timestamp?
 				SwifiicLogger.logMessage("Helper.java", "LogSuccessful!", "helper_log");
 				statement.execute();

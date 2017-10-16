@@ -114,7 +114,7 @@ public class Messenger extends Base implements SwifiicHandler {
 
 					String response = Helper.serializeNotification(notif);
 					send(deviceDtnId + "/in.swifiic.app.msngr.andi" , response);
-					Helper.logHubMessage(PRIMARY_EID, srcurl, deviceDtnId, message);
+					Helper.logHubMessage(PRIMARY_EID, srcurl, deviceDtnId);
 					// Mark bundle as delivered...
 					// SwifiicLogger.logMessage(PRIMARY_EID, "Unable to process message and
 					// 						send response\n" + e.getMessage(), logFileName);

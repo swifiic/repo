@@ -21,6 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import in.swifiic.plat.helper.hub.SwifiicLogger;
+
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
@@ -296,6 +298,8 @@ public class Helper {
 
 	public static void logHubMessage(String AppId, String SourceDTNId, String DestDTNId, String Message) {
 		Connection conn = DatabaseHelper.connectToDB();
+		System.err.println("ATLOGHUB");
+		SwifiicLogger.logMessage("Helper.java", "@logHubMessage!!", "helper_log");
 
 		if (conn != null) {
 			String insertQuery = sqlProperties.getProperty("hublog.logMessage");

@@ -88,12 +88,17 @@ public class Messenger extends Base implements SwifiicHandler {
 		public void handlePayload(String payload, final Context ctx,String srcurl) {
 			final String message = new String(payload);
 			System.out.println(srcurl);
-			SwifiicLogger.logMessage(PRIMARY_EID, "Payload received:\n" + payload, logFileName);
+			// SwifiicLogger.logMessage(PRIMARY_EID, "Payload received:\n" + payload, logFileName);
 			SwifiicLogger.logMessage(PRIMARY_EID, "Message received from " + srcurl +":\n" + message, logFileName);
 
 			System.err.println("Got Message:" + message);
 			System.err.println("Got Payload:" + payload);
 			// logNew.info("\n Got Message:" +payload);
+
+			// A user may have multiple devices - deprecated for now - only one device per user
+			String deviceDtnId = Helper.getDeviceDtnIdForUser(toUser, ctx);
+			Helper.logHubMessage(PRIMARY_EID, srcurl, deviceDtnId, message);
+
 			executor.execute(new Runnable() {
 				@Override
 				public void run() {
@@ -109,8 +114,6 @@ public class Messenger extends Base implements SwifiicHandler {
 
 
 
-					// A user may have multiple devices - deprecated for now - only one device per user
-					String deviceDtnId = Helper.getDeviceDtnIdForUser(toUser, ctx);
 
 					String response = Helper.serializeNotification(notif);
 					send(deviceDtnId + "/in.swifiic.app.msngr.andi" , response);

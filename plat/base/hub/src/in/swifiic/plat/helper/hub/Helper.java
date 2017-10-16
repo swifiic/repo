@@ -292,6 +292,8 @@ public class Helper {
 		return  accountDetails;
 	}
 
+	// arnavdhamija
+
 	public static void logHubMessage(String AppId, String SourceDTNId, String DestDTNId, String Message) {
 		Connection conn = DatabaseHelper.connectToDB();
 

@@ -9,13 +9,13 @@ import org.simpleframework.xml.ElementList;
 
 public class Operation {
 	static final String TAG="XmlParser:Operation";
-	
+
 	@Attribute
 	String appName;
-	
+
 	@Attribute
 	String opName;
-	
+
 	@Attribute(required=false)
 	String version = "0.1";  // SWiFiIC version "0.1"
 
@@ -30,30 +30,30 @@ public class Operation {
 
 	@Attribute
 	String appId;     // optional for now
-	
+
 	@ElementList
 	public List<Argument> arguments=new ArrayList<Argument>();
-	
+
 	@Element(required=false)
 	String fileData;
 
 	public Operation() {
 		super();
 	}
-	
+
 	public String getAppName() {
 		return appName;
 	}
-	
+
 	public String getOriginatingUserName() {
 		return origUsr;
 	}
-	
+
 	public String getFileData() {
 		return fileData;
 	}
 	public void setFileData(String data) {
 		fileData = data ;
 	}
-	
+
 }

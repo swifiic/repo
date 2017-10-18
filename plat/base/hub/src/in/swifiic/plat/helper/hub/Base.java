@@ -69,8 +69,8 @@ public class Base implements SwifiicHandler {
 	public void handlePayload(String payload, final Context ctx, String srcurl) {
 		Action action = Helper.parseAction(payload);
 
-		String appName = action.getArgument("appName");
-		String opName = action.getArgument("opName");
+		String appName = action.getAppName();
+		String opName = action.getOperationName();
 		String toUser = action.getArgument("toUser");
 		String deviceDtnId = Helper.getDeviceDtnIdForUser(toUser, ctx);
 

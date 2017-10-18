@@ -86,10 +86,13 @@ public class Messenger extends Base implements SwifiicHandler {
 
 	@Override
 		public void handlePayload(String payload, final Context ctx,String srcurl) {
-			final String message = new String(payload);
+			super.handlePayload(payload, ctx, srcurl);
+			final String message = new String(payload); // 2ASK: why are we even doing this?
 			System.out.println(srcurl);
-			SwifiicLogger.logMessage(PRIMARY_EID, "Payload received:\n" + payload, logFileName);
+			SwifiicLogger.logMessage(PRIMARY_EID, "Payload received:\n" + payload, logFileName); // 2ASK: this is basically logging the same thing twice
 			SwifiicLogger.logMessage(PRIMARY_EID, "Message received from " + srcurl +":\n" + message, logFileName);
+
+			// Helper.logHubMessage(PRIMARY_EID, srcurl, deviceDtnId);
 
 			System.err.println("Got Message:" + message);
 			System.err.println("Got Payload:" + payload);
@@ -100,21 +103,21 @@ public class Messenger extends Base implements SwifiicHandler {
 				try {
 					System.err.println("In run function Message:" + message);
 					Action action = Helper.parseAction(message);
-					if(null == action) throw new Exception("Failed to parse message:" + message);
+					if(null == action) {
+						throw new Exception("Failed to parse message:" + message);
+					}
+
 					Notification notif = new Notification(action);
 					notif.updateNotificatioName("DeliverMessage");
 
 					String toUser = action.getArgument("toUser");
-					String fromUser=action.getArgument("fromUser");
-
-
+					String fromUser = action.getArgument("fromUser");
 
 					// A user may have multiple devices - deprecated for now - only one device per user
 					String deviceDtnId = Helper.getDeviceDtnIdForUser(toUser, ctx);
 
 					String response = Helper.serializeNotification(notif);
 					send(deviceDtnId + "/in.swifiic.app.msngr.andi" , response);
-					Helper.logHubMessage(PRIMARY_EID, srcurl, deviceDtnId);
 					// Mark bundle as delivered...
 					// SwifiicLogger.logMessage(PRIMARY_EID, "Unable to process message and
 					// 						send response\n" + e.getMessage(), logFileName);

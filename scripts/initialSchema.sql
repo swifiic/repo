@@ -99,7 +99,8 @@ USE `swifiic`;
 
 DROP TABLE IF EXISTS `HubLog`;
 CREATE TABLE  IF NOT EXISTS `HubLog` (
-    `AppId` varchar(64) NOT NULL,
+    `AppName` varchar(64) NOT NULL,
+    `OpName` varchar(64) NOT NULL,
     `SourceDTNId` varchar(64) NOT NULL,
     `DestDTNId` varchar(64) NOT NULL,
     `Time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

@@ -66,9 +66,9 @@ public class Base implements SwifiicHandler {
 		String opName = action.getOperationName();
 		String toUserDTNId = destinationAddress;
 		String fromUser = action.getArgument("fromUser");
-		String fromUserDTNId = action.getDeviceDtnIdForUser(fromUser, null); // 2ASK: what am I really supposed to put here? How do I get the srcUrl?
+		String fromUserDTNId = Helper.getDeviceDtnIdForUser(fromUser, null); // 2ASK: what am I really supposed to put here? How do I get the srcUrl?
 
-		Helper.logHubMessage(appName, opName, fromUserDTNId, toUserDTNId);
+		Helper.logHubMessage(appName, opName, "THINKPAD", toUserDTNId);
 	}
 
 	public void handlePayload(String payload, final Context ctx, String srcurl) { //receive
@@ -95,5 +95,15 @@ public class Base implements SwifiicHandler {
 		SwifiicLogger.logMessage(derivedClass, "Sending a group bundle to: " + destination.toString() + "\n with data: " + message, msgLogFilePath);
         //System.out.println("Sending a bundle to  Group: " + destination.toString() + "\n with data: " + message);
         dtnClient.send(finalBundle);
+
+		Action action = Helper.parseAction(message);
+
+		String appName = action.getAppName();
+		String opName = action.getOperationName();
+		String toUserDTNId = destinationAddress;
+		String fromUser = action.getArgument("fromUser");
+		String fromUserDTNId = Helper.getDeviceDtnIdForUser(fromUser, null); // 2ASK: what am I really supposed to put here? How do I get the srcUrl?
+
+		Helper.logHubMessage(appName, opName, "THINKPAD", toUserDTNId);
     }
 }

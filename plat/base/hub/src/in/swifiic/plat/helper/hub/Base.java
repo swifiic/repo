@@ -3,13 +3,10 @@ package in.swifiic.plat.helper.hub;
 import java.io.*;
 
 import in.swifiic.plat.helper.hub.SwifiicLogger;
-// import in.swifiic.plat.helper.hub.Base;
-// import in.swifiic.plat.helper.hub.DatabaseHelper;
 import in.swifiic.plat.helper.hub.Helper;
 import in.swifiic.plat.helper.hub.SwifiicHandler;
 import in.swifiic.plat.helper.hub.xml.Action;
-// import in.swifiic.plat.helper.hub.xml.Notification;
-// import in.swifiic.plat.helper.hub.SwifiicLogger;
+import in.swifiic.plat.helper.hub.xml.Notification;
 
 import ibrdtn.api.object.Bundle;
 import ibrdtn.api.object.EID;
@@ -50,7 +47,7 @@ public class Base implements SwifiicHandler {
         System.exit(0);
     }
 
-    protected void send(String destinationAddress, String message) {
+    protected void send(String destinationAddress, String message) { // 2ASK: should logging be done before or after operation?
         EID destination = new SingletonEndpoint(destinationAddress);
 
         // Create bundle to send
@@ -60,21 +57,30 @@ public class Base implements SwifiicHandler {
 
         final Bundle finalBundle = bundle;
 
+		dtnClient.send(finalBundle);
 		SwifiicLogger.logMessage(derivedClass, "Sending a bundle to: " + destination.toString() + "\n with data: " + message, msgLogFilePath);
-        // System.out.println("Sending a bundle to: " + destination.toString() + "\n with data: " + message);
 
-        dtnClient.send(finalBundle);
-    }
+		Action action = Helper.parseAction(message);
 
-	public void handlePayload(String payload, final Context ctx, String srcurl) {
+		String appName = action.getAppName();
+		String opName = action.getOperationName();
+		String toUserDTNId = destinationAddress;
+		String fromUser = action.getArgument("fromUser");
+		String fromUserDTNId = action.getDeviceDtnIdForUser(fromUser, null); // 2ASK: what am I really supposed to put here? How do I get the srcUrl?
+
+		Helper.logHubMessage(appName, opName, fromUserDTNId, toUserDTNId);
+	}
+
+	public void handlePayload(String payload, final Context ctx, String srcurl) { //receive
 		Action action = Helper.parseAction(payload);
 
 		String appName = action.getAppName();
 		String opName = action.getOperationName();
 		String toUser = action.getArgument("toUser");
-		String deviceDtnId = Helper.getDeviceDtnIdForUser(toUser, ctx);
+		String toUserDTNId = Helper.getDeviceDtnIdForUser(toUser, ctx);
+		String fromUserDTNId = srcurl;
 
-		Helper.logHubMessage(appName, opName, srcurl, deviceDtnId);
+		Helper.logHubMessage(appName, opName, fromUserDTNId, toUserDTNId);
 	}
 
     protected void sendGrp(String destinationAddress, String message) { //is this used for multicast messages? answer: yes

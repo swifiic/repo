@@ -56,11 +56,11 @@ public class Base implements SwifiicHandler {
         bundle.appendBlock(new PayloadBlock(message.getBytes()));
 
         final Bundle finalBundle = bundle;
-
-		dtnClient.send(finalBundle);
 		SwifiicLogger.logMessage(derivedClass, "Sending a bundle to: " + destination.toString() + "\n with data: " + message, msgLogFilePath);
 
-		Action action = Helper.parseAction(message);
+		dtnClient.send(finalBundle);
+
+		Action action = Helper.parseAction(message); // though a notification, we are using parseAction for the XML
 
 		String appName = action.getAppName();
 		String opName = action.getOperationName();
@@ -68,7 +68,7 @@ public class Base implements SwifiicHandler {
 		String fromUser = action.getArgument("fromUser");
 		String fromUserDTNId = Helper.getDeviceDtnIdForUser(fromUser, null); // 2ASK: what am I really supposed to put here? How do I get the srcUrl?
 
-		Helper.logHubMessage(appName, opName, "THINKPAD", toUserDTNId);
+		Helper.logHubMessage(appName, opName, fromUserDTNId, toUserDTNId);
 	}
 
 	public void handlePayload(String payload, final Context ctx, String srcurl) { //receive
@@ -104,6 +104,6 @@ public class Base implements SwifiicHandler {
 		String fromUser = action.getArgument("fromUser");
 		String fromUserDTNId = Helper.getDeviceDtnIdForUser(fromUser, null); // 2ASK: what am I really supposed to put here? How do I get the srcUrl?
 
-		Helper.logHubMessage(appName, opName, "THINKPAD", toUserDTNId);
+		Helper.logHubMessage(appName, opName, dtnClient.getEndpoint(), toUserDTNId);
     }
 }

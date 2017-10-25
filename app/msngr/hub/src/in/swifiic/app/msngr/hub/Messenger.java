@@ -89,7 +89,7 @@ public class Messenger extends Base implements SwifiicHandler {
 			super.handlePayload(payload, ctx, srcurl);
 			final String message = new String(payload); // 2ASK: why are we even doing this?
 			System.out.println(srcurl);
-			SwifiicLogger.logMessage(PRIMARY_EID, "Payload received:\n" + payload, logFileName); // 2ASK: this is basically logging the same thing twice
+			//SwifiicLogger.logMessage(PRIMARY_EID, "Payload received:\n" + payload, logFileName); // 2ASK: this is basically logging the same thing twice
 			SwifiicLogger.logMessage(PRIMARY_EID, "Message received from " + srcurl +":\n" + message, logFileName);
 
 			// Helper.logHubMessage(PRIMARY_EID, srcurl, deviceDtnId);

@@ -104,6 +104,6 @@ public class Base implements SwifiicHandler {
 		String fromUser = action.getArgument("fromUser");
 		String fromUserDTNId = Helper.getDeviceDtnIdForUser(fromUser, null); // 2ASK: what am I really supposed to put here? How do I get the srcUrl?
 
-		Helper.logHubMessage(appName, opName, dtnClient.getEndpoint(), toUserDTNId);
+		Helper.logHubMessage(appName, opName, "Hub", toUserDTNId);
     }
 }

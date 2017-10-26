@@ -1,12 +1,12 @@
-<project name="in-swifiic-msngr" default="dist" basedir=".">
+<project name="in-swifiic-bromide" default="dist" basedir=".">
     <description>
         simple build file for Hub
     </description>
   <!-- set global properties for this build -->
   <property name="src" location="src"/>
   <property name="lib" location="../../../lib"/>
-  <property name="hub_module" value="msngr" />
-  <property name="hub_class" value="in.swifiic.app.msngr.hub.Messenger" />
+  <property name="hub_module" value="bromide" />
+  <property name="hub_class" value="in.swifiic.app.bromide.hub.Bromide" />
   <property name="build" location="../../../build/${hub_module}"/>
   <property name="dist"  location="../../../dist/${hub_module}"/>
 

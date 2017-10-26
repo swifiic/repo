@@ -211,8 +211,8 @@ EOF
 sudo mkdir -p /var/spool/ibrdtn/bundles
 sudo chmod -R 777 /var/spool/ibrdtn/bundles
 
-sudo mkdir -p /var/log/msngr /var/log/suta /var/log/soa
-sudo chmod -R 777 /var/log/msngr /var/log/suta /var/log/soa
+sudo mkdir -p /var/log/msngr /var/log/suta /var/log/soa /var/log/bromide
+sudo chmod -R 777 /var/log/msngr /var/log/suta /var/log/soa /var/log/bromide
 # cleanup the temp folder
 rm -rf /tmp/deploy
 

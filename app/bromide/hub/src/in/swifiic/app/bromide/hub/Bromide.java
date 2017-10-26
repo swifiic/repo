@@ -1,4 +1,4 @@
-package in.swifiic.app.msngr.hub;
+package in.swifiic.app.bromide.hub;
 
 import ibrdtn.example.api.DTNClient;
 import in.swifiic.plat.helper.hub.Base;

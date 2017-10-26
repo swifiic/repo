@@ -1,0 +1,56 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <PreferenceCategory
+        android:title="About Msngr" >
+    
+	    <Preference
+	        android:maxLines="1"
+	        android:key="version"
+	        android:selectable="false"
+	        android:selectAllOnFocus="true"
+	        android:singleLine="true"
+	        android:title="Version"
+	        android:summary="@string/version" />
+	
+		<Preference
+	        android:defaultValue="@string/pref_default_hub_address"
+	        android:key="hub_address"
+	        android:maxLines="1"
+	        android:selectable="false"
+	        android:selectAllOnFocus="true"
+	        android:singleLine="true"
+	        android:title="@string/pref_title_hub_address" />
+		
+		<Preference
+	        android:defaultValue="@string/pref_default_my_identity"
+	        android:key="my_identity"
+	        android:maxLines="1"
+	        android:selectable="false"
+	        android:selectAllOnFocus="true"
+	        android:singleLine="true"
+	        android:title="@string/pref_title_my_identity" />
+		<Preference
+	        android:defaultValue="@string/pref_default_reset"
+	        android:key="reset_required"
+	        android:maxLines="1"
+	        android:selectable="false"
+	        android:selectAllOnFocus="true"
+	        android:singleLine="true"
+	        android:title="@string/pref_default_reset" />
+    
+	</PreferenceCategory>
+	
+    <PreferenceCategory 
+        android:title="Settings">
+		
+	    <in.swifiic.app.msngr.andi.MyDialogPreference
+	        android:key="delete_all_messages"
+	        android:selectable="true"
+	        android:title="Delete all messages?"
+	        android:dialogMessage="WARNING: Can't be undone!"
+	        android:positiveButtonText="OK"
+	        android:negativeButtonText="Cancel" />
+	    
+	</PreferenceCategory>
+	
+</PreferenceScreen>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="android_custom" default="debug">
+
+<!-- abhishek - minor changes for handling single lib for all projects -->
+    <target name="-pre-compile"  depends="set-stamp">
+        <path id="project.all.jars.path">
+            <fileset dir="${project.ext.jars.path1}">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${project.ext.jars.path2}">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${project.ext.jars.path3}">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${jar.libs.dir}">
+                <include name="*.jar"/>
+            </fileset>
+        </path>
+    </target>
+    <property name="strings.xml"  location="./res/values/strings.xml"/>
+
+    <target name="init">
+        <!-- Create the time stamp -->
+        <tstamp/>
+        <hostinfo/>
+        <exec executable="hostname" outputproperty="computer.hostname"/>
+    </target>
+
+    <target name="set-stamp" depends="init" description="sets the build date" >
+
+        <replaceregexp file="${strings.xml}"
+            match="(&lt;string name=&quot;app_build_date&quot;&gt;)[A-Za-z0-9 ]+(&lt;/string&gt;)"
+            replace="&lt;string name=&quot;app_build_date&quot;&gt;${DSTAMP}&lt;/string&gt;" />
+
+        <replaceregexp file="${strings.xml}"
+            match="(&lt;string name=&quot;app_build_ctx&quot;&gt;)[A-Za-z0-9 \/\-]+(&lt;/string&gt;)"
+            replace="&lt;string name=&quot;app_build_ctx&quot;&gt;${computer.hostname} ${basedir} ${user.name}&lt;/string&gt;" />
+
+    </target>
+</project>

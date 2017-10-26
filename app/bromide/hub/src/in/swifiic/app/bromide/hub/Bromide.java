@@ -72,18 +72,18 @@ public class Bromide extends Base implements SwifiicHandler {
 	}
 
 	@Override
-		public void handlePayload(String payload, final Context ctx, String srcurl) {
-			super.handlePayload(payload, ctx, srcurl);
-			final String message = new String(payload); // 2ASK: why are we even doing this?
-			System.out.println(srcurl);
-			SwifiicLogger.logMessage(PRIMARY_EID, "Message received from " + srcurl +":\n" + message, logFileName);
+	public void handlePayload(String payload, final Context ctx, String srcurl) {
+		super.handlePayload(payload, ctx, srcurl);
+		final String message = new String(payload); // 2ASK: why are we even doing this?
+		System.out.println(srcurl);
+		SwifiicLogger.logMessage(PRIMARY_EID, "Message received from " + srcurl +":\n" + message, logFileName);
 
-			System.err.println("Got Message:" + message);
-			System.err.println("Got Payload:" + payload);
-			// logNew.info("\n Got Message:" +payload);
-			executor.execute(new Runnable() {
-				@Override
-				public void run() {
+		System.err.println("Got Message:" + message);
+		System.err.println("Got Payload:" + payload);
+		// logNew.info("\n Got Message:" +payload);
+		executor.execute(new Runnable() {
+			@Override
+			public void run() {
 				try {
 					System.err.println("In run function Message:" + message);
 					Action action = Helper.parseAction(message);

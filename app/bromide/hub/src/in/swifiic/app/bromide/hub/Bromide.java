@@ -23,12 +23,17 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.util.Base64;
+
+import java.io.FileOutputStream;
+
+
 
 import ibrdtn.api.ExtendedClient;
 
 
 public class Bromide extends Base implements SwifiicHandler {
-
+	private int i = 0;
 	private static final Logger logger = LogManager.getLogManager().getLogger("");
 	private DTNClient dtnClient;
 
@@ -89,6 +94,16 @@ public class Bromide extends Base implements SwifiicHandler {
 					Action action = Helper.parseAction(message);
 					if(null == action) {
 						throw new Exception("Failed to parse message:" + message);
+					}
+					String encodedImage = action.getArgument("encodedImage");
+					try {
+						byte[] decodedImage = Base64.getDecoder().decode(encodedImage);
+						// FileOutputStream fos = new FileOutputStream("myImage"+String.valueOf(i++)+".jpg");
+						// fos.write(decodedImage);
+						// fos.close();
+						SwifiicLogger.logMessage(PRIMARY_EID, "Image saved", logFileName);
+					} catch (IllegalArgumentException e) {
+						SwifiicLogger.logMessage(PRIMARY_EID, "encodedImage is not valid base64! " + encodedImage, errorFileName);
 					}
 				} catch (Exception e) {
 					SwifiicLogger.logMessage(PRIMARY_EID, "Unable to process message and send response\n" + e.getMessage(), errorFileName);

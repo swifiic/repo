@@ -17,12 +17,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.util.Date;
 // import java.util.Base64;
 
 import ibrdtn.api.Base64;
@@ -98,7 +100,8 @@ public class Bromide extends Base implements SwifiicHandler {
 					String encodedImage = action.getArgument("encodedImage");
 					try {
 						byte[] decodedImage = Base64.decode(encodedImage);
-						FileOutputStream fos = new FileOutputStream(logDirPath+"myImage"+String.valueOf(i++)+".jpg");
+						String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+						FileOutputStream fos = new FileOutputStream(logDirPath+"IMG_"+timeStamp+".jpg", false); //overwriting the file for testing
 						fos.write(decodedImage);
 						fos.close();
 						SwifiicLogger.logMessage(PRIMARY_EID, "Image saved", logFileName);

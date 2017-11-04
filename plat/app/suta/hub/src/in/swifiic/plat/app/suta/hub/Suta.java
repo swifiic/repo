@@ -172,7 +172,7 @@ public class Suta extends Base implements SwifiicHandler {
 							SwifiicLogger.logMessage(PRIMARY_EID, "Encoding successful", logFileName);
 							//get dtn id for src
 							String deviceDTNId = Helper.getDeviceDtnIdForUser(fromUser, ctx);
-							Notification notif = new Notification("SendTestMessage", "SUTA", "NOPE", "0.1", "Hub");
+							Notification notif = new Notification("SendAPKMessage", "SUTA", "NOPE", "0.1", "Hub");
 							notif.addArgument("TestData", encodedApk);
 							String payload = Helper.serializeNotification(notif);
 							send(deviceDTNId+"/in.swifiic.plat.app.suta.andi", payload);

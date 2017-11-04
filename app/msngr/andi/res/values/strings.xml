@@ -11,7 +11,7 @@
     <string name="hello_world">Hello world!</string>
 
   <!-- abhishek for build details intial values are place holders -->
-    <string name="app_build_date">20171104</string>
+    <string name="app_build_date">20171105</string>
     <string name="app_build_ctx">nic-ThinkPad /home/nic/swifiic/repo/app/msngr/andi root</string>
 
 </resources>

@@ -7,13 +7,11 @@ import in.swifiic.plat.helper.hub.SwifiicHandler;
 import in.swifiic.plat.helper.hub.xml.Notification;
 import in.swifiic.plat.helper.hub.SwifiicLogger;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.String;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Properties;
@@ -58,6 +56,7 @@ public class Suta extends Base implements SwifiicHandler {
 	private DTNClient dtnClient;
 	protected ExecutorService executor = Executors.newCachedThreadPool();
 	// Following is the name of the endpoint to register with
+	private static final String logDirPath = "/home/nic/logfolder/";
 	private static final String logFileName = "suta_log";
 	private static final String errorFileName = "suta_error";
 	protected static String PRIMARY_EID = "suta";
@@ -151,19 +150,46 @@ public class Suta extends Base implements SwifiicHandler {
 					if (null == action)
 						return;
 					String opName = action.getOperationName();
+					SwifiicLogger.logMessage(PRIMARY_EID, "got op of" + opName, logFileName);
 					if(opName.compareTo("DeviceListUpdate")==0)
 						return;
+					String fromUser = action.getArgument("fromUser");
+					if(opName.compareTo("RequestAppMsg")==0) { //2ASK: why does this work?
+						SwifiicLogger.logMessage(PRIMARY_EID, "Processing request for App", logFileName);
+
+						String appRequested = action.getArgument("appRequested");
+						String appPath = null;
+						if (appRequested.compareTo("Msngr")==0) {
+							appPath = logDirPath + "msngr.apk";
+						} else if (appRequested.compareTo("Bromide")==0) {
+							appPath = logDirPath + "bromide.apk";
+						} else {
+							SwifiicLogger.logMessage(PRIMARY_EID, "AppNotFound", errorFileName);
+							return;
+						}
+						try {
+							String encodedApk = Base64.encodeFromFile(appPath);
+							SwifiicLogger.logMessage(PRIMARY_EID, "Encoding successful", logFileName);
+							//get dtn id for src
+							String deviceDTNId = Helper.getDeviceDtnIdForUser(fromUser, ctx);
+							Notification notif = new Notification("SendTestMessage", "SUTA", "NOPE", "0.1", "Hub");
+							notif.addArgument("TestData", encodedApk);
+							String payload = Helper.serializeNotification(notif);
+							send(deviceDTNId+"/in.swifiic.plat.app.suta.andi", payload);
+						} catch (IOException e) {
+							SwifiicLogger.logMessage(PRIMARY_EID, "Unsuccessful logging!" + e.getStackTrace(), errorFileName);
+						}
+						return;
+					}
 
 					// We are looking for Op Name "SendInfo" "SendMessage"
 					String actualContent = action.getArgument("message");
 					String fileName = action.getArgument("filename");
-
 					String macId = action.getArgument("macAddress");
 					String notifSentBySutaAt = action.getArgument("notifSentBySutaAt");
 					String timeAtHubOfLastHubUpdate = action.getArgument("timeAtHubOfLastHubUpdate");
 					String timeAtSutaOfLastHubUpdate = action.getArgument("timeAtSutaOfLastHubUpdate");
 
-					String fromUser = action.getArgument("fromUser");
 
 					if (macId != null && notifSentBySutaAt != null && dtnId != null
 							&& fromUser != null) {

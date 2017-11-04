@@ -86,7 +86,7 @@ public class Helper {
         return null;
 	}
 
-	public static String getDeviceDtnIdForUser(String user, Context ctx) {
+	public static String getDeviceDtnIdForUser(String user, Context ctx) { //2ASK: why do we pass ctx?
 		Connection connection = DatabaseHelper.connectToDB();
 		PreparedStatement statement;
 		String sql=sqlProperties.getProperty("user.findDtnId");
@@ -312,7 +312,7 @@ public class Helper {
 				statement.close();
 				DatabaseHelper.closeDB(conn);
 			} catch (SQLException e) {
-				SwifiicLogger.logMessage("Helper.java", "Exception! " + e.toString(), "helper_log");
+				SwifiicLogger.logMessage("Helper.java", "Exception! w/" + "App: " + AppName +" Opp: " + OpName +" SrcDtn: " + SourceDTNId + " DestDtn: " + DestDTNId + e.toString(), "helper_log");
 				e.printStackTrace();
 			}
 		}

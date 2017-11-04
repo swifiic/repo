@@ -80,6 +80,10 @@ public class Base implements SwifiicHandler {
 		String toUserDTNId = Helper.getDeviceDtnIdForUser(toUser, ctx);
 		String fromUserDTNId = srcurl;
 
+		if (toUserDTNId == null) {
+			toUserDTNId = "Hub";
+		}
+		
 		Helper.logHubMessage(appName, opName, fromUserDTNId, toUserDTNId);
 	}
 

@@ -15,11 +15,8 @@ public final class SwifiicLogger {
     private static Formatter simpleFormatter = null;
     private static FileHandler fileHandler = null;
 	private static final String logDirPath = "/home/nic/logfolder/";
-
-	private SwifiicLogger() {
-
-	}
-	public static void logMessage(String className, String message, String filePath) { //make syncronized
+    
+    synchronized public static void logMessage(String className, String message, String filePath) { //make syncronized
 		String fullPath = logDirPath + filePath;
 	   try {
            fileHandler = new FileHandler(fullPath, true);

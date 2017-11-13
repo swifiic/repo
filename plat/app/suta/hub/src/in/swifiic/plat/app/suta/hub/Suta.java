@@ -134,6 +134,7 @@ public class Suta extends Base implements SwifiicHandler {
 	 * Source url of the bundle got in Abstract API handler
 	 */
 	public void handlePayload(String payload, final Context ctx, String url) {
+		super.handlePayload(payload, ctx, url);
 		int i;
 		i = url.lastIndexOf("/");
 		final String dtnId = url.substring(0, i);

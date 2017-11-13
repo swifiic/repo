@@ -86,7 +86,7 @@ public class Helper {
         return null;
 	}
 
-	public static String getDeviceDtnIdForUser(String user, Context ctx) { //2ASK: why do we pass ctx?
+	public static String getDeviceDtnIdForUser(String user, Context ctx) { //2ASK: why do we pass ctx? //change to removing the context
 		Connection connection = DatabaseHelper.connectToDB();
 		PreparedStatement statement;
 		String sql=sqlProperties.getProperty("user.findDtnId");

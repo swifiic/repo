@@ -147,14 +147,16 @@ public class Suta extends Base implements SwifiicHandler {
 				try {
 
 					Action action = Helper.parseAction(message);
-					if (null == action)
+					if (null == action) {
 						return;
+					}
 					String opName = action.getOperationName();
 					SwifiicLogger.logMessage(PRIMARY_EID, "got op of" + opName, logFileName);
-					if(opName.compareTo("DeviceListUpdate")==0)
+					if(opName.compareTo("DeviceListUpdate")==0) {
 						return;
+					}
 					String fromUser = action.getArgument("fromUser");
-					if(opName.compareTo("RequestAppMsg")==0) { //2ASK: why does this work?
+					if (opName.compareTo("RequestApp")==0) { //2ASK: why does this work? //change to requestapp
 						SwifiicLogger.logMessage(PRIMARY_EID, "Processing request for App", logFileName);
 
 						String appRequested = action.getArgument("appRequested");
@@ -172,12 +174,13 @@ public class Suta extends Base implements SwifiicHandler {
 							SwifiicLogger.logMessage(PRIMARY_EID, "Encoding successful", logFileName);
 							//get dtn id for src
 							String deviceDTNId = Helper.getDeviceDtnIdForUser(fromUser, ctx);
-							Notification notif = new Notification("SendAPKMessage", "SUTA", "NOPE", "0.1", "Hub");
-							notif.addArgument("TestData", encodedApk);
+							Notification notif = new Notification("SendAPKMessage", "SUTA", "NOPE", "0.1", "Hub"); //change to sendAPK
+							notif.addArgument("encodedApk", encodedApk); //change to encodedApk
+							notif.addArgument("appFileName", appRequested);
 							String payload = Helper.serializeNotification(notif);
 							send(deviceDTNId+"/in.swifiic.plat.app.suta.andi", payload);
 						} catch (IOException e) {
-							SwifiicLogger.logMessage(PRIMARY_EID, "Unsuccessful logging!" + e.getStackTrace(), errorFileName);
+							SwifiicLogger.logMessage(PRIMARY_EID, "Unsuccessfully processed!" + e.getStackTrace(), errorFileName);
 						}
 						return;
 					}

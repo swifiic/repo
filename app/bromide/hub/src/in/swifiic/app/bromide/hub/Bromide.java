@@ -98,15 +98,16 @@ public class Bromide extends Base implements SwifiicHandler {
 						throw new Exception("Failed to parse message:" + message);
 					}
 					String encodedImage = action.getArgument("encodedImage");
+					String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+					FileOutputStream fos = new FileOutputStream(logDirPath+"IMG_"+timeStamp+".jpg", false); //overwriting the file for testing
 					try {
 						byte[] decodedImage = Base64.decode(encodedImage);
-						String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-						FileOutputStream fos = new FileOutputStream(logDirPath+"IMG_"+timeStamp+".jpg", false); //overwriting the file for testing
 						fos.write(decodedImage);
-						fos.close();
 						SwifiicLogger.logMessage(PRIMARY_EID, "Image saved", logFileName);
 					} catch (IllegalArgumentException e) {
 						SwifiicLogger.logMessage(PRIMARY_EID, "encodedImage is not valid base64! " + encodedImage, errorFileName);
+					} finally {
+						fos.close();
 					}
 				} catch (Exception e) {
 					SwifiicLogger.logMessage(PRIMARY_EID, "Unable to process message and send response\n" + e.getMessage(), errorFileName);

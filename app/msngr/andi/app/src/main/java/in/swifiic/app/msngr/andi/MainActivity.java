@@ -54,15 +54,14 @@ public class MainActivity extends SwifiicActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);            	        // TODO check in sharedPreference if the generic code mentioned resetRequired
         // TODO if yes - reset AND clear the value of resetRequired
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        pref=PreferenceManager.getDefaultSharedPreferences(this);
-        if(pref.getString("reset_required", "no").equalsIgnoreCase("yes")){
-        	DatabaseHelper db = new DatabaseHelper(this);
-        	db.deleteForReset();
-        	db.close();
-        	pref.edit().putString("reset_required", "no").commit();
-        }
         setContentView(R.layout.main_activity_msngr);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        if(pref.getString("reset_required", "no").equalsIgnoreCase("yes")){
+            DatabaseHelper db = new DatabaseHelper(this);
+            db.deleteForReset();
+            db.close();
+            pref.edit().putString("reset_required", "no").commit();
+        }
         messageToSend = (EditText)findViewById(R.id.msgTextToSend);
 	messageToSend.requestFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -110,12 +109,14 @@ public class MainActivity extends SwifiicActivity {
             		String fromUser = sharedPref.getString("my_identity", "UnknownUser");
             		Date date = new Date();
             		String sentAt = "" + date.getTime();
+
                     
             		Action act = new Action("SendMessage", aeCtx);
             		act.addArgument("message", message);
                     act.addArgument("toUser", toUser);
                     act.addArgument("fromUser", fromUser);
-                    act.addArgument("sentAt", "" + sentAt);   
+                    act.addArgument("sentAt", "" + sentAt);
+
                     
                     // Loading hub address from preferences
                     String hubAddress = sharedPref.getString("hub_address", "");
@@ -127,7 +128,6 @@ public class MainActivity extends SwifiicActivity {
                     msg.setUser(toUser);
                     msg.setIsInbound(0);
                     msg.setSentAtTime(sentAt);
-                    
                     DatabaseHelper db = new DatabaseHelper(v.getContext());
                     db.addMessage(msg);
                     Log.d(TAG, "Inserted a row: " + msg.getMsg());

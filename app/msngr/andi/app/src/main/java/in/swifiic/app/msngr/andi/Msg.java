@@ -12,14 +12,16 @@ public class Msg {
 	 
     private String msg;
     private String user;
-    private int isInbound;
-    private Date sentAt;
+    private int isInbound=0;
+    private Date sentAt, hubRelayedAt, receivedAt;
     
     public Msg(Notification notif) {
 		this.msg = notif.getArgument("message");
 		this.user = notif.getArgument("fromUser");
 		this.isInbound = 1;
 		this.sentAt = new Date(Long.parseLong(notif.getArgument("sentAt")));
+        this.hubRelayedAt= new Date(Long.parseLong(notif.getArgument("hubRelayedAt")));
+        this.receivedAt= new Date();
 	}
     
 	public Msg() {
@@ -41,6 +43,12 @@ public class Msg {
     public void setSentAtTime(String time) {
     	this.sentAt = new Date(Long.parseLong(time));
     }
+    public void setHubRelayedAtTime(String time) {
+        this.hubRelayedAt = new Date(Long.parseLong(time));
+    }
+    public void setReceivedAtTime(String time) {
+        this.receivedAt = new Date(Long.parseLong(time));
+    }
     
     /*
      * Getters
@@ -56,5 +64,11 @@ public class Msg {
     }
     public String getSentAtTime() {
     	return "" + this.sentAt.getTime();
+    }
+    public String getRelayedAtTime() {
+        return "" + this.hubRelayedAt.getTime();
+    }
+    public String getReceivedAtTime() {
+        return "" + this.receivedAt.getTime();
     }
 }

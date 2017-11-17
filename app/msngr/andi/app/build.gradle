@@ -8,7 +8,7 @@ android {
         applicationId "in.swifiic.app.msngr.andi"
         versionCode 1
         minSdkVersion 14
-        targetSdkVersion 19
+        targetSdkVersion 22
     }
 
     buildTypes {

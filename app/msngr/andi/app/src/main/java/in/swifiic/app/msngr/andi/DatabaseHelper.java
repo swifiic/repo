@@ -29,17 +29,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
  
     // Column names
     private static final String KEY_ID = "_id";
-    private static final String KEY_MESSAGE = "message";
-    private static final String KEY_USER = "user";
-    private static final String KEY_IS_INBOUND = "isInbound";	// This key is: 1 for incoming message 0 for outgoing message    
-    private static final String KEY_SENTAT = "sentAt";
-  
+    public static final String KEY_MESSAGE = "message";
+    public static final String KEY_USER = "user";
+    public static final String KEY_IS_INBOUND = "isInbound";	// This key is: 1 for incoming message 0 for outgoing message
+    public static final String KEY_SENTAT = "sentAt";
+    public static final String KEY_RELAYEDAT = "relayedAt";
+    public static final String KEY_RECEIVEDAT = "receivedAt";
+
     // Table Create Statement
     private static final String CREATE_TABLE_MSGS = "CREATE TABLE " + TABLE_MSGS + "(" 
     		+ KEY_ID + " INTEGER PRIMARY KEY, " 
     		+ KEY_MESSAGE + " TEXT, "
     		+ KEY_USER + " TEXT, "
-            + KEY_IS_INBOUND + " INTEGER, " 
+            + KEY_IS_INBOUND + " INTEGER, "
+            + KEY_RECEIVEDAT + " TEXT, "
+            + KEY_RELAYEDAT + " TEXT, "
             + KEY_SENTAT + " TEXT)";
  
     public DatabaseHelper(Context context) {
@@ -106,7 +110,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(KEY_USER, msg.getUser());
         values.put(KEY_IS_INBOUND, msg.getIsInbound());
         values.put(KEY_SENTAT, msg.getSentAtTime());
-     
+        if(msg.getIsInbound() == 1) {
+            values.put(KEY_RELAYEDAT, msg.getRelayedAtTime());
+            values.put(KEY_RECEIVEDAT, msg.getReceivedAtTime());
+        } else {
+            values.put(KEY_RELAYEDAT, "NA");
+            values.put(KEY_RECEIVEDAT, "NA");
+        }
+
         // Insert row
         long msg_id = db.insert(TABLE_MSGS, null, values);
         if(msg_id==-1) {

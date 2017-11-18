@@ -14,10 +14,10 @@ public final class SwifiicLogger {
     private static final Logger LOGGER = Logger.getLogger(Base.class.getName());
     private static Formatter simpleFormatter = null;
     private static FileHandler fileHandler = null;
-	private static final String logDirPath = "/home/nic/logfolder/";
-    
+	private static final String logDirPath = "/home/nic/logfolder/"; //2DO: has to be made generic!
+
     synchronized public static void logMessage(String className, String message, String filePath) { //make syncronized
-		String fullPath = logDirPath + filePath;
+       String fullPath = logDirPath + filePath;
 	   try {
            fileHandler = new FileHandler(fullPath, true);
            fileHandler.setFormatter(new SimpleFormatter());

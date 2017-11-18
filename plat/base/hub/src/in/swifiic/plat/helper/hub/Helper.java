@@ -130,7 +130,7 @@ public class Helper {
 			statement = connection.prepareStatement(sql);
 			result = statement.executeQuery();
 			// Extract data from result set
-			while(result.next()) {
+			while(result.next()) { //arnavdhamija - shouldn't this be a stringbuilder instead?
 				// Retrieve by column name
 				username = result.getString("Name");
 				alias = result.getString("Alias");
@@ -148,6 +148,28 @@ public class Helper {
 		return users;
 	}
 
+	public static String getAllApps() {
+		Connection connection = DatabaseHelper.connectToDB();
+		PreparedStatement preparedStatement;
+		String sql = sqlProperties.getProperty("apps.getAppNames");
+		String appName;
+		StringBuilder appList = new StringBuilder();
+		ResultSet resultSet;
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()) {
+				appName = resultSet.getString("AppName");
+				appList.append(appName + "|");
+			}
+			resultSet.close();
+			preparedStatement.close();
+			DatabaseHelper.closeDB(connection);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return appList.toString();
+	}
 
 
 

@@ -88,11 +88,13 @@ public class Suta extends Base implements SwifiicHandler {
 					suta.getDtnClientInstance().reconnect();
 				}
 				String userList = Helper.getAllUsers();
+				String appList = Helper.getAllApps();
 				//here account detais also contains heartbeat(updated)
 				String accountDetails = Helper.getAccountDetailsForAll();
 
 				Notification notif = new Notification("DeviceListUpdate","SUTA", "TODO", "0.1", "Hub");
 				notif.addArgument("userList", userList);
+				notif.addArgument("appList", appList); //2DO: parse this on the android side as well!
 				notif.addArgument("accountDetails",accountDetails);
 				//notif.addArgument("heartBeat",heartBeat);
 				Calendar c = Calendar.getInstance();
@@ -124,6 +126,16 @@ public class Suta extends Base implements SwifiicHandler {
 
 	}
 
+	private String getAppPath(String appRequested) {
+		String[] appList = Helper.getAllApps().split("|");
+		for (String appName : appList) {
+			if (appName.compareTo(appRequested) == 0) {
+				String appPath = logDirPath + appName + ".apk";
+				return appPath;
+			}
+		}
+		return null;
+	}
 
 	@Override
 	/***
@@ -161,15 +173,13 @@ public class Suta extends Base implements SwifiicHandler {
 						SwifiicLogger.logMessage(PRIMARY_EID, "Processing request for App", logFileName);
 
 						String appRequested = action.getArgument("appRequested");
-						String appPath = null;
-						if (appRequested.compareTo("Msngr")==0) {
-							appPath = logDirPath + "msngr.apk";
-						} else if (appRequested.compareTo("Bromide")==0) {
-							appPath = logDirPath + "bromide.apk";
-						} else {
+						String appPath = getAppPath(appRequested);
+
+						if (appPath == null) {
 							SwifiicLogger.logMessage(PRIMARY_EID, "AppNotFound", errorFileName);
 							return;
 						}
+						
 						try {
 							String encodedApk = Base64.encodeFromFile(appPath);
 							SwifiicLogger.logMessage(PRIMARY_EID, "Encoding successful", logFileName);

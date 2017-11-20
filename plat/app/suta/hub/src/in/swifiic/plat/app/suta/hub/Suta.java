@@ -131,6 +131,9 @@ public class Suta extends Base implements SwifiicHandler {
 		return null;
 	}
 
+	// arnavdhamija
+	// Sends the chosen APK to the the device which requested it by encoding it in Base64
+
 	private boolean handleRequestApp(Action action, String deviceDTNId) {
 		SwifiicLogger.logMessage(PRIMARY_EID, "Processing request for App", logFileName);
 
@@ -147,7 +150,7 @@ public class Suta extends Base implements SwifiicHandler {
 			SwifiicLogger.logMessage(PRIMARY_EID, "Encoding successful", logFileName);
 			//get dtn id for src
 			Notification notif = new Notification("SendAPKMessage", "SUTA",
-					"NOPE", "0.1", "Hub");
+													"NOPE", "0.1", "Hub");
 			notif.addArgument("encodedApk", encodedApk);
 			notif.addArgument("appFileName", appRequested);
 			String payload = Helper.serializeNotification(notif);
@@ -195,11 +198,14 @@ public class Suta extends Base implements SwifiicHandler {
 					String fromUser = action.getArgument("fromUser");
 					if (opName.compareTo("RequestApp")==0) { //2ASK: why does this work? //change to requestapp
 						String deviceDTNId = Helper.getDeviceDtnIdForUser(fromUser, ctx);
-						handleRequestApp(action, deviceDTNId);
+						if(!handleRequestApp(action, deviceDTNId)) {
+							SwifiicLogger.logMessage(PRIMARY_EID,"Could not send APK", logFileName);
+						}
 						return;
 					}
 
 					// We are looking for Op Name "SendInfo" "SendMessage"
+					// this should really be moved to its own opName checking code
 					String actualContent = action.getArgument("message");
 					String fileName = action.getArgument("filename");
 					String macId = action.getArgument("macAddress");

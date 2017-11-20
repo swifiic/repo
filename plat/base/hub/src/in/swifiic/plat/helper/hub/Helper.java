@@ -36,26 +36,24 @@ public class Helper {
 	public static Properties sqlProperties=null;
 	static
 	{
-	String filePath = "not set";
-	try
-	{
-	String base = System.getenv("SWIFIIC_HUB_BASE");
-	if(null != base) {
-		filePath = base + "/properties/";
-	} else {
-		System.err.println("SWIFIIC_HUB_BASE not set");
-	}
-	FileInputStream fis = new FileInputStream(filePath + "sqlQueries.properties");
-        sqlProperties=new Properties();
-	sqlProperties.load(fis);
-	}
-	catch(Exception e)
-	{
-		e.printStackTrace();
-	}
-	if(null == sqlProperties) {
-		System.err.println("Error - in loading SQL properties for query string. Filepath was :" + filePath );
-	}
+		String filePath = "not set";
+		try {
+			String base = System.getenv("SWIFIIC_HUB_BASE");
+			if(null != base) {
+				filePath = base + "/properties/";
+			} else {
+				System.err.println("SWIFIIC_HUB_BASE not set");
+			}
+			FileInputStream fis = new FileInputStream(filePath + "sqlQueries.properties");
+			sqlProperties = new Properties();
+			sqlProperties.load(fis);
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		if(null == sqlProperties) {
+			System.err.println("Error - in loading SQL properties for query string. Filepath was :" + filePath );
+		}
 	}
 
 	private static final Logger logger = LogManager.getLogManager().getLogger("");
@@ -147,6 +145,10 @@ public class Helper {
 		}
 		return users;
 	}
+
+	// arnavdhamija
+	// Retrieves all app names stored in the SWiFiIC SQL Database in the App table
+	// Returns a string with app names separated by a '|'
 
 	public static String getAllApps() {
 		Connection connection = DatabaseHelper.connectToDB();
@@ -317,6 +319,7 @@ public class Helper {
 	}
 
 	// arnavdhamija
+	// Logs an operation performed in any of the daemon apps (such as Msngr) to the HubLog table in the database
 
 	public static void logHubMessage(String AppName, String OpName, String SourceDTNId, String DestDTNId) {
 		Connection conn = DatabaseHelper.connectToDB();

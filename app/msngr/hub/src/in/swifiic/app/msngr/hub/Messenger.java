@@ -37,40 +37,26 @@ public class Messenger extends Base implements SwifiicHandler {
 
 	// Following is the name of the endpoint to register with
 	protected static String PRIMARY_EID = "Msngr";
+
+	// Define filenames for log files
 	private static final String logFileName = "msngr_log";
 	private static final String errorFileName = "msngr_error";
 
-	public static org.apache.logging.log4j.Logger logNew=org.apache.logging.log4j.LogManager.getLogger("in.swifiic.app.msngr.hub.Messenger");
 	public Messenger() {
 		super(PRIMARY_EID);
 		// Initialize connection to daemon
 		dtnClient = getDtnClient(PRIMARY_EID, this);
-		// logger.log(Level.INFO, dtnClient.getConfiguration());
-		// logNew.info(dtnClient.getConfiguration());
 		SwifiicLogger.logMessage(PRIMARY_EID, dtnClient.getConfiguration(), logFileName);
 
 	}
 
-	// fix any exceptions which may occur here
 	public static void main(String args[]) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		Messenger messenger = new Messenger();
-		String input;
-		// System.out.print("Enter \"exit\" to exit application: ");
+
 		while(true) {
-			// input = br.readLine(); // what if input is null?
-			// // while(null == input) {
-			// // 	input = br.readLine();
-			// // }
-			// if(input.equalsIgnoreCase("exit")) {
-			// 	messenger.exit();
-			// } else {
-			// 	continue;
-			// }
 			ExtendedClient ec = messenger.getDtnClientInstance().getEC(); // does instance need to be received each time?
 			if(!ec.isConnected()){
-				SwifiicLogger.logMessage(PRIMARY_EID, "Messenger attempting reconnect with the service",
-										errorFileName);
+				SwifiicLogger.logMessage(PRIMARY_EID, "Messenger attempting reconnect with the service", errorFileName);
 				System.err.println("Messenger attempting reconnect with the service");
 				messenger.getDtnClientInstance().reconnect();
 			}
@@ -78,28 +64,23 @@ public class Messenger extends Base implements SwifiicHandler {
 				Thread.currentThread().sleep(1000);
 			} catch (InterruptedException e) {
 				System.out.println("Thread interrupted " + e);
-				SwifiicLogger.logMessage(PRIMARY_EID, "Thread interrupted " + e,
-										errorFileName);
+				SwifiicLogger.logMessage(PRIMARY_EID, "Thread interrupted " + e, errorFileName);
 			}
 		}
 	}
 
 	@Override
-		public void handlePayload(String payload, final Context ctx,String srcurl) {
-			super.handlePayload(payload, ctx, srcurl);
-			final String message = new String(payload); // 2ASK: why are we even doing this?
-			System.out.println(srcurl);
-			//SwifiicLogger.logMessage(PRIMARY_EID, "Payload received:\n" + payload, logFileName); // 2ASK: this is basically logging the same thing twice
-			SwifiicLogger.logMessage(PRIMARY_EID, "Message received from " + srcurl +":\n" + message, logFileName);
+	public void handlePayload(String payload, final Context ctx,String srcurl) {
+		super.handlePayload(payload, ctx, srcurl);
+		final String message = new String(payload); // 2ASK: why are we even doing this?
+		System.out.println(srcurl);
+		SwifiicLogger.logMessage(PRIMARY_EID, "Message received from " + srcurl +":\n" + message, logFileName);
 
-			// Helper.logHubMessage(PRIMARY_EID, srcurl, deviceDtnId);
-
-			System.err.println("Got Message:" + message);
-			System.err.println("Got Payload:" + payload);
-			// logNew.info("\n Got Message:" +payload);
-			executor.execute(new Runnable() {
-				@Override
-				public void run() {
+		System.err.println("Got Message:" + message);
+		System.err.println("Got Payload:" + payload);
+		executor.execute(new Runnable() {
+			@Override
+			public void run() {
 				try {
 					System.err.println("In run function Message:" + message);
 					Action action = Helper.parseAction(message);
@@ -126,9 +107,7 @@ public class Messenger extends Base implements SwifiicHandler {
 					boolean status = Helper.debitUser(fromUser);
 				} catch (Exception e) {
 					SwifiicLogger.logMessage(PRIMARY_EID, "Unable to process message and send response\n" + e.getMessage(), errorFileName);
-					// logger.log(Level.SEVERE, "Unable to process message and send response\n" + e.getMessage());
 					e.printStackTrace();
-					// logNew.info("Unable to process message and send response\n" + e.getMessage());
 				}
 			}
 		});

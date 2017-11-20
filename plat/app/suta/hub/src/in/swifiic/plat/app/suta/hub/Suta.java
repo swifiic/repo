@@ -179,7 +179,7 @@ public class Suta extends Base implements SwifiicHandler {
 							SwifiicLogger.logMessage(PRIMARY_EID, "AppNotFound", errorFileName);
 							return;
 						}
-						
+
 						try {
 							String encodedApk = Base64.encodeFromFile(appPath);
 							SwifiicLogger.logMessage(PRIMARY_EID, "Encoding successful", logFileName);

@@ -53,6 +53,8 @@
     <jar jarfile="${dist}/lib/in-swifiic-hub.jar" basedir="${build}"/>
     <copy file="${src}/dbConnection.properties" todir="${properties}"/>
     <copy file="${src}/sqlQueries.properties" todir="${properties}"/>
+    <copy file="${src}/logging.properties" todir="${properties}"/>
+
   </target>
 
   <target name="clean"

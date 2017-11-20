@@ -1,6 +1,7 @@
 package in.swifiic.plat.helper.hub;
 
 import java.io.*;
+import java.util.Properties;
 
 import in.swifiic.plat.helper.hub.SwifiicLogger;
 import in.swifiic.plat.helper.hub.Helper;
@@ -26,6 +27,21 @@ public class Base implements SwifiicHandler {
 	public Base() {
 		derivedClass = "Anonymous class";
 		SwifiicLogger.logMessage(derivedClass, "initiated.", statusLogFilePath);
+
+//		String base = System.getenv("SWIFIIC_HUB_BASE");
+//		String propertiesPath;
+//		if (null != base) {
+//			propertiesPath = base + "/properties/";
+//			try {
+//				FileInputStream fis = new FileInputStream(propertiesPath + "logging.properties");
+//				Properties loggingProperties = new Properties();
+//				loggingProperties.load(fis);
+//				String logFolder = loggingProperties.getProperty("logfolder");
+//				SwifiicLogger.logMessage("SWIFIICLOGGER", logFolder, "SwiFicILogger2");
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
 	}
 
 	public Base(String className) {

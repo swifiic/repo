@@ -25,7 +25,6 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.Date;
-// import java.util.Base64;
 
 import ibrdtn.api.Base64;
 import java.io.FileOutputStream;
@@ -34,12 +33,15 @@ import java.io.FileOutputStream;
 
 import ibrdtn.api.ExtendedClient;
 
+// arnavdhamija
+// Daemon for the Bromide image receiving app
+// Receives a Base64 encoded string, decodes it with the IBR-DTN Base64 decoder and writes the image to a JPEG file
 
 public class Bromide extends Base implements SwifiicHandler {
 	private int i = 0;
 	private DTNClient dtnClient;
 
-	private static final String logDirPath = "/home/nic/logfolder/";
+	private String imagePath = null;
 	protected ExecutorService executor = Executors.newCachedThreadPool();
 
 	// Following is the name of the endpoint to register with
@@ -51,17 +53,14 @@ public class Bromide extends Base implements SwifiicHandler {
 		super(PRIMARY_EID);
 		// Initialize connection to daemon
 		dtnClient = getDtnClient(PRIMARY_EID, this);
+		imagePath = SwifiicLogger.getLogDirectory();
 		SwifiicLogger.logMessage(PRIMARY_EID, dtnClient.getConfiguration(), logFileName);
 	}
 
-	// fix any exceptions which may occur here
 	public static void main(String args[]) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		Bromide messenger = new Bromide();
-		String input;
-		// System.out.print("Enter \"exit\" to exit application: ");
 		while(true) {
-			ExtendedClient ec = messenger.getDtnClientInstance().getEC(); // does instance need to be received each time?
+			ExtendedClient ec = messenger.getDtnClientInstance().getEC();
 			if(!ec.isConnected()){
 				SwifiicLogger.logMessage(PRIMARY_EID, "Bromide attempting reconnect with the service",
 										errorFileName);
@@ -72,8 +71,7 @@ public class Bromide extends Base implements SwifiicHandler {
 				Thread.currentThread().sleep(1000);
 			} catch (InterruptedException e) {
 				System.out.println("Thread interrupted " + e);
-				SwifiicLogger.logMessage(PRIMARY_EID, "Thread interrupted " + e,
-										errorFileName);
+				SwifiicLogger.logMessage(PRIMARY_EID, "Thread interrupted " + e, errorFileName);
 			}
 		}
 	}
@@ -81,13 +79,12 @@ public class Bromide extends Base implements SwifiicHandler {
 	@Override
 	public void handlePayload(String payload, final Context ctx, String srcurl) {
 		super.handlePayload(payload, ctx, srcurl);
-		final String message = new String(payload); // 2ASK: why are we even doing this?
+		final String message = new String(payload);
 		System.out.println(srcurl);
 		SwifiicLogger.logMessage(PRIMARY_EID, "Message received from " + srcurl +":\n" + message, logFileName);
 
 		System.err.println("Got Message:" + message);
 		System.err.println("Got Payload:" + payload);
-		// logNew.info("\n Got Message:" +payload);
 		executor.execute(new Runnable() {
 			@Override
 			public void run() {
@@ -98,16 +95,19 @@ public class Bromide extends Base implements SwifiicHandler {
 						throw new Exception("Failed to parse message:" + message);
 					}
 					String encodedImage = action.getArgument("encodedImage");
+					// We save images as IMG_YYYYMMDDHHMMSS in the user specified path
 					String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-					FileOutputStream fos = new FileOutputStream(logDirPath+"IMG_"+timeStamp+".jpg", false); //overwriting the file for testing
-					try {
-						byte[] decodedImage = Base64.decode(encodedImage);
-						fos.write(decodedImage);
-						SwifiicLogger.logMessage(PRIMARY_EID, "Image saved", logFileName);
-					} catch (IllegalArgumentException e) {
-						SwifiicLogger.logMessage(PRIMARY_EID, "encodedImage is not valid base64! " + encodedImage, errorFileName);
-					} finally {
-						fos.close();
+					if (imagePath != null) {
+						FileOutputStream fos = new FileOutputStream(imagePath + "IMG_" + timeStamp + ".jpg", false);
+						try {
+							byte[] decodedImage = Base64.decode(encodedImage); // Decode using the IBR-DTN decoder. Java decoder doesn't work so well
+							fos.write(decodedImage);
+							SwifiicLogger.logMessage(PRIMARY_EID, "Image saved", logFileName);
+						} catch (IllegalArgumentException e) {
+							SwifiicLogger.logMessage(PRIMARY_EID, "encodedImage is not valid base64! " + encodedImage, errorFileName);
+						} finally {
+							fos.close();
+						}
 					}
 				} catch (Exception e) {
 					SwifiicLogger.logMessage(PRIMARY_EID, "Unable to process message and send response\n" + e.getMessage(), errorFileName);

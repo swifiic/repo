@@ -30,7 +30,9 @@ import ibrdtn.api.Base64;
 import ibrdtn.api.ExtendedClient;
 
 public class Suta extends Base implements SwifiicHandler {
+
 	public static Properties sutaProperties=null;
+
 	static	{
 		String filePath = " Not Set ";
 		try {
@@ -51,12 +53,8 @@ public class Suta extends Base implements SwifiicHandler {
 		}
 	}
 
-	private static final Logger logger = LogManager.getLogManager().getLogger("");
-	public static org.apache.logging.log4j.Logger logNew = org.apache.logging.log4j.LogManager.getLogger("in.swifiic.plat.app.suta.hub.Suta");
 	private DTNClient dtnClient;
 	protected ExecutorService executor = Executors.newCachedThreadPool();
-	// Following is the name of the endpoint to register with
-	private static final String logDirPath = "/home/nic/logfolder/";
 	private static final String logFileName = "suta_log";
 	private static final String errorFileName = "suta_error";
 	protected static String PRIMARY_EID = "suta";
@@ -66,10 +64,6 @@ public class Suta extends Base implements SwifiicHandler {
 		super(PRIMARY_EID);
 		dtnClient = getDtnClient(PRIMARY_EID, this);
 		SwifiicLogger.logMessage(PRIMARY_EID, dtnClient.getConfiguration(), logFileName);
-
-		// logger.log(Level.SEVERE, "LOGT_TEST");
-		// logger.log(Level.INFO, dtnClient.getConfiguration());
-		// logNew.info(dtnClient.getConfiguration());
 	}
 
 	static boolean exitFlag = false;
@@ -103,14 +97,14 @@ public class Suta extends Base implements SwifiicHandler {
 		        notif.addArgument("currentTime",strDate);
 		        notif.addArgument("sequenceNumber",seqno+"");
 
-		        // System.out.println("Notification Sent with Sequence Number " + seqno + " at " + strDate);
-		        // logNew.info("Notification Sent with Sequence Number " + seqno + " at " + strDate);
+		        // Logging the message on the SwifiicLogger and to the stdout logger
+				System.out.println("Notification Sent with Sequence Number " + seqno + " at " + strDate);
 				SwifiicLogger.logMessage(PRIMARY_EID, "Notification Sent with Sequence Number " + seqno + " at " + strDate, logFileName);
 
 				String payload = Helper.serializeNotification(notif);
 				suta.sendGrp("dtn://in.swifiic.plat.app.suta.andi/mc", payload);
-				logNew.info("Sending payload to  dtn://in.swifiic.plat.app.suta.andi/mc"
-						+ payload);
+				SwifiicLogger.logMessage(PRIMARY_EID, "Sending payload to  dtn://in.swifiic.plat.app.suta.andi/mc"
+																+ payload, logFileName);
 				   seqno++;
 
 			}
@@ -130,12 +124,41 @@ public class Suta extends Base implements SwifiicHandler {
 		String[] appList = Helper.getAllApps().split("|");
 		for (String appName : appList) {
 			if (appName.compareTo(appRequested) == 0) {
-				String appPath = logDirPath + appName + ".apk";
+				String appPath = SwifiicLogger.getLogDirectory() + appName + ".apk";
 				return appPath;
 			}
 		}
 		return null;
 	}
+
+	private boolean handleRequestApp(Action action, String deviceDTNId) {
+		SwifiicLogger.logMessage(PRIMARY_EID, "Processing request for App", logFileName);
+
+		String appRequested = action.getArgument("appRequested");
+		String appPath = getAppPath(appRequested);
+
+		if (appPath == null) {
+			SwifiicLogger.logMessage(PRIMARY_EID, "AppNotFound", errorFileName);
+			return false;
+		}
+
+		try {
+			String encodedApk = Base64.encodeFromFile(appPath);
+			SwifiicLogger.logMessage(PRIMARY_EID, "Encoding successful", logFileName);
+			//get dtn id for src
+			Notification notif = new Notification("SendAPKMessage", "SUTA",
+					"NOPE", "0.1", "Hub");
+			notif.addArgument("encodedApk", encodedApk);
+			notif.addArgument("appFileName", appRequested);
+			String payload = Helper.serializeNotification(notif);
+			send(deviceDTNId+"/in.swifiic.plat.app.suta.andi", payload);
+			return true;
+		} catch (IOException e) {
+			SwifiicLogger.logMessage(PRIMARY_EID, "Unsuccessfully processed!" + e.getStackTrace(), errorFileName);
+			return false;
+		}
+	}
+
 
 	@Override
 	/***
@@ -145,6 +168,7 @@ public class Suta extends Base implements SwifiicHandler {
 	 * @param url -----> Source url of the bundle. Used to extract the dtn id of the user
 	 * Source url of the bundle got in Abstract API handler
 	 */
+
 	public void handlePayload(String payload, final Context ctx, String url) {
 		super.handlePayload(payload, ctx, url);
 		int i;
@@ -170,29 +194,8 @@ public class Suta extends Base implements SwifiicHandler {
 					}
 					String fromUser = action.getArgument("fromUser");
 					if (opName.compareTo("RequestApp")==0) { //2ASK: why does this work? //change to requestapp
-						SwifiicLogger.logMessage(PRIMARY_EID, "Processing request for App", logFileName);
-
-						String appRequested = action.getArgument("appRequested");
-						String appPath = getAppPath(appRequested);
-
-						if (appPath == null) {
-							SwifiicLogger.logMessage(PRIMARY_EID, "AppNotFound", errorFileName);
-							return;
-						}
-
-						try {
-							String encodedApk = Base64.encodeFromFile(appPath);
-							SwifiicLogger.logMessage(PRIMARY_EID, "Encoding successful", logFileName);
-							//get dtn id for src
-							String deviceDTNId = Helper.getDeviceDtnIdForUser(fromUser, ctx);
-							Notification notif = new Notification("SendAPKMessage", "SUTA", "NOPE", "0.1", "Hub"); //change to sendAPK
-							notif.addArgument("encodedApk", encodedApk); //change to encodedApk
-							notif.addArgument("appFileName", appRequested);
-							String payload = Helper.serializeNotification(notif);
-							send(deviceDTNId+"/in.swifiic.plat.app.suta.andi", payload);
-						} catch (IOException e) {
-							SwifiicLogger.logMessage(PRIMARY_EID, "Unsuccessfully processed!" + e.getStackTrace(), errorFileName);
-						}
+						String deviceDTNId = Helper.getDeviceDtnIdForUser(fromUser, ctx);
+						handleRequestApp(action, deviceDTNId);
 						return;
 					}
 
@@ -207,16 +210,12 @@ public class Suta extends Base implements SwifiicHandler {
 
 					if (macId != null && notifSentBySutaAt != null && dtnId != null
 							&& fromUser != null) {
-
-						logNew.info("SUTA ANDI INFO RECEivED.....");
-					logNew.info(macId + ":" + notifSentBySutaAt + ":" + dtnId
-								+ ":" + fromUser);
+						SwifiicLogger.logMessage(PRIMARY_EID, "SUTA Android Device Info: " + macId + ":"
+																+ notifSentBySutaAt + ":" + dtnId + ":" + fromUser, logFileName);
 						Helper.updateDatabase(macId, notifSentBySutaAt, dtnId, fromUser,timeAtHubOfLastHubUpdate,timeAtSutaOfLastHubUpdate);
 
 					}
 					if (fileName != null && actualContent != null) {
-						// logNew.info("Log file received with message "
-						// 		+ fileName + "\n");
 						SwifiicLogger.logMessage(PRIMARY_EID, "Log file received with message "
 											+ fileName + "\n", logFileName);
 						String folderpath = sutaProperties.getProperty("suta.trackAppFilePath");
@@ -240,14 +239,11 @@ public class Suta extends Base implements SwifiicHandler {
 		} catch (Exception e) {
 			SwifiicLogger.logMessage(PRIMARY_EID, "b64StringToFile: Could not save file "
 										+ e.getLocalizedMessage(), errorFileName);
-			// logger.log(Level.INFO, "b64StringToFile", "Could not save file "
-			// 		+ e.getLocalizedMessage());
-			// logNew.error("b64StringToFile:Could not save file "
-			// 		+ e.getLocalizedMessage());
 		} finally {
 			try {
-				if (null != str)
+				if (null != str) {
 					str.close();
+				}
 			} catch (Exception e) {/* do nothing */
 			}
 		}

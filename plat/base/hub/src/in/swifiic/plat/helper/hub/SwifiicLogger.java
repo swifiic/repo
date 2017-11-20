@@ -17,11 +17,10 @@ import java.util.logging.SimpleFormatter;
 
 public final class SwifiicLogger {
     private static final Logger LOGGER = Logger.getLogger(Base.class.getName());
-    private static Formatter simpleFormatter = null;
     private static FileHandler fileHandler = null;
 	private static String logDirPath = null; // Set the directory where you want to log files by modifying logging.properties
 
-// We make this syncrhonized as many processes might try running the static block at once
+    // We make this syncrhonized as many processes might try running the static block at once
     static {
         synchronized (SwifiicLogger.class) {
             String base = System.getenv("SWIFIIC_HUB_BASE");
@@ -35,7 +34,7 @@ public final class SwifiicLogger {
                     loggingProperties.load(fis);
                     String logFolder = loggingProperties.getProperty("logfolder");
                     logDirPath = logFolder;
-
+//                  2ASK: this is a very big problem! swifiic doesn't run as user and isn't allowed to write files unless given permissions beforehand!
                     File directory = new File(logDirPath);
                     if (!directory.exists()) {
                         directory.mkdirs();
@@ -70,6 +69,10 @@ public final class SwifiicLogger {
                LOGGER.log(Level.SEVERE, "Unable to close file handler!");
            }
        }
+   }
+
+   public static String getLogDirectory() {
+        return logDirPath;
    }
 
 }

@@ -1,9 +1,0 @@
-<project name="SWiFiIC-plat-app-soa" default="All" basedir=".">
-<target name="All"  description="Build the platform apps">
-    <ant dir="hub" target="dist"/>
-</target>
-<target name="clean"  description="clean the old build">
-    <ant dir="hub" target="clean"/>
-</target>
-</project>
-

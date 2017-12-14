@@ -40,4 +40,4 @@ Thumbs.db
 # Android Studio
 #.idea
 .idea/workspace.xml
-.gradle
+.gradle/

@@ -1,8 +1,8 @@
-cd base
-./gradlew
-cd ../msngr
-./gradlew
-cd ../soa
+cd plat/soa
 ./gradlew
 cd ../suta
+./gradlew
+cd ../../app/Bromide
+./gradlew
+cd ../msngr
 ./gradlew

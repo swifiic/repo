@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="de.tubs.ibr.dtn:library-1.1.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/de.tubs.ibr.dtn/library/1.1.1/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/de.tubs.ibr.dtn/library/1.1.1/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.tubs.ibr.dtn/library/1.1.1/75e53cac3310922cae0a1390f33b7197528200d1/library-1.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

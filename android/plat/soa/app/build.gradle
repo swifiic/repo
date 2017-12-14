@@ -1,0 +1,37 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        applicationId "swifiic.soa"
+        minSdkVersion 14
+        targetSdkVersion 20
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+configurations {
+    compile.exclude module: 'stax'
+    compile.exclude module: 'stax-api'
+    compile.exclude module: 'xpp3'
+}
+
+dependencies {
+    compile 'joda-time:joda-time:2.1'
+    compile 'org.simpleframework:simple-xml:2.7.+'
+    compile 'commons-io:commons-io:+'
+    compile 'org.apache.commons:commons-lang3:3.6'
+    compile 'com.android.support:support-core-utils:25.0.1'
+    compile 'com.android.support:support-fragment:25.0.1'
+}

@@ -1,1 +1,0 @@
-include ':plat:base:andi', ':plat:app:soa:andi', ':plat:app:suta:andi', ':app:msngr:andi'

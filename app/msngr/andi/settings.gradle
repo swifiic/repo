@@ -1,0 +1,5 @@
+include ':app'
+
+include ':base'
+project(':base').projectDir = new File(rootDir, '../../../plat/base/andi/lib')
+

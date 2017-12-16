@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SUTA</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_userList">User list</string>
+    <string name="remainingCredits">Remaining credits:</string>
+    <string name="updatedAt">Update sent by hub at:</string>
+    <string name="transactions">Transactions:</string>
+
+  <!-- abhishek for build details intial values are place holders -->
+    <string name="app_build_date">20170819</string>
+    <string name="app_build_ctx">nic-ThinkPad /home/nic/swifiic/repo/plat/app/suta/andi nic</string>
+
+</resources>

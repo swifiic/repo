@@ -1,1 +1,5 @@
-include ':plat:base:andi', ':plat:app:soa:andi', ':plat:app:suta:andi', ':app:msngr:andi'
+include ':plat:base:andi'
+include ':plat:base:hub'
+
+include  ':plat:app:soa:andi', ':plat:app:suta:andi', ':app:msngr:andi'
+include  ':plat:app:soa:hub', ':plat:app:suta:hub', ':app:msngr:hub'

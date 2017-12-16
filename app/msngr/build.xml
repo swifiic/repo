@@ -1,13 +1,12 @@
 <project name="Msngr" default="All" basedir=".">
 <target name="All"  description="Build the hub and andi">
     <ant dir="hub"/>
-    <ant dir="andi" target="debug"/>
-    <copy file="andi/bin/Messenger-debug.apk" toDir="../../dist/apk" />
+    <!-- <ant dir="andi" target="debug"/> -->
+    <!-- <copy file="andi/bin/Messenger-debug.apk" toDir="../../dist/apk" /> -->
 </target>
 <target name="clean"  description="clean the old build">
     <ant dir="hub" target="clean"/>
-    <ant dir="andi" target="clean"/>
+    <!-- <ant dir="andi" target="clean"/> -->
 </target>
 
 </project>
-

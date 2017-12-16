@@ -20,13 +20,13 @@
                 <path refid="external.jars" />
   </path>
 
-	
+
   <target name="init">
     <!-- Create the time stamp sets the variable ${DSTAMP}; not used presently-->
     <tstamp/>
     <!-- Create the build directory structure used by compile -->
     <mkdir dir="${build}"/>
-    
+
   </target>
 
   <target name="compile" depends="init"
@@ -39,7 +39,7 @@
     </fileset>
   </copy>
 
-  
+
 
   </target>
 

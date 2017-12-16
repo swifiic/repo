@@ -8,6 +8,7 @@ import in.swifiic.plat.helper.hub.SwifiicHandler;
 import in.swifiic.plat.helper.hub.xml.Action;
 import in.swifiic.plat.helper.hub.xml.Notification;
 
+import java.util.Date;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,12 +28,12 @@ import ibrdtn.api.ExtendedClient;
 
 
 public class Messenger extends Base implements SwifiicHandler {
-	
+
 	private static final Logger logger = LogManager.getLogManager().getLogger("");
     private DTNClient dtnClient;
-    
+
     protected ExecutorService executor = Executors.newCachedThreadPool();
-    
+
     // Following is the name of the endpoint to register with
     protected String PRIMARY_EID = "Msngr";
      public static org.apache.logging.log4j.Logger logNew=org.apache.logging.log4j.LogManager.getLogger("in.swifiic.app.msngr.hub.Messenger");
@@ -43,7 +44,7 @@ public class Messenger extends Base implements SwifiicHandler {
 logNew.info(dtnClient.getConfiguration());
 
     }
-    
+
     public static void main(String args[]) throws IOException {
     	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     	Messenger messenger = new Messenger();
@@ -81,19 +82,22 @@ logNew.info(dtnClient.getConfiguration());
 			if(null == action) throw new Exception("Failed to parse message:" + message);
                 	Notification notif = new Notification(action);
                 	notif.updateNotificatioName("DeliverMessage");
-                	
+
                 	String toUser = action.getArgument("toUser");
                 	String fromUser=action.getArgument("fromUser");
-                	
-              
-                	
+									Date date = new Date();
+									String dateVal = "" + date.getTime();
+									notif.addArgument("hubRelayedAt",dateVal);
+
+
+
                 	// A user may have multiple devices - deprecated for now - only one device per user
-                	String deviceDtnId = Helper.getDeviceDtnIdForUser(toUser, ctx); 
-                 	
+                	String deviceDtnId = Helper.getDeviceDtnIdForUser(toUser, ctx);
+
                 	String response = Helper.serializeNotification(notif);
                 	send(deviceDtnId + "/in.swifiic.app.msngr.andi" , response);
-                		// Mark bundle as delivered...                    
-                        logger.log(Level.INFO, "Attempted to send to {1}, had received \n{0}\n and responsed with \n {2}", 
+                		// Mark bundle as delivered...
+                        logger.log(Level.INFO, "Attempted to send to {1}, had received \n{0}\n and responsed with \n {2}",
                         				new Object[] {message, deviceDtnId + "/in.swifiic.app.msngr.andi", response});
                 	boolean status = Helper.debitUser(fromUser);
                 } catch (Exception e) {
@@ -103,7 +107,7 @@ logNew.info(dtnClient.getConfiguration());
                 }
             }
         });
-		
+
 	}
-	
+
 }

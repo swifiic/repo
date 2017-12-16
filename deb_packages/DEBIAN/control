@@ -1,0 +1,11 @@
+Package: swifiic
+Version: 0.1
+Architecture: all
+Maintainer: Abhishek Thakur
+Installed-Size: 6
+Depends:  bash
+Section: testing
+Priority: optional
+Homepage: http://www.swifiic.in/
+Description:Installs tomcat8-user, IBRDTN, mysql-server,jdk.
+

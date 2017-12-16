@@ -1,5 +1,5 @@
 # deb_packages for swifiic
-  Package name: ***swifiic***
+  (1) Package name: ***swifiic***
   
   **About:** The package will install following dependencies, required for swifiic setup:
   - [ ] tomcat8
@@ -19,12 +19,12 @@
        ``` apt-get install swifiic ```
 
 
-# Troubleshooting
+## Troubleshooting
 ```diff
 - Error “E:Encountered a section with no Package: header, E:Problem with MergeList …….” 
 ```
 
- ## Fix it by these steps ..  
+ ### Fix it by these steps ..  
   1. Clean up..
     * ```sudo apt-get clean ```
     * ```sudo apt-get autoclean ```

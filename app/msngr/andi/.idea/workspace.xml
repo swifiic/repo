@@ -10,16 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c759218f-e1e9-4fc5-8113-68686e62e420" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/in/swifiic/app/msngr/andi/ConversationListCursorAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/in/swifiic/app/msngr/andi/ConversationListCursorAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/in/swifiic/app/msngr/andi/DatabaseHelper.java" afterPath="$PROJECT_DIR$/app/src/main/java/in/swifiic/app/msngr/andi/DatabaseHelper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/in/swifiic/app/msngr/andi/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/in/swifiic/app/msngr/andi/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/in/swifiic/app/msngr/andi/Msg.java" afterPath="$PROJECT_DIR$/app/src/main/java/in/swifiic/app/msngr/andi/Msg.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/chat_message.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/chat_message.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/inswifiicandi.todel/build.gradle" afterPath="$PROJECT_DIR$/inswifiicandi.todel/build.gradle" />
     </list>
     <ignored path="andi.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -138,6 +129,11 @@
     </leaf>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="a4avyeudsih &lt;4vedi.aayush@gmail.com&gt;" />
+      </list>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
   </component>
   <component name="GradleLocalSettings">
@@ -3100,11 +3096,19 @@
       <option name="presentableId" value="Default" />
       <updated>1503495629438</updated>
     </task>
+    <task id="LOCAL-00001" summary="updated code for timestamps">
+      <created>1510921527240</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1510921527240</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="27" width="1366" height="741" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.37696335" sideWeight="0.4969651" order="12" side_tool="false" content_ui="tabs" />
@@ -3146,6 +3150,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="updated code for timestamps" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated code for timestamps" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

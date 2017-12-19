@@ -1,0 +1,2 @@
+include ':plat:base:hub'
+include  ':plat:app:soa:hub', ':plat:app:suta:hub', ':app:msngr:hub'

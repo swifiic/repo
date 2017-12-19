@@ -1,0 +1,14 @@
+<project name="SWiFiIC-plat" default="App" basedir=".">
+<target name="Base" description="Build the library components">
+    <ant dir="base"/>
+</target>
+<target name="App" depends="Base" description="Build the platform apps">
+    <ant dir="app"/>
+</target>
+<target name="clean" description="clean sub folders">
+    <ant dir="app" target="clean"/>
+    <ant dir="base" target="clean"/>
+</target>
+<!-- to do - copy script/createdb.sql to dist -->
+</project>
+

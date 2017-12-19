@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
+    id="WebApp_ID" version="3.0">
+    <listener>
+		<listener-class>operator.SessionCounterListener</listener-class>
+	</listener>
+  <!-- security-constraint>
+    <web-resource-collection>
+        <web-resource-name>hubSrvr</web-resource-name>
+        <url-pattern>/Oprtr</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+        <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+</security-constraint-->
+  <display-name>HubSrvr</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+<!-- AT removing the mapping as @WebServlet annotation is being used within Java code
+  <servlet>
+      <servlet-name>Oprtr</servlet-name>
+      <servlet-class>operator.Oprtr</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>Oprtr</servlet-name>
+      <url-pattern>/Oprtr</url-pattern>
+  </servlet-mapping>
+-->
+<context-param>
+    <param-name>log4j2Configuration</param-name>
+    <param-value>${env:catalina.base}/webapps/HubSrvr/WebContent/WEB-INF/log4j2.xml</param-value>
+</context-param>
+
+</web-app>

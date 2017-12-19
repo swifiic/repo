@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AppDef xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="AppHub.xsd"
+    appName="Oprtr" appVer="0.1" 
+    defBilling="None" appId="2" 
+    logVisibility="OperatorOnly" roleVisibility="Public">
+    
+  <rolesNeeded>Operator</rolesNeeded>
+  <rolesNeeded>User</rolesNeeded>
+  
+  <activity name="Login" mode="SyncOperator" operationAccess="User">
+      <argument argName="sessionId" argValue="cleints's nonce - post encryption with servers public key" />
+      <argument argName="secret" argValue="shared secret - hash value - with key as sessionId" />
+      <behavior>shared secret to be configured per device, sessionId should be pseudo random from client</behavior>
+  </activity>
+
+  <activity name="Logout" mode="SyncOperator" operationAccess="User">
+      <argument argName="sessionId" argValue="cleints's nonce till logout - post encryption with servers public key" />
+  </activity>
+    
+  <activity name="AddUser" mode="SyncOperator" operationAccess="OperatorOnly">
+      <argument argName="mobNum" argValue="+91... Mobile number - for SMS etc. in future" />
+      <argument argName="usrEmail" argValue="Email Address - optional" />
+      <argument argName="usrName" argValue="Complete Name" />
+      <argument argName="address" argValue="Complete Address" />
+      <argument argName="notes" argValue="Notes for user creation" />
+      <argument argName="initialCredit" argValue="amount to be credited to user's account (numeric string)" />
+      <argument argName="photoFileId" argValue="fileId assigned for photo file upload" optional="true" />
+      <argument argName="idProofFileId" argValue="fileId assigned for idProof scan file upload" optional="true" />
+      <argument argName="addressProofFileId" argValue="fileId assigned for address scan file upload" optional="true" />
+      <argument argName="deviceId" argValue="unique ID for device (MAC of first interface)" optional="true" />
+      <behavior>To provision the user for first time</behavior>
+  </activity>
+  
+  <activity name="DeleteUser" mode="SyncOperator" operationAccess="OperatorOnly">
+      <argument argName="mobNum" argValue="+91... Mobile number - for SMS etc. in future" />
+      <behavior>To desable user account - records to be mantained as per audit policies</behavior>
+  </activity>
+
+  <activity name="RechargeUser" mode="SyncOperator" operationAccess="OperatorOnly">
+      <argument argName="mobNum" argValue="+91... Mobile number - for SMS etc. in future" />
+      <argument argName="additionalCredit" argValue="amount to be added (deleted for -ve)(numeric string)" />
+      <behavior>To provision the user for first time</behavior>
+  </activity>
+  
+
+  <activity name="UpdateUserAddress" mode="SyncOperator" operationAccess="OperatorOnly">
+      <argument argName="mobNum" argValue="+91... Mobile number - for SMS etc. in future" />
+      <argument argName="address" argValue="Complete Address" optional="true" />
+      <argument argName="addressProofFileId" argValue="fileId assigned for address scan file upload" optional="true" />
+      <argument argName="notes" argValue="Notes for user details change" />
+      <behavior>To update address and address Proof</behavior>
+  </activity>
+  
+  <activity name="UpdateUserDetails" mode="SyncOperator" operationAccess="OperatorOnly">
+      <argument argName="mobNum" argValue="+91... Mobile number - for SMS etc. in future" />
+      <argument argName="photoFileId" argValue="fileId assigned for photo file upload" optional="true" />
+      <argument argName="idProofFileId" argValue="fileId assigned for idProof scan file upload" optional="true" />
+      <argument argName="notes" argValue="Notes for user details change" />
+      <behavior>To upload new images proof etc.</behavior>
+  </activity>
+
+  <activity name="UpdateDevice" mode="SyncOperator" operationAccess="OperatorOnly">
+      <argument argName="mobNum" argValue="+91... Mobile number - for SMS etc. in future" />
+      <argument argName="deviceId" />
+      <argument argName="deviceName" />
+      <argument argName="delete" argValue="true if device needs to be removed" optional="true" />
+      <behavior>To add/delete device for a user account</behavior>
+  </activity>
+
+  <activity name="LookupUser" mode="SyncOperator" operationAccess="User">
+      <argument argName="mobNum"   argValue="+91... Mobile number - for SMS etc. in future" />
+      <argument argName="usrName"         output="true" />
+      <argument argName="address"         output="true" />
+      <argument argName="notes"           output="true" /> <!-- show only for Operator -->
+      <argument argName="remainingCredit" output="true" />
+      <argument argName="photoFileId"     output="true" />
+      <argument argName="idProofFileId"   output="true" />
+      <argument argName="addressProofFileId"  output="true" />
+      <argument argName="deviceIds"       output="true" />
+      <argument argName="deviceNames"     output="true" />
+      <argument argName="appIds"          output="true" />
+      <behavior>if queried by User some fields will be made blank/ all fields to be exposed for Operator.</behavior>
+  </activity>
+  
+  <activity name="GetUserApps" mode="AsyncBestEffort" operationAccess="User">
+      <argument argName="mobNum"   argValue="+91... Mobile number" />
+      <argument argName="appIds"         output="true" />
+      <argument argName="appNames"       output="true" />
+      <argument argName="appRoles"       output="true" /> 
+      <argument argName="newAppIds"      output="true" />
+      <argument argName="newAppNames"    output="true" />
+      <behavior>List of apps used by user, and not used by user
+          appIds and appRoles are comma separated ",". If multiple roles (should be allow it) - then "|" separated.</behavior>
+  </activity>
+
+  <activity name="GetAppDetails" mode="AsyncBestEffort" operationAccess="User">
+      <argument argName="mobNum"   argValue="+91... Mobile number" />
+      <argument argName="appId"   argValue="id of the app learned previously" />
+      <argument argName="appName"       output="true" />
+      <argument argName="appRoles"      output="true" /> 
+      <argument argName="appUsers"      output="true" />
+      <argument argName="subscription"  output="true" /> 
+      <behavior>appUsers is a list of comma separated values like "mobNum | role | name"
+          if user is not subscribed to the app, it may not be able to see the Users
+          subscription has details like "free" "monthly" or "per-event" etc. based on App definition.</behavior>
+  </activity>
+  
+  <activity name="UpdateUserAppRole" mode="AsyncBestEffort" operationAccess="User">
+      <argument argName="mobNum" argValue="+91" />
+      <argument argName="appId" />
+      <argument argName="role" />
+      <argument argName="delete" argValue="true if device needs to be removed" optional="true" />
+      <behavior>To add/delete device for a user account</behavior>
+  </activity>
+  
+  <activity name="GetBillDetails" mode="AsyncBestEffort" operationAccess="User">
+      <argument argName="mobNum"   argValue="+91... Mobile number" />
+      <argument argName="concise"   argValue="false if detailed bill needed" optional="true" />
+      <argument argName="billDetails"      output="true" /> 
+      <behavior>To add/delete device for a user account</behavior>
+  </activity>
+
+  <activity name="DeliveryUpdate" mode="AsyncBestEffort" operationAccess="User">
+      <argument argName="mobNum"   argValue="+91... Mobile number" />
+      <argument argName="deviceId"   />
+      <argument argName="sessionId"  /> 
+      <argument argName="appId"  /> 
+      <argument argName="operation"  /> 
+      <argument argName="status"  /> 
+      <argument argName="notes"  /> 
+      <argument argName="deviceLogId"  /> 
+      <behavior>To confirm the delivery or similar status on device for notification etc.</behavior>
+  </activity>
+  
+  
+  <!--  TBD notifications -->
+  <notification name="SyncDevice" mode="AsyncBestEffort" operationAccess="User">
+      <argument argName="mobNum"       argValue="+91... Mobile number" />
+      <argument argName="deviceId" />
+      <argument argName="secretId"     argValue="new secret assigned to device for DTN, encrypted with pre-shared secret"/>
+      <argument argName="validity"     argValue="expiry date for secret (possibly 2 days)"/>
+      <argument argName="auditIds"     argValue="comma separated list of 2-5 recently processed Session/DTN Ids."/>
+      
+      <argument argName="syncSignature"   argValue="authenticity proof for the notification" />
+      <argument argName="textSignature"      argValue="remaining credit, rating, last two billing event times etc." /> 
+      <argument argName="syncText"      argValue="remaining credit, rating, issue time." /> 
+      <behavior>syncSignature covers all except syncText; textSignature covers syncText</behavior>
+  </notification>
+  
+</AppDef>

@@ -97,8 +97,8 @@ public class Messenger extends Base implements SwifiicHandler {
 
 					// Timestamp code
                     Date date = new Date();
-                    String dateVal = date.getTime().toString();
-                    notif.addArgument("hubRelayedAt",dateVal);
+                    String dateVal = "" + date.getTime();
+                    notif.addArgument("hubRelayedAt", dateVal);
 
 					// A user may have multiple devices - deprecated for now - only one device per user
 					String deviceDtnId = Helper.getDeviceDtnIdForUser(toUser, ctx);

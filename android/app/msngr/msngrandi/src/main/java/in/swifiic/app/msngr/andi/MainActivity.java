@@ -7,7 +7,7 @@ import in.swifiic.plat.helper.andi.Helper;
 import in.swifiic.plat.helper.andi.ui.SwifiicActivity;
 import in.swifiic.plat.helper.andi.xml.Action;
 
-    import java.util.Date;
+import java.util.Date;
 
 import android.app.ActionBar;
 import android.app.AlarmManager;

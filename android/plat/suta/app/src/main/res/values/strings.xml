@@ -8,8 +8,11 @@
     <string name="updatedAt">Update sent by hub at:</string>
     <string name="transactions">Transactions:</string>
 
-  <!-- abhishek for build details intial values are place holders -->
+    <!-- abhishek for build details intial values are place holders -->
     <string name="app_build_date">20170819</string>
     <string name="app_build_ctx">nic-ThinkPad /home/nic/swifiic/repo/plat/app/suta/andi nic</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

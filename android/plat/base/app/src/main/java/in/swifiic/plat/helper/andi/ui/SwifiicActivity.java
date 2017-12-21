@@ -7,9 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.support.v4.app.FragmentActivity;
 
 
-public class SwifiicActivity extends Activity {
+public class SwifiicActivity extends FragmentActivity {
 	protected GenericService mService = null;
     private boolean mBound = false;
     

@@ -17,6 +17,10 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.content.Context;
 import android.preference.PreferenceManager;
+import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
@@ -25,6 +29,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +38,7 @@ import in.swifiic.plat.helper.andi.AppEndpointContext;
 import in.swifiic.plat.helper.andi.Constants;
 import in.swifiic.plat.helper.andi.Helper;
 
-public class MainActivity extends SwifiicActivity  {
+public class MainActivity extends SwifiicActivity {
 
 
     @SuppressWarnings("unused")
@@ -63,28 +68,33 @@ public class MainActivity extends SwifiicActivity  {
    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         SharedPreferences pref =PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.activity_main);
 
-        Button downloadButton = (Button) findViewById(R.id.downloadButton);
-        final RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        SimpleFragmentPagerAdapter simpleFragmentPagerAdapter = new SimpleFragmentPagerAdapter(this, getSupportFragmentManager());
+        viewPager.setAdapter(simpleFragmentPagerAdapter);
 
-        downloadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // arnavdhamija - not at all a good approach, needs to dynamically update the list
-                int selectedID = radioGroup.getCheckedRadioButtonId();
-                RadioButton radioButton = (RadioButton) findViewById(selectedID);
-
-                String appRequested = radioButton.getText().toString();
-                if (appRequested != null) {
-                    Toast.makeText(getApplicationContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
-                    sendAppRequest(appRequested);
-                }
-            }
-        });
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(viewPager);
+//        Button downloadButton = (Button) findViewById(R.id.downloadButton);
+//        final RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+//
+//        downloadButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                // arnavdhamija - not at all a good approach, needs to dynamically update the list
+//                int selectedID = radioGroup.getCheckedRadioButtonId();
+//                RadioButton radioButton = (RadioButton) findViewById(selectedID);
+//
+//                String appRequested = radioButton.getText().toString();
+//                if (appRequested != null) {
+//                    Toast.makeText(getApplicationContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
+//                    sendAppRequest(appRequested);
+//                }
+//            }
+//        });
 
 
         // getting the current time and checking the difference from last updated time
@@ -126,9 +136,9 @@ public class MainActivity extends SwifiicActivity  {
 
         //
 
-        remainingCredit = (TextView)findViewById(R.id.remainingCredit);
-        currTime = (TextView)findViewById(R.id.currTime);
-        transactions = (TextView)findViewById(R.id.transactions);
+//        remainingCredit = (TextView)findViewById(R.id.remainingCredit);
+//        currTime = (TextView)findViewById(R.id.currTime);
+//        transactions = (TextView)findViewById(R.id.transactions);
         transactions.setMovementMethod(new ScrollingMovementMethod());
 
         remainingCredit.setText(pref.getString("remainingCredit", "waiting"));

@@ -12,6 +12,7 @@ import in.swifiic.plat.helper.andi.ui.SwifiicActivity;
 import in.swifiic.plat.helper.andi.ui.UserChooserActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -39,7 +40,7 @@ import in.swifiic.plat.helper.andi.AppEndpointContext;
 import in.swifiic.plat.helper.andi.Constants;
 import in.swifiic.plat.helper.andi.Helper;
 
-public class MainActivity extends SwifiicActivity {
+public class MainActivity extends SwifiicActivity implements CreditFragment.OnFragmentInteractionListener, ItemFragment.OnListFragmentInteractionListener {
 
 
     @SuppressWarnings("unused")
@@ -48,7 +49,7 @@ public class MainActivity extends SwifiicActivity {
     private AppEndpointContext aeCtx = new AppEndpointContext("suta", "0.1", "1");
 
 
-    private TextView remainingCredit,currTime,transactions;
+//    private TextView remainingCredit,currTime,transactions;
 
     // Creates an Action for requesting an APK and sends it to the Hub.
     private void sendAppRequest(String appRequested) {
@@ -140,11 +141,11 @@ public class MainActivity extends SwifiicActivity {
 //        remainingCredit = (TextView)findViewById(R.id.remainingCredit);
 //        currTime = (TextView)findViewById(R.id.currTime);
 //        transactions = (TextView)findViewById(R.id.transactions);
-        transactions.setMovementMethod(new ScrollingMovementMethod());
-
-        remainingCredit.setText(pref.getString("remainingCredit", "waiting"));
-        currTime.setText(pref.getString("notifSentByHubAt","waiting"));
-        transactions.setText(pref.getString("revisedTransactionDetails","waiting"));
+//        transactions.setMovementMethod(new ScrollingMovementMethod());
+//
+//        remainingCredit.setText(pref.getString("remainingCredit", "waiting"));
+//        currTime.setText(pref.getString("notifSentByHubAt","waiting"));
+//        transactions.setText(pref.getString("revisedTransactionDetails","waiting"));
 
         Intent serviceIntent = new Intent(this, TrackService.class);
         //serviceIntent.setAction("in.swifiic.plat.app.suta.andi.mgmt.TrackService");
@@ -155,9 +156,9 @@ public class MainActivity extends SwifiicActivity {
     {
         SharedPreferences pref =PreferenceManager.getDefaultSharedPreferences(this);
 
-        remainingCredit.setText(pref.getString("remainingCredit", "waiting"));
-        currTime.setText(pref.getString("notifSentByHubAt","waiting"));
-        transactions.setText(pref.getString("revisedTransactionDetails","waiting"));
+//        remainingCredit.setText(pref.getString("remainingCredit", "waiting"));
+//        currTime.setText(pref.getString("notifSentByHubAt","waiting"));
+//        transactions.setText(pref.getString("revisedTransactionDetails","waiting"));
 
     	super.onResume();
     	//sendInfoToHub();
@@ -216,4 +217,13 @@ public class MainActivity extends SwifiicActivity {
         Helper.sendSutaInfo(act, hubAddress + "/suta", this);
 	}
 
+    @Override
+    public void onCreditFragmentInteraction(String string) {
+
+    }
+
+    @Override
+    public void onItemFragmentInteraction(String string) {
+
+    }
 }

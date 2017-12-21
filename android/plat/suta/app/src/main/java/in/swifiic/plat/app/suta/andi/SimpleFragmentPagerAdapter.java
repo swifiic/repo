@@ -20,7 +20,14 @@ public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-        return null;
+        switch (i) {
+            case 0:
+                return new CreditFragment();
+            case 1:
+                return new ItemFragment();
+            default:
+                return null;
+        }
     }
 
     @Override

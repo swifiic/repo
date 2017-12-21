@@ -32,6 +32,7 @@ import android.widget.RadioGroup;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.design.widget.TabLayout;
 
 import in.swifiic.plat.helper.andi.xml.Action;
 import in.swifiic.plat.helper.andi.AppEndpointContext;

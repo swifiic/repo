@@ -74,13 +74,20 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
         SharedPreferences pref =PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.activity_main);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+//        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ViewPager viewPager = new ViewPager(this);
         SimpleFragmentPagerAdapter simpleFragmentPagerAdapter = new SimpleFragmentPagerAdapter(this, getSupportFragmentManager());
         viewPager.setAdapter(simpleFragmentPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
-//        Button downloadButton = (Button) findViewById(R.id.downloadButton);
+//        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
+//        tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
+//        tabLayout.addTab(tabLayout.newTab().setText("Tab 3"));
+        tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        //        Button downloadButton = (Button) findViewById(R.id.downloadButton);
 //        final RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
 //
 //        downloadButton.setOnClickListener(new View.OnClickListener() {

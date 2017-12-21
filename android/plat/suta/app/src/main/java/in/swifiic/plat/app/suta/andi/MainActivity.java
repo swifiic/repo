@@ -75,17 +75,24 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
         setContentView(R.layout.activity_main);
 
 //        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        ViewPager viewPager = new ViewPager(this);
+        final ViewPager viewPager = new ViewPager(this);
         SimpleFragmentPagerAdapter simpleFragmentPagerAdapter = new SimpleFragmentPagerAdapter(this, getSupportFragmentManager());
         viewPager.setAdapter(simpleFragmentPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
-//        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
+        final TabLayout tabLayout = (TabLayout)findViewById(R.id.sliding_tabs);
+        tabLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                tabLayout.setupWithViewPager(viewPager);
+                tabLayout.getTabAt(0);
+                tabLayout.getTabAt(1);
+            }
+        });//        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
 //        tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
 //        tabLayout.addTab(tabLayout.newTab().setText("Tab 3"));
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
 
         //        Button downloadButton = (Button) findViewById(R.id.downloadButton);
 //        final RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);

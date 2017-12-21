@@ -74,8 +74,8 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
         SharedPreferences pref =PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.activity_main);
 
-//        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        final ViewPager viewPager = new ViewPager(this);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+//        final ViewPager viewPager = new ViewPager(this);
         SimpleFragmentPagerAdapter simpleFragmentPagerAdapter = new SimpleFragmentPagerAdapter(this, getSupportFragmentManager());
         viewPager.setAdapter(simpleFragmentPagerAdapter);
 

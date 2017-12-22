@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="android:Theme.DeviceDefault.Light"/>
+    <style name="AppTheme" parent="android:Theme.DeviceDefault.Light.DarkActionBar"/>
     <!-- inherit from the material theme -->
     <!--<style name="AppTheme.Base" parent="android:Theme.Material">-->
         <!--&lt;!&ndash; colorPrimary is used for the default action bar background &ndash;&gt;-->

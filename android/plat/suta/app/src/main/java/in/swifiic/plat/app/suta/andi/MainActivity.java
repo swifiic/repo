@@ -144,17 +144,13 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
 
         }
 
-        //
-
-//        remainingCredit = (TextView)findViewById(R.id.remainingCredit);
-//        currTime = (TextView)findViewById(R.id.currTime);
 //        transactions = (TextView)findViewById(R.id.transactions);
 //        transactions.setMovementMethod(new ScrollingMovementMethod());
-//
-//        remainingCredit.setText(pref.getString("remainingCredit", "waiting"));
-//        currTime.setText(pref.getString("notifSentByHubAt","waiting"));
+
 //        transactions.setText(pref.getString("revisedTransactionDetails","waiting"));w
 
+
+        // implement transaction history
         final TabLayout tabLayout = (TabLayout)findViewById(R.id.sliding_tabs);
         tabLayout.post(new Runnable() {
             @Override
@@ -163,7 +159,6 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
                 tabLayout.getTabAt(0);
                 tabLayout.getTabAt(1);
                 setCreditFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
-//                setCreditFragment("Waiting For Hub", "N/A");
                 setupAppsList();
             }
         });
@@ -178,13 +173,12 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
         this.startService(serviceIntent);
 		
     }
+
     public void onResume() //why do we change all the strings to waiting onresume?
     {
         SharedPreferences pref =PreferenceManager.getDefaultSharedPreferences(this);
         setCreditFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
-
-//        remainingCredit.setText(pref.getString("remainingCredit", "waiting"));
-//        currTime.setText(pref.getString("notifSentByHubAt","waiting"));
+        setupAppsList();
 //        transactions.setText(pref.getString("revisedTransactionDetails","waiting"));
 
     	super.onResume();
@@ -213,6 +207,7 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+
 	/**
 	 * @author aarthi
 	 * Sending details DTN ID, MAC ADDRESS and CURRENT TIME TO SUTA Hub.

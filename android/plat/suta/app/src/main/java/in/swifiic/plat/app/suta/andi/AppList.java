@@ -61,11 +61,6 @@ public class AppList extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ArrayList<AppListData> myData = new ArrayList<>();
-
-        myData.add(new AppListData("Msngr", "A message sending app.", null));
-        myData.add(new AppListData("Bromide", "An image sending app.", null));
-
-        setupListView(myData);
     }
 
     public void setupListView(ArrayList<AppListData> appListData) {

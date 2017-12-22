@@ -2,6 +2,7 @@ package in.swifiic.plat.app.suta.andi;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.StringTokenizer;
@@ -48,6 +49,8 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
 	private final String TAG="MainActivity";
     private AppEndpointContext aeCtx = new AppEndpointContext("suta", "0.1", "1");
     SimpleFragmentPagerAdapter mSimpleFragmentPagerAdapter;
+    ArrayList<AppListData> mAppsList = new ArrayList<>();
+
 
 //    private TextView remainingCredit,currTime,transactions;
 
@@ -78,6 +81,17 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
             return false;
         }
     }
+
+    private boolean setupAppsList() {
+        Fragment fragment = mSimpleFragmentPagerAdapter.getFragment(1);
+        if (fragment != null) {
+            ((AppList)fragment).setupListView(mAppsList);
+            return true;
+        } else {
+            Log.d("SUTA", "NULLNULLNULL");
+            return false;
+        }
+    }
    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,9 +100,13 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
         setContentView(R.layout.activity_main);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-//        final ViewPager viewPager = new ViewPager(this);
         mSimpleFragmentPagerAdapter = new SimpleFragmentPagerAdapter(this, getSupportFragmentManager());
         viewPager.setAdapter(mSimpleFragmentPagerAdapter);
+
+        mAppsList.add(new AppListData("Msngr", "A message sending app.", null));
+        mAppsList.add(new AppListData("Bromide", "An image sending app.", null));
+
+
 
         final TabLayout tabLayout = (TabLayout)findViewById(R.id.sliding_tabs);
         tabLayout.post(new Runnable() {
@@ -99,6 +117,7 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
                 tabLayout.getTabAt(1);
 
                 setCreditFragment("Waiting For Hub");
+                setupAppsList();
             }
         });
 
@@ -250,6 +269,10 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
 
     @Override
     public void onDownloadSelected(int position) {
-        Toast.makeText(this, "FromActivity: " + Integer.toString(position), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "FromActivity: " + mAppsList.get(position).appName, Toast.LENGTH_SHORT).show();
+        String appRequested = mAppsList.get(position).appName;
+        if (appRequested != null) {
+            sendAppRequest(appRequested);
+        }
     }
 }

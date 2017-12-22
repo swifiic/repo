@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,10 +57,15 @@ public class AppList extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        String[] foo = {"Abc", "Def", "Fgh", "Zxc"};
-        ListAdapter listAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, foo);
+        ArrayList<AppListData> myData = new ArrayList<>();
+
+        myData.add(new AppListData("Msngr", "A message sending app.", null));
+        myData.add(new AppListData("Bromide", "An img sending app.", null));
+
+        AppListWidgetAdapter appListWidgetAdapter = new AppListWidgetAdapter(getContext(), myData);
+
         ListView listView = (ListView) getView().findViewById(R.id.listView);
-        listView.setAdapter(listAdapter);
+        listView.setAdapter(appListWidgetAdapter);
     }
 
     /**

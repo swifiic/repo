@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -99,6 +100,11 @@ public class CreditFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    public void setCredit(String value) {
+        TextView creditText = (TextView) getView().findViewById(R.id.creditText);
+        creditText.setText(value);
     }
 
     @Override

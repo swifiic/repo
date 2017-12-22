@@ -47,7 +47,7 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
     private final long timeDiff = 1*(60*1000); // in milli seconds
 	private final String TAG="MainActivity";
     private AppEndpointContext aeCtx = new AppEndpointContext("suta", "0.1", "1");
-
+    SimpleFragmentPagerAdapter mSimpleFragmentPagerAdapter;
 
 //    private TextView remainingCredit,currTime,transactions;
 
@@ -76,8 +76,8 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 //        final ViewPager viewPager = new ViewPager(this);
-        SimpleFragmentPagerAdapter simpleFragmentPagerAdapter = new SimpleFragmentPagerAdapter(this, getSupportFragmentManager());
-        viewPager.setAdapter(simpleFragmentPagerAdapter);
+        mSimpleFragmentPagerAdapter = new SimpleFragmentPagerAdapter(this, getSupportFragmentManager());
+        viewPager.setAdapter(mSimpleFragmentPagerAdapter);
 
         final TabLayout tabLayout = (TabLayout)findViewById(R.id.sliding_tabs);
         tabLayout.post(new Runnable() {
@@ -86,10 +86,15 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
                 tabLayout.setupWithViewPager(viewPager);
                 tabLayout.getTabAt(0);
                 tabLayout.getTabAt(1);
+                Fragment fragment = mSimpleFragmentPagerAdapter.getFragment(0);
+                if (fragment != null) {
+                    Log.d("SUTA", "FRAGNOT NULL");
+                } else {
+                    Log.d("SUTA", "NULLNULLNULL");
+                }
             }
-        });//        tabLayout.addTab(tabLayout.newTab().setText("Tab 1"));
-//        tabLayout.addTab(tabLayout.newTab().setText("Tab 2"));
-//        tabLayout.addTab(tabLayout.newTab().setText("Tab 3"));
+        });
+
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
@@ -159,7 +164,7 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
 //
 //        remainingCredit.setText(pref.getString("remainingCredit", "waiting"));
 //        currTime.setText(pref.getString("notifSentByHubAt","waiting"));
-//        transactions.setText(pref.getString("revisedTransactionDetails","waiting"));
+//        transactions.setText(pref.getString("revisedTransactionDetails","waiting"));w
 
         Intent serviceIntent = new Intent(this, TrackService.class);
         //serviceIntent.setAction("in.swifiic.plat.app.suta.andi.mgmt.TrackService");

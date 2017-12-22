@@ -17,5 +17,6 @@
     <string name="download_app">Download App</string>
     <string name="generic_app_text">Generic App</string>
     <string name="generic_app_description_text">Generic App Description</string>
+    <string name="current_balance_text">Current Balance</string>
 
 </resources>

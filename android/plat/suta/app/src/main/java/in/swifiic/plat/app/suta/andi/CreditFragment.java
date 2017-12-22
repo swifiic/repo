@@ -72,7 +72,7 @@ public class CreditFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Hi", Toast.LENGTH_SHORT).show();
+                setCredit(Integer.toString(0));
             }
         });
     }

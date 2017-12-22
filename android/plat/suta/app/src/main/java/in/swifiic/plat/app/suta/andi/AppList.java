@@ -5,12 +5,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -60,12 +63,27 @@ public class AppList extends Fragment {
         ArrayList<AppListData> myData = new ArrayList<>();
 
         myData.add(new AppListData("Msngr", "A message sending app.", null));
-        myData.add(new AppListData("Bromide", "An img sending app.", null));
+        myData.add(new AppListData("Bromide", "An image sending app.", null));
 
-        AppListWidgetAdapter appListWidgetAdapter = new AppListWidgetAdapter(getContext(), myData);
+        setupListView(myData);
+    }
+
+    public void setupListView(ArrayList<AppListData> appListData) {
+        AppListWidgetAdapter appListWidgetAdapter = new AppListWidgetAdapter(getContext(), appListData);
 
         ListView listView = (ListView) getView().findViewById(R.id.listView);
         listView.setAdapter(appListWidgetAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                long viewId = view.getId();
+                if (viewId == R.id.downloadButton) {
+                    Log.d("FRAGTEXT", Integer.toString(position));
+                    mListener.onDownloadSelected(position);
+                }
+            }
+        });
     }
 
     /**
@@ -80,6 +98,6 @@ public class AppList extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onAppListFragmentInteraction(String s);
+        void onDownloadSelected(int position);
     }
 }

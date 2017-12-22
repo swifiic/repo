@@ -67,6 +67,17 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
         action.addArgument("sentAt", epochDelta);
         Helper.sendAction(action, hubAddress + "/suta", getApplicationContext());
     }
+
+    private boolean setCreditFragment(String value) {
+        Fragment fragment = mSimpleFragmentPagerAdapter.getFragment(0);
+        if (fragment != null) {
+            ((CreditFragment)fragment).setCredit(value);
+            return true;
+        } else {
+            Log.d("SUTA", "NULLNULLNULL");
+            return false;
+        }
+    }
    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,12 +97,8 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
                 tabLayout.setupWithViewPager(viewPager);
                 tabLayout.getTabAt(0);
                 tabLayout.getTabAt(1);
-                Fragment fragment = mSimpleFragmentPagerAdapter.getFragment(0);
-                if (fragment != null) {
-                    Log.d("SUTA", "FRAGNOT NULL");
-                } else {
-                    Log.d("SUTA", "NULLNULLNULL");
-                }
+
+                setCreditFragment("Waiting For Hub");
             }
         });
 
@@ -242,7 +249,7 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
     }
 
     @Override
-    public void onAppListFragmentInteraction(String s) {
-
+    public void onDownloadSelected(int position) {
+        Toast.makeText(this, "FromActivity: " + Integer.toString(position), Toast.LENGTH_SHORT).show();
     }
 }

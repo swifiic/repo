@@ -71,10 +71,11 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
         Helper.sendAction(action, hubAddress + "/suta", getApplicationContext());
     }
 
-    private boolean setCreditFragment(String value) {
+    private boolean setCreditFragment(String creditValue, String lastUpdateTime) {
         Fragment fragment = mSimpleFragmentPagerAdapter.getFragment(0);
         if (fragment != null) {
-            ((CreditFragment)fragment).setCredit(value);
+            ((CreditFragment) fragment).setCredit(creditValue);
+            ((CreditFragment) fragment).setLastUpdate(lastUpdateTime);
             return true;
         } else {
             Log.d("SUTA", "NULLNULLNULL");
@@ -96,7 +97,7 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences pref =PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.activity_main);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -105,44 +106,6 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
 
         mAppsList.add(new AppListData("Msngr", "A message sending app.", null));
         mAppsList.add(new AppListData("Bromide", "An image sending app.", null));
-
-
-
-        final TabLayout tabLayout = (TabLayout)findViewById(R.id.sliding_tabs);
-        tabLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                tabLayout.setupWithViewPager(viewPager);
-                tabLayout.getTabAt(0);
-                tabLayout.getTabAt(1);
-
-                setCreditFragment("Waiting For Hub");
-                setupAppsList();
-            }
-        });
-
-        tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-
-        //        Button downloadButton = (Button) findViewById(R.id.downloadButton);
-//        final RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-//
-//        downloadButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // arnavdhamija - not at all a good approach, needs to dynamically update the list
-//                int selectedID = radioGroup.getCheckedRadioButtonId();
-//                RadioButton radioButton = (RadioButton) findViewById(selectedID);
-//
-//                String appRequested = radioButton.getText().toString();
-//                if (appRequested != null) {
-//                    Toast.makeText(getApplicationContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
-//                    sendAppRequest(appRequested);
-//                }
-//            }
-//        });
-
 
         // getting the current time and checking the difference from last updated time
         Calendar c = Calendar.getInstance();
@@ -192,6 +155,24 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
 //        currTime.setText(pref.getString("notifSentByHubAt","waiting"));
 //        transactions.setText(pref.getString("revisedTransactionDetails","waiting"));w
 
+        final TabLayout tabLayout = (TabLayout)findViewById(R.id.sliding_tabs);
+        tabLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                tabLayout.setupWithViewPager(viewPager);
+                tabLayout.getTabAt(0);
+                tabLayout.getTabAt(1);
+                setCreditFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
+//                setCreditFragment("Waiting For Hub", "N/A");
+                setupAppsList();
+            }
+        });
+
+        tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+
+
         Intent serviceIntent = new Intent(this, TrackService.class);
         //serviceIntent.setAction("in.swifiic.plat.app.suta.andi.mgmt.TrackService");
         this.startService(serviceIntent);
@@ -200,6 +181,7 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
     public void onResume() //why do we change all the strings to waiting onresume?
     {
         SharedPreferences pref =PreferenceManager.getDefaultSharedPreferences(this);
+        setCreditFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
 
 //        remainingCredit.setText(pref.getString("remainingCredit", "waiting"));
 //        currTime.setText(pref.getString("notifSentByHubAt","waiting"));
@@ -208,6 +190,7 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
     	super.onResume();
     	//sendInfoToHub();
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
@@ -269,7 +252,7 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
 
     @Override
     public void onDownloadSelected(int position) {
-        Toast.makeText(this, "FromActivity: " + mAppsList.get(position).appName, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Downloading " + mAppsList.get(position).appName, Toast.LENGTH_SHORT).show();
         String appRequested = mAppsList.get(position).appName;
         if (appRequested != null) {
             sendAppRequest(appRequested);

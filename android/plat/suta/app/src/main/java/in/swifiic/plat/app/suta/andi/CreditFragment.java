@@ -107,6 +107,11 @@ public class CreditFragment extends Fragment {
         creditText.setText(value);
     }
 
+    public void setLastUpdate(String lastUpdateTime) {
+        TextView lastUpdateText = (TextView) getView().findViewById(R.id.lastUpdateText);
+        lastUpdateText.setText("Last Hub Update: " + lastUpdateTime);
+    }
+
     @Override
     public void onDetach() {
         super.onDetach();

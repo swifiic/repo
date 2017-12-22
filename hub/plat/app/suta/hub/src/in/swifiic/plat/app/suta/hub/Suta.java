@@ -121,23 +121,25 @@ public class Suta extends Base implements SwifiicHandler {
 	}
 
 	private String getAppPath(String appRequested) {
-		String[] appList = Helper.getAllApps().split("|");
-		for (String appName : appList) {
-			if (appName.compareTo(appRequested) == 0) {
-				String appPath = SwifiicLogger.getLogDirectory() + appName + ".apk";
+//		String[] appList = Helper.getAllApps().split("|");
+//		for (String appName : appList) {
+//			SwifiicLogger.logMessage(PRIMARY_EID, "AppLoc: " + appName + "Request: " + appRequested, errorFileName);
+//			if (appName.compareTo(appRequested) == 0) {
+				String appPath = SwifiicLogger.getLogDirectory() + appRequested + ".apk";
 				return appPath;
-			}
-		}
-		return null;
+//			}
+//		}
+//		return null;
 	}
 
 	// arnavdhamija
 	// Sends the chosen APK to the the device which requested it by encoding it in Base64
 
 	private boolean handleRequestApp(Action action, String deviceDTNId) {
-		SwifiicLogger.logMessage(PRIMARY_EID, "Processing request for App", logFileName);
-
 		String appRequested = action.getArgument("appRequested");
+
+		SwifiicLogger.logMessage(PRIMARY_EID, "Processing request for App " + appRequested, logFileName);
+
 		String appPath = getAppPath(appRequested);
 
 		if (appPath == null) {
@@ -147,7 +149,7 @@ public class Suta extends Base implements SwifiicHandler {
 
 		try {
 			String encodedApk = Base64.encodeFromFile(appPath);
-			SwifiicLogger.logMessage(PRIMARY_EID, "Encoding successful", logFileName);
+			SwifiicLogger.logMessage(PRIMARY_EID, "Encoding successful " + appPath + " Sending to " + deviceDTNId, logFileName);
 			//get dtn id for src
 			Notification notif = new Notification("SendAPKMessage", "SUTA",
 													"NOPE", "0.1", "Hub");

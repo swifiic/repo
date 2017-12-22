@@ -40,7 +40,7 @@ import in.swifiic.plat.helper.andi.AppEndpointContext;
 import in.swifiic.plat.helper.andi.Constants;
 import in.swifiic.plat.helper.andi.Helper;
 
-public class MainActivity extends SwifiicActivity implements CreditFragment.OnFragmentInteractionListener, ItemFragment.OnListFragmentInteractionListener {
+public class MainActivity extends SwifiicActivity implements CreditFragment.OnFragmentInteractionListener, AppList.OnFragmentInteractionListener {
 
 
     @SuppressWarnings("unused")
@@ -237,7 +237,7 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
     }
 
     @Override
-    public void onItemFragmentInteraction(String string) {
+    public void onAppListFragmentInteraction(String s) {
 
     }
 }

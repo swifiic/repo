@@ -24,7 +24,7 @@ public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return new CreditFragment();
             case 1:
-                return new ItemFragment();
+                return new AppList();
             default:
                 return null;
         }

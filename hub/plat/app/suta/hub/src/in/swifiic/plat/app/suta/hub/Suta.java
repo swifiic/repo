@@ -125,7 +125,7 @@ public class Suta extends Base implements SwifiicHandler {
 //		for (String appName : appList) {
 //			SwifiicLogger.logMessage(PRIMARY_EID, "AppLoc: " + appName + "Request: " + appRequested, errorFileName);
 //			if (appName.compareTo(appRequested) == 0) {
-				String appPath = SwifiicLogger.getLogDirectory() + appRequested + ".apk";
+				String appPath = SwifiicLogger.getApkDirectory() + appRequested + ".apk";
 				return appPath;
 //			}
 //		}

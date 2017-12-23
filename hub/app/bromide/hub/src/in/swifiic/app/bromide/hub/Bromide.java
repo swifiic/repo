@@ -53,7 +53,7 @@ public class Bromide extends Base implements SwifiicHandler {
 		super(PRIMARY_EID);
 		// Initialize connection to daemon
 		dtnClient = getDtnClient(PRIMARY_EID, this);
-		imagePath = SwifiicLogger.getLogDirectory();
+		imagePath = SwifiicLogger.getImgDirectory();
 		SwifiicLogger.logMessage(PRIMARY_EID, dtnClient.getConfiguration(), logFileName);
 	}
 

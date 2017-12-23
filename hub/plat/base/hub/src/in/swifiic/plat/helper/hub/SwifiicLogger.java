@@ -19,6 +19,8 @@ public final class SwifiicLogger {
     private static final Logger LOGGER = Logger.getLogger(Base.class.getName());
     private static FileHandler fileHandler = null;
 	private static String logDirPath = null; // Set the directory where you want to log files by modifying logging.properties
+    private static String apkDirPath = null;
+    private static String imgDirPath = null;
 
     // We make this syncrhonized as many processes might try running the static block at once
     static {
@@ -32,20 +34,28 @@ public final class SwifiicLogger {
                     Properties loggingProperties = new Properties();
 
                     loggingProperties.load(fis);
-                    String logFolder = loggingProperties.getProperty("logfolder");
-                    logDirPath = logFolder;
+                    logDirPath = loggingProperties.getProperty("logfolder");
+                    apkDirPath = loggingProperties.getProperty("apkfolder");
+                    imgDirPath = loggingProperties.getProperty("imgfolder");
+
 //                  2ASK: this is a very big problem! swifiic doesn't run as user and isn't allowed to write files unless given permissions beforehand!
-                    File directory = new File(logDirPath);
-                    if (!directory.exists()) {
-                        directory.mkdirs();
-                        directory.setExecutable(true);
-                        directory.setReadable(true);
-                        directory.setWritable(true);
-                    }
+                    initDirectory(logDirPath);
+                    initDirectory(apkDirPath);
+                    initDirectory(imgDirPath);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private static void initDirectory(String dirPath) {
+        File directory = new File(dirPath);
+        if (!directory.exists()) {
+            directory.mkdirs();
+            directory.setExecutable(true);
+            directory.setReadable(true);
+            directory.setWritable(true);
         }
     }
 
@@ -73,6 +83,14 @@ public final class SwifiicLogger {
 
    public static String getLogDirectory() {
         return logDirPath;
+   }
+
+   public static String getApkDirectory() {
+        return  apkDirPath;
+   }
+
+   public static String getImgDirectory() {
+        return imgDirPath;
    }
 
 }

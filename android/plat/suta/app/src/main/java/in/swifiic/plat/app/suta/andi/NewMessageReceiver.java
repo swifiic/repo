@@ -113,15 +113,13 @@ public class NewMessageReceiver extends BroadcastReceiver {
 
 				}
     			else if(seqno > lastReceivedSeqNo) {
-
 					lastReceivedSeqNo = seqno;
 					Log.d(TAG, "Got user list as: " + userList);
 					Log.d(TAG, "Got user accountDetails as: " + accountDetails);
-
 					Provider.getProviderInstance().loadUserSchema(userList);
 					Provider.getProviderInstance().storeAccountDetails(accountDetails, macAddress, notifSentByHubAt, notifRecievedBySutaAt);
 				} else {
-						Log.e(TAG,"Out dated Notification discarding it");
+					Log.e(TAG,"Out dated Notification discarding it");
 				}
 			} else if(opName.equals("SendAPKMessage")) {
     			// Write the APK to a file and alert the user about the same in a Toast

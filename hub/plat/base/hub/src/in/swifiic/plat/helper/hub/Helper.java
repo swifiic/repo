@@ -147,10 +147,37 @@ public class Helper {
 	}
 
 	// arnavdhamija
+	// Retrieves all app IDs stored in the SWiFiIC SQL Database in the App table
+	// Returns a string with app IDs separated by a '|'
+
+	public static String getAppIDs() {
+		Connection connection = DatabaseHelper.connectToDB();
+		PreparedStatement preparedStatement;
+		String sql = sqlProperties.getProperty("apps.getAppIDs");
+		String appID;
+		StringBuilder appList = new StringBuilder();
+		ResultSet resultSet;
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()) {
+				appID = resultSet.getString("AppId");
+				appList.append(appID + "|");
+			}
+			resultSet.close();
+			preparedStatement.close();
+			DatabaseHelper.closeDB(connection);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return appList.toString();
+	}
+
+	// arnavdhamija
 	// Retrieves all app names stored in the SWiFiIC SQL Database in the App table
 	// Returns a string with app names separated by a '|'
 
-	public static String getAllApps() {
+	public static String getAppNames() {
 		Connection connection = DatabaseHelper.connectToDB();
 		PreparedStatement preparedStatement;
 		String sql = sqlProperties.getProperty("apps.getAppNames");
@@ -173,7 +200,32 @@ public class Helper {
 		return appList.toString();
 	}
 
+	// arnavdhamija
+	// Retrieves all app descriptions stored in the SWiFiIC SQL Database in the App table
+	// Returns a string with app descriptions separated by a '|'
 
+	public static String getAppDescriptions() {
+		Connection connection = DatabaseHelper.connectToDB();
+		PreparedStatement preparedStatement;
+		String sql = sqlProperties.getProperty("apps.getAppDescriptions");
+		String appDescription;
+		StringBuilder appList = new StringBuilder();
+		ResultSet resultSet;
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()) {
+				appDescription = resultSet.getString("AppDescription");
+				appList.append(appDescription + "|");
+			}
+			resultSet.close();
+			preparedStatement.close();
+			DatabaseHelper.closeDB(connection);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return appList.toString();
+	}
 
 	/***
 	 *getting account details fo all users

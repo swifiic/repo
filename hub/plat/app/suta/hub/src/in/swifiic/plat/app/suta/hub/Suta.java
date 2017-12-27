@@ -82,14 +82,22 @@ public class Suta extends Base implements SwifiicHandler {
 					suta.getDtnClientInstance().reconnect();
 				}
 				String userList = Helper.getAllUsers();
-				String appList = Helper.getAllApps();
+				String appIDs = Helper.getAppIDs();
+				String appNames = Helper.getAppNames();
+				String appDescriptions = Helper.getAppDescriptions();
+
 				//here account detais also contains heartbeat(updated)
 				String accountDetails = Helper.getAccountDetailsForAll();
 
 				Notification notif = new Notification("DeviceListUpdate","SUTA", "TODO", "0.1", "Hub");
+
+				// Add arguments to be sent in the notification
 				notif.addArgument("userList", userList);
-				notif.addArgument("appList", appList); //2DO: parse this on the android side as well!
-				notif.addArgument("accountDetails",accountDetails);
+				notif.addArgument("appIDs", appIDs);
+				notif.addArgument("appNames", appNames); //2DO: parse this on the android side as well!
+				notif.addArgument("appDescriptions", appDescriptions);
+				notif.addArgument("accountDetails", accountDetails);
+
 				//notif.addArgument("heartBeat",heartBeat);
 				Calendar c = Calendar.getInstance();
 		        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

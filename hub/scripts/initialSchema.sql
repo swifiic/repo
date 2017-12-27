@@ -9,12 +9,17 @@ SET time_zone = "+00:00";
 CREATE DATABASE IF NOT EXISTS `swifiic` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 USE `swifiic`;
 
--- DROP TABLE IF EXISTS `App`;
--- CREATE TABLE IF NOT EXISTS `App` (
---   `AppId` varchar(64) NOT NULL DEFAULT '',
---   `AppName` varchar(64) DEFAULT NULL,
---   PRIMARY KEY (`AppId`)
--- ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+DROP TABLE IF EXISTS `App`;
+CREATE TABLE IF NOT EXISTS `App` (
+  `AppId` varchar(64) NOT NULL DEFAULT '',
+  `AppName` varchar(64) DEFAULT NULL,
+  `AppDescription` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`AppId`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `App` VALUES ('temp0', 'Bromide', 'An Image Sending App');
+INSERT INTO `App` VALUES ('temp1', 'Msngr', 'A Simple Messaging App');
+
 --
 -- DROP TABLE IF EXISTS `AppLedger`;
 -- CREATE TABLE IF NOT EXISTS `AppLedger` (

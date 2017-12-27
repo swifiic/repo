@@ -31,7 +31,7 @@ public class NewMessageReceiver extends BroadcastReceiver {
 	}
 
 	private static final String TAG = "NewMessageReceiver";
-	int lastReceivedSeqNo;
+	int lastReceivedSeqNo = 0;
 	//public static SharedPreferences pref = null;
 
 	@Override
@@ -99,27 +99,25 @@ public class NewMessageReceiver extends BroadcastReceiver {
 				String userList = notif.getArgument("userList");
 				String accountDetails = notif.getArgument("accountDetails");
     			String notifSentByHubAt =notif.getArgument("currentTime");
+    			String appIDs = notif.getArgument("appIDs");
+    			String appNames = notif.getArgument("appNames");
+    			String appDescriptions = notif.getArgument("appDescriptions");
 				// currTime is time at which Hub sends the notification
 
-    			int seqno=Integer.parseInt(notif.getArgument("sequenceNumber"));
-    			if(seqno==1)
-    			{
-    				lastReceivedSeqNo=seqno;
-    				Log.d(TAG, "Got user list as: " + userList);
-					Log.d(TAG, "Got user accountDetails as: " + accountDetails);
+    			int seqno = Integer.parseInt(notif.getArgument("sequenceNumber"));
 
-					Provider.getProviderInstance().loadUserSchema(userList);
-					Provider.getProviderInstance().storeAccountDetails(accountDetails, macAddress, notifSentByHubAt,notifRecievedBySutaAt);
-
-				}
-    			else if(seqno > lastReceivedSeqNo) {
+				if (seqno < lastReceivedSeqNo) {
+					Log.e(TAG,"Out dated Notification discarding it");
+				} else {
 					lastReceivedSeqNo = seqno;
 					Log.d(TAG, "Got user list as: " + userList);
 					Log.d(TAG, "Got user accountDetails as: " + accountDetails);
+					Log.d(TAG, "Got appIDs as: " + appIDs);
+					Log.d(TAG, "Got appNames as: " + appNames);
+					Log.d(TAG, "Got appDescriptions as: " + appDescriptions);
+
 					Provider.getProviderInstance().loadUserSchema(userList);
 					Provider.getProviderInstance().storeAccountDetails(accountDetails, macAddress, notifSentByHubAt, notifRecievedBySutaAt);
-				} else {
-					Log.e(TAG,"Out dated Notification discarding it");
 				}
 			} else if(opName.equals("SendAPKMessage")) {
     			// Write the APK to a file and alert the user about the same in a Toast

@@ -11,7 +11,10 @@ import in.swifiic.plat.app.suta.andi.R;
 import in.swifiic.plat.app.suta.andi.mgmt.TrackService;
 import in.swifiic.plat.helper.andi.ui.SwifiicActivity;
 import in.swifiic.plat.helper.andi.ui.UserChooserActivity;
+
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
@@ -93,10 +96,36 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
             return false;
         }
     }
+
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context, "MessageReceived", Toast.LENGTH_LONG).show();
+            Log.d("SUTA", "ReceivedAmEssage");
+
+            Bundle extras = intent.getExtras();
+
+            Log.d("SUTA", "APPIDS" + extras.getString("appIDs"));
+            Log.d("SUTA", "APPNAMES" + extras.getString("appNames"));
+            Log.d("SUTA", "APPDESC" + extras.getString("appDescriptions"));
+
+            String[] appIDs = extras.getString("appIDs").split("\\|");
+            String[] appNames = extras.getString("appNames").split("\\|");
+            String[] appDescriptions = extras.getString("appDescriptions").split("\\|");
+
+            for (int i = 0; i < appIDs.length; i++) {
+                Log.d(appNames[i], appDescriptions[i]);
+                addAppToList(appNames[i], appDescriptions[i], null);
+            }
+        }
+    };
    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        registerReceiver(broadcastReceiver, new IntentFilter("SUTA_APP_LIST_UPDATE"));
+
         final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         setContentView(R.layout.activity_main);
 
@@ -104,8 +133,8 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
         mSimpleFragmentPagerAdapter = new SimpleFragmentPagerAdapter(this, getSupportFragmentManager());
         viewPager.setAdapter(mSimpleFragmentPagerAdapter);
 
-        mAppsList.add(new AppListData("Msngr", "A message sending app.", null));
-        mAppsList.add(new AppListData("Bromide", "An image sending app.", null));
+//        mAppsList.add(new AppListData("Msngr", "A message sending app.", null));
+//        mAppsList.add(new AppListData("Bromide", "An image sending app.", null));
 
         // getting the current time and checking the difference from last updated time
         Calendar c = Calendar.getInstance();
@@ -180,9 +209,20 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
         setCreditFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
         setupAppsList();
 //        transactions.setText(pref.getString("revisedTransactionDetails","waiting"));
+//        mAppsList.add(new AppListData("Bromide", "An image sending app.", null));
 
     	super.onResume();
     	//sendInfoToHub();
+    }
+
+    public void addAppToList(String appName, String appDescription, String imageUri) {
+        for (AppListData tempData : mAppsList) {
+            if (tempData.appName.compareTo(appName) == 0) {
+                return;
+            }
+        }
+        mAppsList.add(new AppListData(appName, appDescription, imageUri));
+        setupAppsList();
     }
 
     @Override

@@ -116,6 +116,12 @@ public class NewMessageReceiver extends BroadcastReceiver {
 					Log.d(TAG, "Got appNames as: " + appNames);
 					Log.d(TAG, "Got appDescriptions as: " + appDescriptions);
 
+					Intent appListIntent = new Intent("SUTA_APP_LIST_UPDATE");
+					appListIntent.putExtra("appIDs", appIDs);
+					appListIntent.putExtra("appNames", appNames);
+					appListIntent.putExtra("appDescriptions", appDescriptions);
+					context.sendBroadcast(appListIntent);
+
 					Provider.getProviderInstance().loadUserSchema(userList);
 					Provider.getProviderInstance().storeAccountDetails(accountDetails, macAddress, notifSentByHubAt, notifRecievedBySutaAt);
 				}

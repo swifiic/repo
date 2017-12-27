@@ -116,6 +116,7 @@ public class NewMessageReceiver extends BroadcastReceiver {
 					Log.d(TAG, "Got appNames as: " + appNames);
 					Log.d(TAG, "Got appDescriptions as: " + appDescriptions);
 
+//					Cache this for future use, this currently requires suta update to fxn
 					Intent appListIntent = new Intent("SUTA_APP_LIST_UPDATE");
 					appListIntent.putExtra("appIDs", appIDs);
 					appListIntent.putExtra("appNames", appNames);

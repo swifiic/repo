@@ -100,7 +100,6 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Toast.makeText(context, "MessageReceived", Toast.LENGTH_LONG).show();
             Log.d("SUTA", "ReceivedAmEssage");
 
             Bundle extras = intent.getExtras();
@@ -205,7 +204,7 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
 
     public void onResume() //why do we change all the strings to waiting onresume?
     {
-        SharedPreferences pref =PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
         setCreditFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
         setupAppsList();
 //        transactions.setText(pref.getString("revisedTransactionDetails","waiting"));

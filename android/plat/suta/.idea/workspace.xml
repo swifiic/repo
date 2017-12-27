@@ -44,12 +44,12 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/in/swifiic/plat/app/suta/andi/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="277">
-              <caret line="76" column="76" lean-forward="false" selection-start-line="76" selection-start-column="65" selection-end-line="76" selection-end-column="76" />
+            <state relative-caret-position="247">
+              <caret line="136" column="28" lean-forward="false" selection-start-line="136" selection-start-column="28" selection-end-line="136" selection-end-column="28" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3814#4676#0" expanded="true" />
-                <element signature="e#4675#4676#0" expanded="true" />
+                <element signature="e#3814#4857#0" expanded="true" />
+                <element signature="e#4856#4857#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -174,7 +174,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>decodeto</find>
       <find>decode</find>
       <find>request</find>
       <find>br</find>
@@ -204,6 +203,7 @@
       <find>bromide</find>
       <find>setupapps</find>
       <find>onresume</find>
+      <find>setcreditfragment</find>
     </findStrings>
   </component>
   <component name="GradleLocalSettings">
@@ -2804,8 +2804,8 @@
         <option value="$PROJECT_DIR$/app/src/main/res/values/styles.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values-v21/styles.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/menu/main.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/in/swifiic/plat/app/suta/andi/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/in/swifiic/plat/app/suta/andi/NewMessageReceiver.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/in/swifiic/plat/app/suta/andi/MainActivity.java" />
       </list>
     </option>
   </component>
@@ -3014,7 +3014,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1514394793762" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1514395270691" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -3062,7 +3062,7 @@
       </Profilers>
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1514394793762" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1514395270691" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -3245,7 +3245,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1514394793768" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1514395270696" />
       </method>
     </configuration>
     <list size="1">
@@ -3701,12 +3701,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/in/swifiic/plat/app/suta/andi/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="277">
-          <caret line="76" column="76" lean-forward="false" selection-start-line="76" selection-start-column="65" selection-end-line="76" selection-end-column="76" />
+        <state relative-caret-position="247">
+          <caret line="136" column="28" lean-forward="false" selection-start-line="136" selection-start-column="28" selection-end-line="136" selection-end-column="28" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#3814#4676#0" expanded="true" />
-            <element signature="e#4675#4676#0" expanded="true" />
+            <element signature="e#3814#4857#0" expanded="true" />
+            <element signature="e#4856#4857#0" expanded="true" />
           </folding>
         </state>
       </provider>

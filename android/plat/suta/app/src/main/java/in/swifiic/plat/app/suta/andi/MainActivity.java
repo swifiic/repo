@@ -102,6 +102,9 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
         public void onReceive(Context context, Intent intent) {
             Log.d("SUTA", "ReceivedAmEssage");
 
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            setCreditFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
+
             Bundle extras = intent.getExtras();
 
             Log.d("SUTA", "APPIDS" + extras.getString("appIDs"));
@@ -113,7 +116,6 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
             String[] appDescriptions = extras.getString("appDescriptions").split("\\|");
 
             for (int i = 0; i < appIDs.length; i++) {
-                Log.d(appNames[i], appDescriptions[i]);
                 addAppToList(appNames[i], appDescriptions[i], null);
             }
         }
@@ -169,7 +171,6 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
             SharedPreferences.Editor editor = pref.edit();
             editor.putString("lastUpdatedTime",scurTime);
             editor.commit();
-
         }
 
 //        transactions = (TextView)findViewById(R.id.transactions);
@@ -204,9 +205,7 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
 
     public void onResume() //why do we change all the strings to waiting onresume?
     {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        setCreditFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
-        setupAppsList();
+//        setupAppsList();
 //        transactions.setText(pref.getString("revisedTransactionDetails","waiting"));
 //        mAppsList.add(new AppListData("Bromide", "An image sending app.", null));
 

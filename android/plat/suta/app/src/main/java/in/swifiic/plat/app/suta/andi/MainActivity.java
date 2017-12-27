@@ -5,9 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.StringTokenizer;
 
-import in.swifiic.plat.app.suta.andi.R;
 import in.swifiic.plat.app.suta.andi.mgmt.TrackService;
 import in.swifiic.plat.helper.andi.ui.SwifiicActivity;
 import in.swifiic.plat.helper.andi.ui.UserChooserActivity;
@@ -16,7 +14,6 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -24,27 +21,17 @@ import android.content.Context;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TableLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.support.design.widget.TabLayout;
 
 import in.swifiic.plat.helper.andi.xml.Action;
 import in.swifiic.plat.helper.andi.AppEndpointContext;
-import in.swifiic.plat.helper.andi.Constants;
 import in.swifiic.plat.helper.andi.Helper;
 
-public class MainActivity extends SwifiicActivity implements CreditFragment.OnFragmentInteractionListener, AppList.OnFragmentInteractionListener {
+public class MainActivity extends SwifiicActivity implements StatusFragment.OnFragmentInteractionListener, AppList.OnFragmentInteractionListener {
 
 
     @SuppressWarnings("unused")
@@ -74,11 +61,11 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
         Helper.sendAction(action, hubAddress + "/suta", getApplicationContext());
     }
 
-    private boolean setCreditFragment(String creditValue, String lastUpdateTime) {
+    private boolean setStatusFragment(String creditValue, String lastUpdateTime) {
         Fragment fragment = mSimpleFragmentPagerAdapter.getFragment(0);
         if (fragment != null) {
-            ((CreditFragment) fragment).setCredit(creditValue);
-            ((CreditFragment) fragment).setLastUpdate(lastUpdateTime);
+            ((StatusFragment) fragment).setCredit(creditValue);
+            ((StatusFragment) fragment).setLastUpdate(lastUpdateTime);
             return true;
         } else {
             Log.d("SUTA", "NULLNULLNULL");
@@ -103,7 +90,7 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
             Log.d("SUTA", "ReceivedAmEssage");
 
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            setCreditFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
+            setStatusFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
 
             Bundle extras = intent.getExtras();
 
@@ -187,7 +174,7 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
                 tabLayout.setupWithViewPager(viewPager);
                 tabLayout.getTabAt(0);
                 tabLayout.getTabAt(1);
-                setCreditFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
+                setStatusFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
                 setupAppsList();
             }
         });
@@ -279,7 +266,7 @@ public class MainActivity extends SwifiicActivity implements CreditFragment.OnFr
 	}
 
     @Override
-    public void onCreditFragmentInteraction(String string) {
+    public void onStatusFragmentInteraction(String string) {
 
     }
 

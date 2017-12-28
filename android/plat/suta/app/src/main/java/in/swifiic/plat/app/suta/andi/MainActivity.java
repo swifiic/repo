@@ -87,24 +87,22 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d("SUTA", "ReceivedAmEssage");
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        setStatusFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
 
-            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            setStatusFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
+        Bundle extras = intent.getExtras();
 
-            Bundle extras = intent.getExtras();
+        Log.d("SUTA", "APPIDS" + extras.getString("appIDs"));
+        Log.d("SUTA", "APPNAMES" + extras.getString("appNames"));
+        Log.d("SUTA", "APPDESC" + extras.getString("appDescriptions"));
 
-            Log.d("SUTA", "APPIDS" + extras.getString("appIDs"));
-            Log.d("SUTA", "APPNAMES" + extras.getString("appNames"));
-            Log.d("SUTA", "APPDESC" + extras.getString("appDescriptions"));
+        String[] appIDs = extras.getString("appIDs").split("\\|");
+        String[] appNames = extras.getString("appNames").split("\\|");
+        String[] appDescriptions = extras.getString("appDescriptions").split("\\|");
 
-            String[] appIDs = extras.getString("appIDs").split("\\|");
-            String[] appNames = extras.getString("appNames").split("\\|");
-            String[] appDescriptions = extras.getString("appDescriptions").split("\\|");
-
-            for (int i = 0; i < appIDs.length; i++) {
-                addAppToList(appNames[i], appDescriptions[i], null);
-            }
+        for (int i = 0; i < appIDs.length; i++) {
+            addAppToList(appNames[i], appDescriptions[i], null);
+        }
         }
     };
    

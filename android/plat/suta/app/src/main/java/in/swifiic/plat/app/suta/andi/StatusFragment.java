@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 /**
@@ -64,16 +65,18 @@ public class StatusFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Button button = (Button) getView().findViewById(R.id.button);
+        Button button = (Button) getView().findViewById(R.id.pingButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setCredit(Integer.toString(0));
+                ((MainActivity) getActivity()).sendInfoToHub();
+                Toast.makeText(view.getContext(), "Sending a Hub message", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     @Override

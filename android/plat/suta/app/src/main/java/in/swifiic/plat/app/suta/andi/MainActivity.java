@@ -153,7 +153,7 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
 
         Log.d(TAG,"diff = "+diff);
         // diff  will be zero for the first time
-        if (diff>timeDiff || (diff == 0)){
+        if (diff > timeDiff || (diff == 0)) {
             sendInfoToHub();
             SharedPreferences.Editor editor = pref.edit();
             editor.putString("lastUpdatedTime",scurTime);
@@ -261,8 +261,9 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
 
         String hubAddress = pref.getString("hub_address", "");
       
-        if(null!=hubAddress)
-        Helper.sendSutaInfo(act, hubAddress + "/suta", this);
+        if(null!=hubAddress) {
+            Helper.sendSutaInfo(act, hubAddress + "/suta", this);
+        }
 	}
 
     @Override

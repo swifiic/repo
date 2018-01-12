@@ -6,10 +6,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import in.swifiic.plat.app.suta.andi.mgmt.TraceService;
 import in.swifiic.plat.app.suta.andi.mgmt.TrackService;
 import in.swifiic.plat.helper.andi.ui.SwifiicActivity;
 import in.swifiic.plat.helper.andi.ui.UserChooserActivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -18,6 +21,9 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.app.Fragment;
@@ -105,6 +111,16 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
         }
         }
     };
+
+    public static class MessageHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            int state = msg.arg1;
+            Log.d("SUTA", "ARG REC" + state);
+        }
+    }
+
+    public static Handler messageHandler = new MessageHandler();
    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,7 +201,21 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
         Intent serviceIntent = new Intent(this, TrackService.class);
         //serviceIntent.setAction("in.swifiic.plat.app.suta.andi.mgmt.TrackService");
         this.startService(serviceIntent);
-		
+//        starts trace service class
+        Intent traceServiceIntent = new Intent(this, TraceService.class);
+        traceServiceIntent.putExtra("MESSENGER", new Messenger(messageHandler));
+        this.startService(traceServiceIntent);
+
+
+        Intent myIntent = new Intent(this, TraceService.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,  0, traceServiceIntent, 0);
+
+        AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.add(Calendar.SECOND, 0); // first time
+        long frequency= 1 * 1000; // in ms
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), frequency, pendingIntent);
     }
 
     public void onResume() //why do we change all the strings to waiting onresume?

@@ -1,6 +1,7 @@
 package in.swifiic.plat.app.suta.andi.mgmt;
 
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -8,6 +9,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Binder;
 import android.os.Bundle;
@@ -25,6 +28,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 import in.swifiic.plat.helper.andi.GenericService;
 
@@ -34,35 +38,45 @@ import in.swifiic.plat.helper.andi.GenericService;
 
 public class TraceService extends IntentService {
     private Messenger messageHandler;
-    private static final long MIN_DISTANCE_DELTA = 0;//10;
-    private static final long MIN_TIME_DELTA = 0;//1000*60*1;
+    private static final long MIN_DISTANCE_DELTA = 10;//10;
+    private static final long MIN_TIME_DELTA = 1*1000*60;//1000*60*1;
+    private WifiManager mWifiManager;
+
     public TraceService() {
         super("Service started");
     }
 
+    BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
+                List<ScanResult> mScanResults = mWifiManager.getScanResults();
+                for (ScanResult scanResult : mScanResults) {
+                    Log.d("WIFIRECV", scanResult.SSID);
+                }
+            }
+        }
+    };
+
     @Override
-    public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
+    public void onCreate() {
         Toast.makeText(getApplicationContext(), "Trace service starting", Toast.LENGTH_LONG).show();
         Log.d("TraceService", "GO!");
-//        Bundle extras = intent.getExtras();
-//        messageHandler = (Messenger) extras.get("MESSENGER");
-//        Message msg = new Message();
-//        msg.arg1 = 24;
-//
-//        try {
-//            messageHandler.send(msg);
-//            Log.d("TraceService", "Msg sent!");
-//
-//        } catch (RemoteException re) {
-//            Log.e("TraceService", "Couldn't send to main activity");
-//        }
 
-//        getLocation(LocationManager.NETWORK_PROVIDER);
         String filename = "traceDataFile";
         File file = new File(getApplicationContext().getFilesDir(), filename);
         file.delete();
+
+        WifiManager mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        registerReceiver(mReceiver,
+                new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        mWifiManager.startScan();
+
+
+
         getLocation(LocationManager.NETWORK_PROVIDER);
-        return super.onStartCommand(intent, flags, startId);
+
+        super.onCreate();
     }
 
     @Override

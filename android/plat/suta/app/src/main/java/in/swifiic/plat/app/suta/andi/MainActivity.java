@@ -71,6 +71,23 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
         Helper.sendAction(action, hubAddress + "/suta", getApplicationContext());
     }
 
+
+    private void sendTraceData() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String hubAddress = sharedPreferences.getString("hub_address", "");
+        String fromUser = sharedPreferences.getString("my_identity", "");
+        Date date = new Date();
+        String epochDelta = String.valueOf(date.getTime());
+        Action action = new Action("TraceDataDump", new AppEndpointContext("SUTA", "0.1", "1"));
+        String traceData = readTraceData();
+        action.addArgument("traceData", traceData);
+        Helper.sendAction(action, hubAddress + "/suta", getApplicationContext());
+
+        String filename = "traceDataFile";
+        File file = new File(getApplicationContext().getFilesDir(), filename);
+        file.delete();
+    }
+
     private boolean setStatusFragment(String creditValue, String lastUpdateTime) {
         Fragment fragment = mSimpleFragmentPagerAdapter.getFragment(0);
         if (fragment != null) {
@@ -97,22 +114,22 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        setStatusFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            setStatusFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
 
-        Bundle extras = intent.getExtras();
+            Bundle extras = intent.getExtras();
 
-        Log.d("SUTA", "APPIDS" + extras.getString("appIDs"));
-        Log.d("SUTA", "APPNAMES" + extras.getString("appNames"));
-        Log.d("SUTA", "APPDESC" + extras.getString("appDescriptions"));
+            Log.d("SUTA", "APPIDS" + extras.getString("appIDs"));
+            Log.d("SUTA", "APPNAMES" + extras.getString("appNames"));
+            Log.d("SUTA", "APPDESC" + extras.getString("appDescriptions"));
 
-        String[] appIDs = extras.getString("appIDs").split("\\|");
-        String[] appNames = extras.getString("appNames").split("\\|");
-        String[] appDescriptions = extras.getString("appDescriptions").split("\\|");
+            String[] appIDs = extras.getString("appIDs").split("\\|");
+            String[] appNames = extras.getString("appNames").split("\\|");
+            String[] appDescriptions = extras.getString("appDescriptions").split("\\|");
 
-        for (int i = 0; i < appIDs.length; i++) {
-            addAppToList(appNames[i], appDescriptions[i], null);
-        }
+            for (int i = 0; i < appIDs.length; i++) {
+                addAppToList(appNames[i], appDescriptions[i], null);
+            }
         }
     };
 
@@ -212,7 +229,7 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
 
 
         final Handler handler = new Handler();
-        final int delay = 1000; //milliseconds
+        final int delay = 1000*60*10; //milliseconds
 
         handler.postDelayed(new Runnable(){
             public void run(){
@@ -234,10 +251,6 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
             Log.e("SUTA", "File not found for telemtery");
         }
         return fileString;
-    }
-
-    private boolean sendTraceData() {
-
     }
 
     public void onResume() //why do we change all the strings to waiting onresume?

@@ -46,19 +46,19 @@ import android.net.ConnectivityManager;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import in.swifiic.plat.helper.andi.xml.Action;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+//import org.apache.http.HttpResponse;
+//import org.apache.http.NameValuePair;
+//import org.apache.http.client.HttpClient;
+//import org.apache.http.client.entity.UrlEncodedFormEntity;
+//import org.apache.http.client.methods.HttpPost;
+//import org.apache.http.impl.client.DefaultHttpClient;
+//import org.apache.http.message.BasicNameValuePair;
+//import org.apache.http.util.EntityUtils;
+//import in.swifiic.plat.helper.andi.xml.Action;
+//import android.net.wifi.WifiInfo;
+//import android.net.wifi.WifiManager;
+//import java.text.SimpleDateFormat;
+//import java.util.Calendar;
 
 public class TrackService extends Service {
 

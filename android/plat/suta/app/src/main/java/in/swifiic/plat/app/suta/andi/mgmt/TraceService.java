@@ -19,7 +19,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.commonsware.cwac.wakeful.WakefulIntentService;
+//import com.commonsware.cwac.wakeful.WakefulIntentService;
 
 import in.swifiic.plat.helper.andi.GenericService;
 
@@ -56,25 +56,6 @@ public class TraceService extends IntentService {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private Location getLocation(String locationProvider) {
-        Location location;
-        try {
-            LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(locationProvider, MIN_TIME_DELTA, MIN_DISTANCE_DELTA, new CustomLocationListener());
-            location = locationManager.getLastKnownLocation(locationProvider);
-
-        } catch (Exception e) {
-            location = null;
-        }
-        return location;
-    }
-
-    private int getBatteryLevel() {
-        BatteryManager bm = (BatteryManager)getSystemService(BATTERY_SERVICE);
-        int batteryLevel = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-        return batteryLevel;
-    }
-
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         int batteryLevel = getBatteryLevel();
@@ -85,28 +66,49 @@ public class TraceService extends IntentService {
             location = getLocation(LocationManager.NETWORK_PROVIDER);
         }
 //        Toast.makeText(getApplicationContext(), "Latitude" + location.getLatitude() + "Longitude" + location.getLongitude() + "Battery%" + batteryLevel, Toast.LENGTH_SHORT).show();
-        Log.d("TraceService", "Latitude" + location.getLatitude() + "Longitude" + location.getLongitude() + "Battery%" + batteryLevel);
+        if (location != null) {
+            Log.d("TraceService", "Latitude" + location.getLatitude() + "Longitude" + location.getLongitude() + "Battery%" + batteryLevel);
+        }
     }
 
-    class CustomLocationListener implements LocationListener {
-        @Override
-        public void onLocationChanged(Location location) {
+    private Location getLocation(String locationProvider) {
+        Location location;
+        try {
+            LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(locationProvider, MIN_TIME_DELTA, MIN_DISTANCE_DELTA, new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+
+                }
+
+                @Override
+                public void onStatusChanged(String s, int i, Bundle bundle) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String s) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String s) {
+
+                }
+            });
+            location = locationManager.getLastKnownLocation(locationProvider);
+
+        } catch (SecurityException e) {
+            Log.d("TraceService", "We probably didn't get the permission");
+            location = null;
         }
+        return location;
+    }
 
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
+    private int getBatteryLevel() {
+        BatteryManager bm = (BatteryManager)getSystemService(BATTERY_SERVICE);
+        int batteryLevel = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+        return batteryLevel;
     }
 
 }

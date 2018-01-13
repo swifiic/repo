@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "in.swifiic.plat.app.suta.andi"
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 22
     }
 
     buildTypes {
@@ -22,19 +22,19 @@ android {
 
 dependencies {
     compile project(':base')
-//    compile 'com.android.support:support-v4:22.2.0'
-//    compile 'com.android.support:recyclerview-v7:22.2.0'
-//    compile 'com.android.support:appcompat-v7:22.2.0'
-//    compile 'com.android.support:design:22.2.0'
-    compile 'com.commonsware.cwac:wakeful:1.0.+'
+    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:design:22.2.0'
+//    compile 'com.commonsware.cwac:wakeful:1.0.+'
 
 
-    compile 'com.android.support:appcompat-v7:27.0.2'
-    compile 'com.android.support:recyclerview-v7:27.0.2'
-    compile 'com.android.support:design:27.0.2'
-    compile 'com.android.support:support-compat:27.0.2'
-    compile 'com.android.support:support-core-utils:27.0.2'
-    compile 'com.android.support:support-core-ui:27.0.2'
-    compile 'com.android.support:support-fragment:27.0.2'
+//    compile 'com.android.support:appcompat-v7:27.0.2'
+//    compile 'com.android.support:recyclerview-v7:27.0.2'
+//    compile 'com.android.support:design:27.0.2'
+//    compile 'com.android.support:support-compat:27.0.2'
+//    compile 'com.android.support:support-core-utils:27.0.2'
+//    compile 'com.android.support:support-core-ui:27.0.2'
+//    compile 'com.android.support:support-fragment:27.0.2'
 
 }

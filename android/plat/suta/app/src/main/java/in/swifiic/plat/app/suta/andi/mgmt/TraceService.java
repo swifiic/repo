@@ -21,6 +21,11 @@ import android.widget.Toast;
 
 //import com.commonsware.cwac.wakeful.WakefulIntentService;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import in.swifiic.plat.helper.andi.GenericService;
 
 /**
@@ -38,37 +43,43 @@ public class TraceService extends IntentService {
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         Toast.makeText(getApplicationContext(), "Trace service starting", Toast.LENGTH_LONG).show();
+        Log.d("TraceService", "GO!");
+//        Bundle extras = intent.getExtras();
+//        messageHandler = (Messenger) extras.get("MESSENGER");
+//        Message msg = new Message();
+//        msg.arg1 = 24;
+//
+//        try {
+//            messageHandler.send(msg);
+//            Log.d("TraceService", "Msg sent!");
+//
+//        } catch (RemoteException re) {
+//            Log.e("TraceService", "Couldn't send to main activity");
+//        }
 
-        Bundle extras = intent.getExtras();
-        messageHandler = (Messenger) extras.get("MESSENGER");
-        Message msg = new Message();
-        msg.arg1 = 24;
-
-        try {
-            messageHandler.send(msg);
-            Log.d("TraceService", "Msg sent!");
-
-        } catch (RemoteException re) {
-            Log.e("TraceService", "Couldn't send to main activity");
-        }
-
+//        getLocation(LocationManager.NETWORK_PROVIDER);
+        String filename = "traceDataFile";
+        File file = new File(getApplicationContext().getFilesDir(), filename);
+        file.delete();
         getLocation(LocationManager.NETWORK_PROVIDER);
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        int batteryLevel = getBatteryLevel();
-        Location location;
-        if (batteryLevel > 75) {
-            location = getLocation(LocationManager.GPS_PROVIDER);
-        } else {
-            location = getLocation(LocationManager.NETWORK_PROVIDER);
-        }
+//        int batteryLevel = getBatteryLevel();
+//        Location location;
+//        if (batteryLevel > 75) {
+//            location = getLocation(LocationManager.GPS_PROVIDER);
+//        } else {
+//            location = getLocation(LocationManager.NETWORK_PROVIDER);
+//        }
+////        Toast.makeText(getApplicationContext(), "Latitude" + location.getLatitude() + "Longitude" + location.getLongitude() + "Battery%" + batteryLevel, Toast.LENGTH_SHORT).show();
+//        if (location != null) {
+////            Log.d("TraceService", "Latitude" + location.getLatitude() + "Longitude" + location.getLongitude() + "Battery%" + batteryLevel);
 //        Toast.makeText(getApplicationContext(), "Latitude" + location.getLatitude() + "Longitude" + location.getLongitude() + "Battery%" + batteryLevel, Toast.LENGTH_SHORT).show();
-        if (location != null) {
-            Log.d("TraceService", "Latitude" + location.getLatitude() + "Longitude" + location.getLongitude() + "Battery%" + batteryLevel);
-        }
+//
+//        }
     }
 
     private Location getLocation(String locationProvider) {
@@ -78,6 +89,25 @@ public class TraceService extends IntentService {
             locationManager.requestLocationUpdates(locationProvider, MIN_TIME_DELTA, MIN_DISTANCE_DELTA, new LocationListener() {
                 @Override
                 public void onLocationChanged(Location location) {
+
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String formattedDate = df.format(Calendar.getInstance().getTime());
+
+                    int batteryLevel = getBatteryLevel();
+//                    Log.d("TraceService", "Latitude" + location.getLatitude() + "Longitude" + location.getLongitude() + "Battery%" + batteryLevel);
+                    String filename = "traceDataFile";
+                    File file = new File(getApplicationContext().getFilesDir(), filename);
+                    String traceData = formattedDate + "|" + location.getLatitude() + "|" + location.getLongitude() + "|" + batteryLevel + "\n";
+                    try {
+                        FileOutputStream outputStream = new FileOutputStream(file, true);
+//                        outputStream = openFileOutput(file, Context.MODE_PRIVATE);
+                        outputStream.write(traceData.getBytes());
+                        outputStream.close();
+                        Log.d("TraceService", "DONE");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
 
                 }
 

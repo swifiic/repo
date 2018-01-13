@@ -1,5 +1,7 @@
 package in.swifiic.plat.app.suta.andi;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,6 +34,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import android.support.design.widget.TabLayout;
+
+import org.apache.commons.io.IOUtils;
 
 import in.swifiic.plat.helper.andi.xml.Action;
 import in.swifiic.plat.helper.andi.AppEndpointContext;
@@ -203,19 +207,37 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
         this.startService(serviceIntent);
 //        starts trace service class
         Intent traceServiceIntent = new Intent(this, TraceService.class);
-        traceServiceIntent.putExtra("MESSENGER", new Messenger(messageHandler));
+//        traceServiceIntent.putExtra("MESSENGER", new Messenger(messageHandler));
         this.startService(traceServiceIntent);
 
 
-        Intent myIntent = new Intent(this, TraceService.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,  0, traceServiceIntent, 0);
+        final Handler handler = new Handler();
+        final int delay = 1000; //milliseconds
 
-        AlarmManager alarmManager = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.add(Calendar.SECOND, 0); // first time
-        long frequency= 1 * 1000; // in ms
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), frequency, pendingIntent);
+        handler.postDelayed(new Runnable(){
+            public void run(){
+                readTraceData();
+                handler.postDelayed(this, delay);
+            }
+        }, delay);
+    }
+
+    private String readTraceData() {
+        String fileString = null;
+        try {
+            File file = new File(getApplicationContext().getFilesDir(), "traceDataFile");
+            FileInputStream inputStream = new FileInputStream(file);
+            fileString = IOUtils.toString(inputStream, "UTF-8");
+            Log.d("SUTA", "DATADATA" + fileString);
+            inputStream.close();
+        } catch (Exception e) {
+            Log.e("SUTA", "File not found for telemtery");
+        }
+        return fileString;
+    }
+
+    private boolean sendTraceData() {
+
     }
 
     public void onResume() //why do we change all the strings to waiting onresume?

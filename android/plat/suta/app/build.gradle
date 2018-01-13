@@ -26,6 +26,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:design:22.2.0'
+    compile "commons-io:commons-io:+"
 //    compile 'com.commonsware.cwac:wakeful:1.0.+'
 
 

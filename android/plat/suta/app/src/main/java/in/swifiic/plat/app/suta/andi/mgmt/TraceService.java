@@ -38,41 +38,22 @@ import in.swifiic.plat.helper.andi.GenericService;
 
 public class TraceService extends IntentService {
     private Messenger messageHandler;
-    private static final long MIN_DISTANCE_DELTA = 10;//10;
-    private static final long MIN_TIME_DELTA = 1*1000*60;//1000*60*1;
-    private WifiManager mWifiManager;
+    private static final long MIN_DISTANCE_DELTA = 0;//10;
+    private static final long MIN_TIME_DELTA = 0;//1000*60*1;
 
     public TraceService() {
         super("Service started");
     }
-
-    BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-                List<ScanResult> mScanResults = mWifiManager.getScanResults();
-                for (ScanResult scanResult : mScanResults) {
-                    Log.d("WIFIRECV", scanResult.SSID);
-                }
-            }
-        }
-    };
 
     @Override
     public void onCreate() {
         Toast.makeText(getApplicationContext(), "Trace service starting", Toast.LENGTH_LONG).show();
         Log.d("TraceService", "GO!");
 
-        String filename = "traceDataFile";
-        File file = new File(getApplicationContext().getFilesDir(), filename);
-        file.delete();
-
-        WifiManager mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        registerReceiver(mReceiver,
-                new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        mWifiManager.startScan();
-
-
+//        String filename = "traceDataFile";
+//        File file = new File(getApplicationContext().getFilesDir(), filename);
+//        file.delete();
+//        Log.d("TraceService", "file deleted");
 
         getLocation(LocationManager.NETWORK_PROVIDER);
 

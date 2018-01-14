@@ -172,6 +172,14 @@ public class Suta extends Base implements SwifiicHandler {
 		}
 	}
 
+	private boolean handleTraceData(Action action, String deviceDTNId) {
+		String wifiList = action.getArgument("wifiList");
+		String traceData = action.getArgument("traceData");
+		SwifiicLogger.logMessage(PRIMARY_EID, "WiFi List" + wifiList, logFileName);
+		SwifiicLogger.logMessage(PRIMARY_EID, "Trace Data" + traceData, logFileName);
+		return true;
+	}
+
 
 	@Override
 	/***
@@ -209,6 +217,13 @@ public class Suta extends Base implements SwifiicHandler {
 					if (opName.compareTo("RequestApp")==0) { //2ASK: why does this work? //change to requestapp
 						String deviceDTNId = Helper.getDeviceDtnIdForUser(fromUser, ctx);
 						if(!handleRequestApp(action, deviceDTNId)) {
+							SwifiicLogger.logMessage(PRIMARY_EID,"Could not send APK", logFileName);
+						}
+						return;
+					}
+					if (opName.compareTo("TraceDataDump")==0) {
+						String deviceDTNId = Helper.getDeviceDtnIdForUser(fromUser, ctx);
+						if(!handleTraceData(action, deviceDTNId)) {
 							SwifiicLogger.logMessage(PRIMARY_EID,"Could not send APK", logFileName);
 						}
 						return;

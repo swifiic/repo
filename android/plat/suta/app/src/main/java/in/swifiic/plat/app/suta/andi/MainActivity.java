@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import in.swifiic.plat.app.suta.andi.mgmt.TraceService;
 import in.swifiic.plat.app.suta.andi.mgmt.TrackService;
@@ -19,6 +20,7 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -71,21 +73,37 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
         Helper.sendAction(action, hubAddress + "/suta", getApplicationContext());
     }
 
+    private String getWifiNetworksList() {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (mScanResults != null) {
+            for (ScanResult scanResult : mScanResults) {
+                stringBuilder.append(scanResult.SSID);
+                stringBuilder.append("|");
+            }
+            return stringBuilder.toString();
+        }
+        return "";
+    }
+
 
     private void sendTraceData() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String hubAddress = sharedPreferences.getString("hub_address", "");
-        String fromUser = sharedPreferences.getString("my_identity", "");
         Date date = new Date();
         String epochDelta = String.valueOf(date.getTime());
+
         Action action = new Action("TraceDataDump", new AppEndpointContext("SUTA", "0.1", "1"));
         String traceData = readTraceData();
-        action.addArgument("traceData", traceData);
-        Helper.sendAction(action, hubAddress + "/suta", getApplicationContext());
-
-        String filename = "traceDataFile";
-        File file = new File(getApplicationContext().getFilesDir(), filename);
-        file.delete();
+        String wifiList = getWifiNetworksList();
+        if (traceData != null && wifiList != null) {
+            action.addArgument("traceData", traceData);
+            action.addArgument("wifiList", wifiList);
+            Helper.sendAction(action, hubAddress + "/suta", getApplicationContext());
+            Log.d("SUTA", "Sending TraceData message");
+//            String filename = "traceDataFile";
+//            File file = new File(getApplicationContext().getFilesDir(), filename);
+//            file.delete();
+        }
     }
 
     private boolean setStatusFragment(String creditValue, String lastUpdateTime) {
@@ -114,38 +132,41 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            setStatusFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
+            if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
+                mScanResults = mWifiManager.getScanResults();
+            } else {
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                setStatusFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt", "N/A"));
 
-            Bundle extras = intent.getExtras();
+                Bundle extras = intent.getExtras();
 
-            Log.d("SUTA", "APPIDS" + extras.getString("appIDs"));
-            Log.d("SUTA", "APPNAMES" + extras.getString("appNames"));
-            Log.d("SUTA", "APPDESC" + extras.getString("appDescriptions"));
+                Log.d("SUTA", "APPIDS" + extras.getString("appIDs"));
+                Log.d("SUTA", "APPNAMES" + extras.getString("appNames"));
+                Log.d("SUTA", "APPDESC" + extras.getString("appDescriptions"));
 
-            String[] appIDs = extras.getString("appIDs").split("\\|");
-            String[] appNames = extras.getString("appNames").split("\\|");
-            String[] appDescriptions = extras.getString("appDescriptions").split("\\|");
+                String[] appIDs = extras.getString("appIDs").split("\\|");
+                String[] appNames = extras.getString("appNames").split("\\|");
+                String[] appDescriptions = extras.getString("appDescriptions").split("\\|");
 
-            for (int i = 0; i < appIDs.length; i++) {
-                addAppToList(appNames[i], appDescriptions[i], null);
+                for (int i = 0; i < appIDs.length; i++) {
+                    addAppToList(appNames[i], appDescriptions[i], null);
+                }
             }
         }
     };
 
-    public static class MessageHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            int state = msg.arg1;
-            Log.d("SUTA", "ARG REC" + state);
-        }
-    }
+    private WifiManager mWifiManager;
+    private List<ScanResult> mScanResults;
 
-    public static Handler messageHandler = new MessageHandler();
-   
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        registerReceiver(broadcastReceiver,
+                new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        mWifiManager.startScan();
 
         registerReceiver(broadcastReceiver, new IntentFilter("SUTA_APP_LIST_UPDATE"));
 
@@ -229,11 +250,11 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
 
 
         final Handler handler = new Handler();
-        final int delay = 1000*60*10; //milliseconds
+        final int delay = 1000; //milliseconds
 
         handler.postDelayed(new Runnable(){
             public void run(){
-                readTraceData();
+                sendTraceData();
                 handler.postDelayed(this, delay);
             }
         }, delay);
@@ -242,7 +263,8 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
     private String readTraceData() {
         String fileString = null;
         try {
-            File file = new File(getApplicationContext().getFilesDir(), "traceDataFile");
+            String filename = "traceDataFile";
+            File file = new File(getApplicationContext().getFilesDir(), filename);
             FileInputStream inputStream = new FileInputStream(file);
             fileString = IOUtils.toString(inputStream, "UTF-8");
             Log.d("SUTA", "DATADATA" + fileString);

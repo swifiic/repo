@@ -118,6 +118,19 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
         }
     }
 
+    private boolean setStatusFragment(String creditValue, String lastHubUpdateTime, String multicastReceiveTime, String lastAndroidUpdate) {
+        Fragment fragment = mSimpleFragmentPagerAdapter.getFragment(0);
+        if (fragment != null) {
+            ((StatusFragment) fragment).setCredit(creditValue);
+            ((StatusFragment) fragment).setLastUpdate(lastHubUpdateTime, multicastReceiveTime, lastAndroidUpdate);
+            return true;
+        } else {
+            Log.d("SUTA", "NULLNULLNULL");
+            return false;
+        }
+    }
+
+
     private boolean setupAppsList() {
         Fragment fragment = mSimpleFragmentPagerAdapter.getFragment(1);
         if (fragment != null) {
@@ -136,7 +149,10 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
                 mScanResults = mWifiManager.getScanResults();
             } else {
                 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                setStatusFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt", "N/A"));
+                setStatusFragment(pref.getString("remainingCredit", "Waiting for Hub"),
+                                    pref.getString("notifSentByHubAt", "N/A"), //time at which hub sent msg
+                                    pref.getString("notifRecievedBySutaAt","N/A"), //time at which android received hub mc
+                                    pref.getString("androidTimestamp", "N/A"));
 
                 Bundle extras = intent.getExtras();
 
@@ -230,7 +246,10 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
                 tabLayout.setupWithViewPager(viewPager);
                 tabLayout.getTabAt(0);
                 tabLayout.getTabAt(1);
-                setStatusFragment(pref.getString("remainingCredit", "Waiting for Hub"), pref.getString("notifSentByHubAt","N/A"));
+                setStatusFragment(pref.getString("remainingCredit", "Waiting for Hub"),
+                        pref.getString("notifSentByHubAt", "N/A"),
+                        pref.getString("hubTimestamp", "N/A"),
+                        pref.getString("androidTimestamp", "N/A"));
                 setupAppsList();
             }
         });
@@ -250,7 +269,7 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
 
 
         final Handler handler = new Handler();
-        final int delay = 1000; //milliseconds
+        final int delay = 1000*60*5; //milliseconds
 
         handler.postDelayed(new Runnable(){
             public void run(){

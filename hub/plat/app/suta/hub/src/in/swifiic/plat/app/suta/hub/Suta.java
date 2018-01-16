@@ -175,8 +175,8 @@ public class Suta extends Base implements SwifiicHandler {
 	private boolean handleTraceData(Action action, String deviceDTNId) {
 		String wifiList = action.getArgument("wifiList");
 		String traceData = action.getArgument("traceData");
-		SwifiicLogger.logMessage(PRIMARY_EID, "WiFi List" + wifiList, logFileName);
-		SwifiicLogger.logMessage(PRIMARY_EID, "Trace Data" + traceData, logFileName);
+		SwifiicLogger.logMessage(PRIMARY_EID, "WiFi List: " + wifiList, logFileName);
+//		SwifiicLogger.logMessage(PRIMARY_EID, "Trace Data" + traceData, logFileName);
 		return true;
 	}
 
@@ -197,7 +197,7 @@ public class Suta extends Base implements SwifiicHandler {
 		final String dtnId = url.substring(0, i);
 		final String message = payload;
 
-		SwifiicLogger.logMessage(PRIMARY_EID, "Payload received:\n" + payload, logFileName);
+//		SwifiicLogger.logMessage(PRIMARY_EID, "Payload received:\n" + payload, logFileName);
 
 		executor.execute(new Runnable() {
 			@Override
@@ -224,7 +224,7 @@ public class Suta extends Base implements SwifiicHandler {
 					if (opName.compareTo("TraceDataDump")==0) {
 						String deviceDTNId = Helper.getDeviceDtnIdForUser(fromUser, ctx);
 						if(!handleTraceData(action, deviceDTNId)) {
-							SwifiicLogger.logMessage(PRIMARY_EID,"Could not send APK", logFileName);
+							SwifiicLogger.logMessage(PRIMARY_EID,"Trace Error!", logFileName);
 						}
 						return;
 					}

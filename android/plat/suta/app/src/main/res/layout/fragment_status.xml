@@ -42,4 +42,18 @@
         android:gravity="center"
         android:padding="16dp"
         android:text="Waiting for Hub" />
+
+    <TextView
+        android:id="@+id/hubTimestamp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="16dp" />
+
+    <TextView
+        android:id="@+id/lastAndroidUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="16dp" />
 </LinearLayout>

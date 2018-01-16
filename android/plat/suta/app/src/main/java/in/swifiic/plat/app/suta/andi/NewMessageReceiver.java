@@ -93,7 +93,7 @@ public class NewMessageReceiver extends BroadcastReceiver {
 
 				Calendar c = Calendar.getInstance();
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String notifRecievedBySutaAt = sdf.format(c.getTime());
+				String notifRecievedBySutaAt = sdf.format(c.getTime()); //this is the one which isn't displayed right now
 				// suta got notification at this time
 
 				String userList = notif.getArgument("userList");

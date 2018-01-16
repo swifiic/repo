@@ -355,7 +355,7 @@ public class TrackService extends Service {
 			str = LoadPreferences("createdFileIdx");
 			int currUploadIndex  = Integer.parseInt(str);
 
-			if(isWifi()) // TODO check if IBR DTN daemon is connected
+			if(true) // TODO check if IBR DTN daemon is connected
 			{
 				Log.d(MY_TAG, "detected wifi/emulator");
 				lastuploadwifi=Integer.parseInt(LoadPreferences("fileuploads").toString());

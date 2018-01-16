@@ -89,13 +89,15 @@ class TAContext{
 			alert.setMessage("Your device does not support traffic stat monitoring.");
 			alert.show();
 		}
-		if(LoadPreferences("mask").equalsIgnoreCase("off"))
-		{
-			final long MINIMUM_DISTANCE_CHANGE_FOR_UPDATES = 20; // in Meters
-			final long MINIMUM_TIME_BETWEEN_UPDATES = 30000; // in Milliseconds
+//		if(LoadPreferences("mask").equalsIgnoreCase("off"))
+//		{
+			final long MINIMUM_DISTANCE_CHANGE_FOR_UPDATES = 0; // in Meters
+			final long MINIMUM_TIME_BETWEEN_UPDATES = 0; // in Milliseconds
 
-			if(null == locationManager)
+			if(null == locationManager) {
 				locationManager = (LocationManager) svcRef.getSystemService(Context.LOCATION_SERVICE);
+				Log.d("TrackService", "Loc manager started!");
+			}
 			if(null == locationManager)
 				Log.e(MY_TAG, "Failed to init getSystemService(Context.LOCATION_SERVICE);");
 			locationManager.requestLocationUpdates(
@@ -104,7 +106,9 @@ class TAContext{
 					MINIMUM_DISTANCE_CHANGE_FOR_UPDATES,
 					new MyLocationListener());
 			getCurrentLocation();
-		}
+//		} else {
+//			Log.d(MY_TAG, "Loading prefs fialed");
+//		}
 
 		for(int i=0; i < NumSamples; i++)
 			sampleTX[i]=sampleRX[i] =0;
@@ -224,7 +228,7 @@ class TAContext{
 			//start a tag called "root"
 			serializer.startTag(null, "Logfile"); 
 	
-			sAC.appendXmlEntries(serializer);
+//			sAC.appendXmlEntries(serializer);
 			sIC.appendXmlEntries(serializer);
 
 			serializer.startTag(null, "other");
@@ -340,15 +344,21 @@ class TAContext{
 	}
 
 	String getCurrentLocation() {
-		if(null == locationManager)
+		if(null == locationManager) {
+			Log.d("TrackService", "Loc fail!");
 			return "unknown";
+		}
 		Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		if(null == location) location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		if(null == location) {
+			location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+		}
 		if (location != null) {
 			String latitude=Double.toString(location.getLatitude());
 			String longitude=Double.toString(location.getLongitude());
+			Log.d("TrackService",latitude + "," + longitude);
 			return (latitude + "," + longitude);
 		} else {
+			Log.d("TrackService", "Loc fai2l!");
 			return "unknown";
 		}
 	}   

@@ -260,23 +260,23 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
 
 
         Intent serviceIntent = new Intent(this, TrackService.class);
-        //serviceIntent.setAction("in.swifiic.plat.app.suta.andi.mgmt.TrackService");
+        serviceIntent.setAction("in.swifiic.plat.app.suta.andi.mgmt.TrackService");
         this.startService(serviceIntent);
 //        starts trace service class
-        Intent traceServiceIntent = new Intent(this, TraceService.class);
+//        Intent traceServiceIntent = new Intent(this, TraceService.class);
 //        traceServiceIntent.putExtra("MESSENGER", new Messenger(messageHandler));
-        this.startService(traceServiceIntent);
+//        this.startService(traceServiceIntent);
 
 
-        final Handler handler = new Handler();
-        final int delay = 1000*60*5; //milliseconds
-
-        handler.postDelayed(new Runnable(){
-            public void run(){
-                sendTraceData();
-                handler.postDelayed(this, delay);
-            }
-        }, delay);
+//        final Handler handler = new Handler();
+//        final int delay = 1000*60*5; //milliseconds
+//
+//        handler.postDelayed(new Runnable(){
+//            public void run(){
+//                sendTraceData();
+//                handler.postDelayed(this, delay);
+//            }
+//        }, delay);
     }
 
     private String readTraceData() {

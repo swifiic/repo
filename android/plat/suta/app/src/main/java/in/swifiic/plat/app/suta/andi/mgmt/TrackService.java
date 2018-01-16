@@ -85,34 +85,35 @@ public class TrackService extends Service {
 
 	@Override
 	public void onCreate() {
-		super.onCreate();
-		Log.d(MY_TAG,"Service STARTED");
-	    String packageName = this.getPackageName().trim();
-	    folderPath = Environment.getExternalStorageDirectory().getAbsolutePath() + 
-	    								"/Android/data/" + packageName + "/files/";
-	 ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-	 batteryStatus = getApplicationContext().registerReceiver(null, ifilter);
-	 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-     pref=PreferenceManager.getDefaultSharedPreferences(this);
- 	
-	
-      String hubAddress = pref.getString("hub_address", "dtn://aarthi-hub.dtn");
-   //  Helper.sendSutaInfo(act, hubAddress + "/suta", this);
+	super.onCreate();
+	Log.d(MY_TAG,"Service STARTED");
+	String packageName = this.getPackageName().trim();
+	folderPath = Environment.getExternalStorageDirectory().getAbsolutePath() +
+					"/Android/data/" + packageName + "/files/";
+	ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+	batteryStatus = getApplicationContext().registerReceiver(null, ifilter);
+	SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+	pref=PreferenceManager.getDefaultSharedPreferences(this);
 
-		try {
-		    File folder  = new File(folderPath);
-		    boolean exists = folder.exists();
-		    if (!exists) 
-		        folder.mkdirs();
-		    File exptFile = new File(folderPath + excpFileName);
-		    if(exptFile.length()>0){
-		    	exptFile.renameTo(new File (folderPath + excpFileName + ".old"));
-		    	Log.w(MY_TAG, "Old exception log file renamed");
-		    }
-		} catch (Exception e){
-			Toast.makeText(this, "Folder Create" + e.getMessage(), Toast.LENGTH_LONG).show();
-			Log.e(MY_TAG, "Folder Create" + e.getMessage());
+	Toast.makeText(getApplicationContext(), "Track service starting", Toast.LENGTH_LONG).show();
+	String hubAddress = pref.getString("hub_address", "dtn://THINKPAD.dtn");
+	//  Helper.sendSutaInfo(act, hubAddress + "/suta", this);
+
+	try {
+		File folder  = new File(folderPath);
+		boolean exists = folder.exists();
+		if (!exists) {
+			folder.mkdirs();
 		}
+		File exptFile = new File(folderPath + excpFileName);
+		if(exptFile.length()>0) {
+			exptFile.renameTo(new File (folderPath + excpFileName + ".old"));
+			Log.w(MY_TAG, "Old exception log file renamed");
+		}
+	} catch (Exception e) {
+		Toast.makeText(this, "Folder Create" + e.getMessage(), Toast.LENGTH_LONG).show();
+		Log.e(MY_TAG, "Folder Create" + e.getMessage());
+	}
 		ctx = TAContext.createContextFromPersistedData(this);
 		mHandler.postDelayed(mRunnable, 10000);
 	}
@@ -223,9 +224,6 @@ public class TrackService extends Service {
 
 	private final Runnable mRunnable = new Runnable() {
 		private String version=null;
-		
-
-
 		public boolean isAndroidEmulator() {
 			String model = Build.MODEL;
 			String product = Build.PRODUCT;
@@ -267,32 +265,33 @@ public class TrackService extends Service {
 				initData();
 				// recover the serialized context
 			}
-			 ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-			 batteryStatus = getApplicationContext().registerReceiver(null, ifilter);
-			 int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-			 int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-			 int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-			 boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
-			                      status == BatteryManager.BATTERY_STATUS_FULL;
+			ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+			batteryStatus = getApplicationContext().registerReceiver(null, ifilter);
+			int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+			int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+			int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+			boolean isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
+							  status == BatteryManager.BATTERY_STATUS_FULL;
 
-			 // How are we charging?
-			 int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
-			 boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
-			 boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
-			 
+			// How are we charging?
+			int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+			boolean usbCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_USB;
+			boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
 
-			 batteryPct = level / (float)scale;
+
+			batteryPct = level / (float)scale;
 			ctx.doSampling();
 
-			if(ctx.shouldCreateLogFile()){
+			// arnavdhamija - just for now, let us force sending packets
+//			if(ctx.shouldCreateLogFile()){
 				String fileName = ctx.saveLogs();
-				if (null != fileName)
+				if (null != fileName) {
 					handleLogStreamEndAndFileUpload(fileName);
-			}
-			
-		
+				}
+//			}
+
 			last_sample=ctx.getNextPollDelay(batteryPct, isCharging,usbCharge,acCharge,previous);
-			 previous=last_sample;
+			previous=last_sample;
 
 			mHandler.postDelayed(mRunnable,last_sample);
 		}
@@ -386,36 +385,34 @@ public class TrackService extends Service {
 		}};
 
 
-		
-		
-void dtnSendFile(String message,String filename)
-{
-	SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-	Action act = new Action("SendMessage", aeCtx);
-   /* WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-    WifiInfo info = manager.getConnectionInfo();
-    String macAddress = info.getMacAddress();
-    act.addArgument("macAddress", macAddress);
-    Calendar c = Calendar.getInstance();
-    SimpleDateFormat sdf = new SimpleDateFormat("dd:MMMM:yyyy HH:mm:ss a");
-    String strDate = sdf.format(c.getTime());
-    act.addArgument("dateTime",strDate);*/
-	Date date = new Date();
-	String sentAt = "" + date.getTime();
-    
-	
-    act.addArgument("message", message);
-    act.addArgument("filename",filename);
-    act.addArgument("sentAt", "" + sentAt);  
 
-    
-    // Loading hub address from preferences
-    String hubAddress = sharedPref.getString("hub_address", "");
-    Log.d(MY_TAG,"Hub address:::::"+hubAddress);
-   
-    if(hubAddress.equals(""))
-    	hubAddress="dtn://aarthi-hub.dtn";
-    act.addArgument("sentTo",hubAddress+"/suta");
-    Helper.sendAction(act, hubAddress + "/suta", this);
-}
+
+	void dtnSendFile(String message,String filename)
+	{
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+		Action act = new Action("SendMessage", aeCtx);
+	   /* WifiManager manager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		WifiInfo info = manager.getConnectionInfo();
+		String macAddress = info.getMacAddress();
+		act.addArgument("macAddress", macAddress);
+		Calendar c = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd:MMMM:yyyy HH:mm:ss a");
+		String strDate = sdf.format(c.getTime());
+		act.addArgument("dateTime",strDate);*/
+		Date date = new Date();
+		String sentAt = "" + date.getTime();
+
+
+		act.addArgument("message", message);
+		act.addArgument("filename",filename);
+		act.addArgument("sentAt", "" + sentAt);
+
+
+		// Loading hub address from preferences
+		String hubAddress = sharedPref.getString("hub_address", "dtn://THINKPAD.dtn");
+		Log.d(MY_TAG,"SENDING A traceData"+hubAddress);
+
+		act.addArgument("sentTo",hubAddress+"/suta");
+		Helper.sendAction(act, hubAddress + "/suta", this);
+	}
 }

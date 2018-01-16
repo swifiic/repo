@@ -228,6 +228,9 @@ public class Suta extends Base implements SwifiicHandler {
 						}
 						return;
 					}
+//					if (opName.compareTo("SendMessage")==0) {
+//
+//					}
 
 					// We are looking for Op Name "SendInfo" "SendMessage"
 					// this should really be moved to its own opName checking code

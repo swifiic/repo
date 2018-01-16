@@ -122,7 +122,7 @@ public class StatusFragment extends Fragment {
         hubTimeStampText.setText("Device Timestamp: " + multicastReceiveTime);
 
         TextView lastAndroidUpdateText = (TextView) getView().findViewById(R.id.lastAndroidUpdate);
-        lastAndroidUpdateText.setText("Last Message sent from device: " + lastAndroidUpdate);
+        lastAndroidUpdateText.setText("Last Device Transmission: " + lastAndroidUpdate);
     }
 
 

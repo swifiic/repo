@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import in.swifiic.plat.helper.andi.xml.Action;
 import in.swifiic.plat.helper.andi.xml.Notification;
@@ -54,7 +56,16 @@ public class Helper {
         try {
         	// Loading my identity from preferences
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(c);
-            String myIdentity = sharedPref.getString("my_identity", "");
+
+            // for saving the last time the device sent a message to any device
+            SharedPreferences.Editor editor = sharedPref.edit();
+			Calendar calendar = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String curTime = sdf.format(calendar.getTime());
+			editor.putString("lastDeviceMsg", curTime);
+			editor.commit();
+
+			String myIdentity = sharedPref.getString("my_identity", "");
         	act.addArgument("fromUser", myIdentity);
         	
         	String msg = serializeAction(act);
@@ -79,6 +90,14 @@ public class Helper {
 		try {
 			final String filename = "action_file";
 			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(c);
+
+			SharedPreferences.Editor editor = sharedPref.edit();
+			Calendar calendar = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String curTime = sdf.format(calendar.getTime());
+			editor.putString("lastDeviceMsg", curTime);
+			editor.commit();
+
 			String myIdentity = sharedPref.getString("my_identity", "");
 
 			String msg = serializeAction(action);

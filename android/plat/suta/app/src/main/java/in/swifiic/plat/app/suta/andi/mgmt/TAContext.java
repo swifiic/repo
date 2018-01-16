@@ -23,6 +23,7 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.TrafficStats;
+import android.preference.PreferenceManager;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
 import android.telephony.cdma.CdmaCellLocation;
@@ -246,6 +247,12 @@ class TAContext{
 			}  
 			serializer.text(txt);
 			serializer.endTag(null, "other");
+
+			serializer.startTag(null, "wifiSSIDs");
+			SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(svcRef);
+			String wifiSSIDs = pref.getString("wifiAPs", "No APs Visible");
+			serializer.text(wifiSSIDs);
+			serializer.endTag(null, "wifiSSIDs");
 	
 			serializer.endTag(null, "Logfile");
 			serializer.endDocument();

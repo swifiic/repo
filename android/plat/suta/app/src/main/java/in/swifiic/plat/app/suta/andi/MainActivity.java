@@ -147,12 +147,18 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
                 mScanResults = mWifiManager.getScanResults();
+                String wifiAPs = getWifiNetworksList();
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("wifiAPs", wifiAPs);
+                Log.d(TAG, "Wifi aps saved as: " + pref.getString("wifiAPs", "No APs Visible"));
+                editor.commit();
             } else {
                 SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 setStatusFragment(pref.getString("remainingCredit", "Waiting for Hub"),
                                     pref.getString("notifSentByHubAt", "N/A"), //time at which hub sent msg
                                     pref.getString("notifRecievedBySutaAt","N/A"), //time at which android received hub mc
-                                    pref.getString("androidTimestamp", "N/A"));
+                                    pref.getString("lastDeviceMsg", "N/A"));
 
                 Bundle extras = intent.getExtras();
 
@@ -248,8 +254,8 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
                 tabLayout.getTabAt(1);
                 setStatusFragment(pref.getString("remainingCredit", "Waiting for Hub"),
                         pref.getString("notifSentByHubAt", "N/A"),
-                        pref.getString("hubTimestamp", "N/A"),
-                        pref.getString("androidTimestamp", "N/A"));
+                        pref.getString("notifRecievedBySutaAt", "N/A"),
+                        pref.getString("lastDeviceMsg", "N/A"));
                 setupAppsList();
             }
         });

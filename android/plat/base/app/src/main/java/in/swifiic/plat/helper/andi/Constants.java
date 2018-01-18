@@ -28,6 +28,9 @@ public final class Constants {
 
 	public static final String SEND_BIG_MSG_INTENT = "in.swifiic.app.SEND_BIG_MSG";
 
+	public static final String UPDATE_NEIGHBOR_LIST_INTENT = "in.swifiic.app.UPDATE_NEIGHBOR_LIST_INTENT";
+
+
 
 	public static final String PUBLIC_DIR_PATH = Environment.getExternalStorageDirectory().toString() + "/swifiic/";
 }

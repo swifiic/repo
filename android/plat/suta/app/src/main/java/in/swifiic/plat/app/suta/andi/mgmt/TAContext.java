@@ -35,6 +35,9 @@ import android.os.SystemClock;
 
 import org.xmlpull.v1.XmlSerializer;
 
+import in.swifiic.plat.helper.andi.Constants;
+import in.swifiic.plat.helper.andi.GenericService;
+
 
 class TAContext{
 	final private static  String MY_TAG = "TAC";
@@ -92,24 +95,34 @@ class TAContext{
 		}
 //		if(LoadPreferences("mask").equalsIgnoreCase("off"))
 //		{
-			final long MINIMUM_DISTANCE_CHANGE_FOR_UPDATES = 0; // in Meters
-			final long MINIMUM_TIME_BETWEEN_UPDATES = 0; // in Milliseconds
+		final long MINIMUM_DISTANCE_CHANGE_FOR_UPDATES = 0; // in Meters
+		final long MINIMUM_TIME_BETWEEN_UPDATES = 0; // in Milliseconds
 
-			if(null == locationManager) {
-				locationManager = (LocationManager) svcRef.getSystemService(Context.LOCATION_SERVICE);
-				Log.d("TrackService", "Loc manager started!");
-			}
-			if(null == locationManager)
-				Log.e(MY_TAG, "Failed to init getSystemService(Context.LOCATION_SERVICE);");
+		if(null == locationManager) {
+			locationManager = (LocationManager) svcRef.getSystemService(Context.LOCATION_SERVICE);
+			Log.d("TrackService", "Loc manager started!");
+		}
+		if(null == locationManager) {
+			Log.e(MY_TAG, "Failed to init getSystemService(Context.LOCATION_SERVICE);");
+		}
+
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(svcRef);
+		boolean enableGPS = sharedPreferences.getBoolean("gps_preference", false);
+
+		if (enableGPS) {
 			locationManager.requestLocationUpdates(
-					LocationManager.GPS_PROVIDER, 
-					MINIMUM_TIME_BETWEEN_UPDATES, 
+					LocationManager.GPS_PROVIDER,
+					MINIMUM_TIME_BETWEEN_UPDATES,
 					MINIMUM_DISTANCE_CHANGE_FOR_UPDATES,
 					new MyLocationListener());
-			getCurrentLocation();
-//		} else {
-//			Log.d(MY_TAG, "Loading prefs fialed");
-//		}
+		} else {
+			locationManager.requestLocationUpdates(
+					LocationManager.NETWORK_PROVIDER,
+					MINIMUM_TIME_BETWEEN_UPDATES,
+					MINIMUM_DISTANCE_CHANGE_FOR_UPDATES,
+					new MyLocationListener());
+		}
+		getCurrentLocation();
 
 		for(int i=0; i < NumSamples; i++)
 			sampleTX[i]=sampleRX[i] =0;
@@ -248,11 +261,21 @@ class TAContext{
 			serializer.text(txt);
 			serializer.endTag(null, "other");
 
-			serializer.startTag(null, "wifiSSIDs");
 			SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(svcRef);
+			serializer.startTag(null, "wifiSSIDs");
 			String wifiSSIDs = pref.getString("wifiAPs", "No APs Visible");
 			serializer.text(wifiSSIDs);
 			serializer.endTag(null, "wifiSSIDs");
+
+			// This isn't my proudest hack, but this works anyway - arnavdhamija
+			Intent i = new Intent(svcRef, GenericService.class);
+			i.setAction(Constants.UPDATE_NEIGHBOR_LIST_INTENT);
+			svcRef.startService(i);
+
+			serializer.startTag(null, "dtnNeighbors");
+			String dtnNeighbors = pref.getString("dtnNeighbors", "No Neighbors Found");
+			serializer.text(dtnNeighbors);
+			serializer.endTag(null, "dtnNeighbors");
 	
 			serializer.endTag(null, "Logfile");
 			serializer.endDocument();
@@ -355,8 +378,14 @@ class TAContext{
 			Log.d("TrackService", "Loc fail!");
 			return "unknown";
 		}
-		Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		if(null == location) {
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(svcRef);
+		boolean enableGPS = sharedPreferences.getBoolean("gps_preference", false);
+		Location location;
+		if (enableGPS) {
+			Log.d(MY_TAG, "Using GPS for location!");
+			location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		} else {
+			Log.d(MY_TAG, "Using Network for location!");
 			location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 		}
 		if (location != null) {
@@ -365,7 +394,7 @@ class TAContext{
 			Log.d("TrackService",latitude + "," + longitude);
 			return (latitude + "," + longitude);
 		} else {
-			Log.d("TrackService", "Loc fai2l!");
+			Log.d("TrackService", "Loc fail!");
 			return "unknown";
 		}
 	}   

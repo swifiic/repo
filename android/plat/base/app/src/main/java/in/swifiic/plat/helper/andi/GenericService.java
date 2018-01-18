@@ -11,10 +11,12 @@ import in.swifiic.plat.helper.andi.xml.Action;
 import in.swifiic.plat.helper.andi.xml.Notification;
 import android.app.IntentService;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import de.tubs.ibr.dtn.api.Block;
 import de.tubs.ibr.dtn.api.Bundle;
@@ -164,6 +166,23 @@ public class GenericService extends IntentService {
         }
     }
 
+    void updateNeighborsList() {
+        StringBuilder neighbors = new StringBuilder();
+        List<Node> neightborList = mClient.getNeighbors();
+        if (neightborList != null) {
+            for (Node neighbor : neightborList) {
+                neighbors.append(neighbor.endpoint.toString());
+                neighbors.append('|');
+            }
+        }
+        String list = neighbors.toString();
+        Log.d(TAG, "Neighbors List: " + list);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("dtnNeighbors", list);
+        editor.commit();
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if(null==intent) {
@@ -248,6 +267,9 @@ public class GenericService extends IntentService {
 				e.printStackTrace();
 				Log.e(TAG, "Parse failed during send info for String: " + msg+ "\n exception:" + e);
 			}
+        } else if (Constants.UPDATE_NEIGHBOR_LIST_INTENT.equals(action)) {
+            Log.d(TAG, "Updating neighbors list");
+            updateNeighborsList();
         }
         
     }

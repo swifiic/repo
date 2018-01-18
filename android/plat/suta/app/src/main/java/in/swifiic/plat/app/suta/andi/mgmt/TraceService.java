@@ -38,8 +38,8 @@ import in.swifiic.plat.helper.andi.GenericService;
 
 public class TraceService extends IntentService {
     private Messenger messageHandler;
-    private static final long MIN_DISTANCE_DELTA = 10;
-    private static final long MIN_TIME_DELTA = 1000*60*1;
+    private static final long MIN_DISTANCE_DELTA = 0;//10;
+    private static final long MIN_TIME_DELTA = 0;//1000*60*1;
 
     public TraceService() {
         super("Service started");
@@ -50,10 +50,10 @@ public class TraceService extends IntentService {
         Toast.makeText(getApplicationContext(), "Trace service starting", Toast.LENGTH_LONG).show();
         Log.d("TraceService", "GO!");
 
-        String filename = "traceDataFile";
-        File file = new File(getApplicationContext().getFilesDir(), filename);
-        file.delete();
-        Log.d("TraceService", "file deleted");
+//        String filename = "traceDataFile";
+//        File file = new File(getApplicationContext().getFilesDir(), filename);
+//        file.delete();
+//        Log.d("TraceService", "file deleted");
 
         getLocation(LocationManager.NETWORK_PROVIDER);
 

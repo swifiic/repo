@@ -377,8 +377,7 @@ public class TrackService extends Service {
 					}
 				}
 			}
-			else
-			{ 
+			else {
 				Toast.makeText(getApplicationContext(), "wifinotdetected", Toast.LENGTH_SHORT).show();
 				Log.w(MY_TAG, "NO WiFi detected");
 			}	

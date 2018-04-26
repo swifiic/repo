@@ -182,13 +182,14 @@
 
 
     <!-- Include all elements that Tomcat exposes to applications -->
-    <pathelement location="${catalina.home}/common/classes"/>
+    <!-- maybe not required with tomcat8 <pathelement location="${catalina.home}/common/classes"/> -->
     <fileset dir="${catalina.bin.home}/lib"> <!-- AT added for Ubuntu -->
       <include name="*.jar"/>
     </fileset>
-    <fileset dir="${catalina.home}/common/classes">
+    <!-- <fileset dir="${catalina.home}/common/classes">
       <include name="*.jar"/>
     </fileset>
+    -->
     <pathelement location="${catalina.home}/shared/classes"/>
     <fileset dir="${web.home}/WEB-INF/lib">
       <include name="*.jar"/>

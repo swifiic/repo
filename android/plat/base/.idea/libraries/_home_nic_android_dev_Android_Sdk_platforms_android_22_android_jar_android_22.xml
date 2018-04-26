@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="_home_nic_android_dev_Android_Sdk_platforms_android_22_android_jar-android-22">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../Android/Sdk/platforms/android-22/android.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

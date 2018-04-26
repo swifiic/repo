@@ -1,0 +1,9 @@
+<project name="SWiFiIC-plat" default="All" basedir=".">
+<target name="All" description="Build the library components">
+    <ant dir="hub" target="dist"/>
+</target>
+<target name="clean" description="clean sub folders">
+    <ant dir="hub" target="clean"/>
+</target>
+</project>
+

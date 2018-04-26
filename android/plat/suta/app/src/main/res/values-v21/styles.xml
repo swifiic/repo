@@ -1,0 +1,20 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="android:Theme.DeviceDefault.Light.DarkActionBar"/>
+    <!-- inherit from the material theme -->
+    <!--<style name="AppTheme.Base" parent="android:Theme.Material">-->
+        <!--&lt;!&ndash; colorPrimary is used for the default action bar background &ndash;&gt;-->
+        <!--<item name="android:colorPrimary">#FFFFFF</item>-->
+
+        <!--&lt;!&ndash; colorPrimaryDark is used for the status bar &ndash;&gt;-->
+        <!--<item name="android:colorPrimaryDark">#303F9F</item>-->
+
+        <!--&lt;!&ndash; colorAccent is used as the default value for colorControlActivated-->
+             <!--which is used to tint widgets &ndash;&gt;-->
+        <!--<item name="android:colorAccent">#FF4081</item>-->
+    <!--</style>-->
+
+    <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">#FF4081</item>
+    </style>
+</resources>

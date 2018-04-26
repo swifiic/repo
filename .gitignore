@@ -16,9 +16,13 @@ swifiic.properties
 bin/
 gen/
 build/
+build/*
 out/
 dist/
 dist.tar.gz
+release.tar
+release.tar.gz
+
 release.tar
 release.tar.gz
 
@@ -26,6 +30,7 @@ release.tar.gz
 /**/local.properties
 /**/project.properties
 /**/META-INF
+/**/.project
 
 # Windows thumbnail db
 Thumbs.db
@@ -38,6 +43,6 @@ Thumbs.db
 .project
 
 # Android Studio
-#.idea
+.idea
 .idea/workspace.xml
-.gradle
+.gradle/

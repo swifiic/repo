@@ -8,8 +8,8 @@
   <property name="src2" location="src/in"/>
   <property name="lib" location="../../../lib"/>
   <property name="build" location="../../../build/hub"/>
-  <property name="dist"  location="../../../dist/hub"/>
-  <property name="properties" location="../../../dist/properties"/>
+  <property name="dist"  location="../../../../dist/hub"/>
+  <property name="properties" location="../../../../dist/properties"/>
 
  <path id="external.jars">
                 <fileset dir="${lib}" includes="hub/*jar"/>

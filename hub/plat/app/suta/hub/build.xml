@@ -8,8 +8,8 @@
   <property name="hub_module" value="suta" />
   <property name="hub_class" value="in.swifiic.plat.app.suta.hub.Suta" />
   <property name="build" location="../../../../build/suta"/>
-  <property name="dist"  location="../../../../dist/suta"/>
-  <property name="properties"  location="../../../../dist/properties"/>
+  <property name="dist"  location="../../../../../dist/suta"/>
+  <property name="properties"  location="../../../../../dist/properties"/>
 
  <path id="external.jars">
                 <fileset dir="${lib}" includes="hub/*jar"/>

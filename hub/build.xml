@@ -1,7 +1,7 @@
 <project name="SWiFiIC" default="all" basedir=".">
 <target name="init" description="Build the platform components">
-    <mkdir dir="dist" />
-    <mkdir dir="dist/apk" />
+    <mkdir dir="../dist" />
+    <mkdir dir="../dist/apk" />
     <ant dir="plat"/>
 </target>
 
@@ -10,10 +10,8 @@
 </target>
 
 <target name="package" depends="Apps" description="Create the release tarballs">
-    <copy todir="dist/lib"> <fileset dir="lib" /> </copy>
-    <copy todir="dist/scripts"> <fileset dir="scripts" /> </copy>
-    <tar destfile="release.tar" basedir="dist/"/>
-    <gzip destfile="release.tar.gz" src="release.tar"/>
+    <copy todir="../dist/lib"> <fileset dir="lib" /> </copy>
+    <copy todir="../dist/scripts"> <fileset dir="scripts" /> </copy>
 </target>
 
 <target name="all" depends="init,Apps,package"/>
@@ -21,9 +19,7 @@
 <target name="clean">
     <ant dir="plat" target="clean"/>
     <ant dir="app" target="clean"/>
-    <delete dir="dist" />
-    <delete file="release.tar" />
-    <delete file="release.tar.gz" />
+    <delete dir="../dist" />
 </target>
 </project>
 

@@ -132,7 +132,7 @@
   <property name="build.home"    value="${basedir}/../../../../build/SOA/hub"/>
   <property name="catalina.home" value="/var/lib/tomcat8/"/> 
   <property name="catalina.bin.home" value="/usr/share/tomcat8/"/> 
-  <property name="dist.home"     value="${basedir}/../../../../dist/hub"/>
+  <property name="dist.home"     value="${basedir}/../../../../../dist/hub"/>
   <property name="docs.home"     value="${build.home}/docs"/>
   <property name="manager.url"   value="http://localhost:8080/manager"/>
   <property name="src.home"      value="./src"/>

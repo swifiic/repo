@@ -1,6 +1,7 @@
 .gradle
 local.properties
 swifiic.properties
+swifiic.tar.gz
 .DS_Store
 #built application files
 *.apk
@@ -31,6 +32,7 @@ release.tar.gz
 /**/project.properties
 /**/META-INF
 /**/.project
+/**/.directory
 
 # Windows thumbnail db
 Thumbs.db

@@ -8,7 +8,7 @@
   <property name="hub_module" value="bromide" />
   <property name="hub_class" value="in.swifiic.app.bromide.hub.Bromide" />
   <property name="build" location="../../../build/${hub_module}"/>
-  <property name="dist"  location="../../../dist/${hub_module}"/>
+  <property name="dist"  location="../../../../dist/${hub_module}"/>
 
  <path id="external.jars">
                 <fileset dir="${lib}" includes="hub/*jar"/>

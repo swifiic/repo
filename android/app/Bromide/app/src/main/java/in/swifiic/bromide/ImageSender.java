@@ -1,4 +1,4 @@
-package com.arnavdhamija.bromide;
+package in.swifiic.bromide;
 
 import android.content.Context;
 import android.content.SharedPreferences;

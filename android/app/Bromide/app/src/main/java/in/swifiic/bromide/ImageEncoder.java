@@ -1,4 +1,4 @@
-package com.arnavdhamija.bromide;
+package in.swifiic.bromide;
 
 import android.app.Activity;
 import android.content.Context;
@@ -26,6 +26,7 @@ import id.zelory.compressor.Compressor;
 
 /**
  * Created by arnavdhamija on 25/10/17.
+ * Integrated to SWiFiIC by Abhishek on 25/4/18
  */
 
 

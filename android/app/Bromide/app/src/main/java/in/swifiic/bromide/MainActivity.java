@@ -1,4 +1,4 @@
-package com.arnavdhamija.bromide;
+package in.swifiic.bromide;
 
 import android.app.Activity;
 import android.content.Intent;

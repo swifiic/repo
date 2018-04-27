@@ -21,10 +21,10 @@ fi
 
 # we may need a better check than this for tomcat7-user
 echo "Checking for Tomcat User"
-if [ -f /etc/init.d/tomcat8* ]; then
+if [ -f /usr/bin/tomcat8* ]; then
     echo " Tomcat is installed"
 else
-    echo " Tomcat is not installed. Install using sudo apt-get install tomcat7-user"
+    echo " Tomcat is not installed. Install using sudo apt-get install tomcat8-user"
     needExit="true"
 fi
 
@@ -76,7 +76,7 @@ else
     needExit="true"
 fi
 
-distFile="./release.tar.gz"
+distFile="./swifiic.tar.gz"
 if [ ! -f ${distFile} ]; then
     echo "release.tar.gz not found. checking arguments"
     if [ ! -f ${1} ]; then
@@ -88,9 +88,18 @@ if [ ! -f ${distFile} ]; then
 fi
 
 distFile=$(get_abs_filename "${distFile}")
+mkdir /tmp/deploy
+cd /tmp/deploy
+tar -zxvf ${distFile}
+if [ ! -d "dist/scripts" ]; then
+    echo "Content of ${distFile} did not have a scripts folder"
+    needExit="true"
+fi
+
+cd dist
 
 if [ "${needExit}" = "true" ]; then
-    echo "Fix prior errors. Aborting.\n\n"
+    echo "Fix prior errors. Aborting."; echo;echo
     exit
 fi
 
@@ -122,15 +131,6 @@ fi
 
 echo; echo;echo
 echo ; echo "======== Starting The SWiFiIC setup under ${base_directory} using ${distFile} ====="
-mkdir /tmp/deploy
-cd /tmp/deploy
-tar -zxvf ${distFile}
-if [ ! -d "scripts" ]; then
-    echo "Content of ${distFile} did not have a scripts folder"
-    exit
-fi
-
-# cd ./dist - new build based on ant does not include a top level folder
 
 sudo mkdir -p ${base_directory}
 if [ $? -ne 0 ] ; then

@@ -95,7 +95,7 @@ public class SettingsActivity extends PreferenceActivity {
 			AlertDialog.Builder alertDialog = new AlertDialog.Builder(preference.getContext());
 
 			alertDialog.setTitle("Alert");
-			alertDialog.setMessage("Are you sure that you want to change the hub address");
+			alertDialog.setMessage("Are you sure that you want to change the hub address / user-id");
 			alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog,int which) {
 					Provider.getProviderInstance().deletedB();

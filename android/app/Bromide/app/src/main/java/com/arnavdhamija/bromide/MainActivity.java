@@ -56,6 +56,7 @@ public class MainActivity extends SwifiicActivity {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         final String hubAddress = sharedPreferences.getString("hub_address", "");
+        final String myId = sharedPreferences.getString("my_identity", "");
 
         toolbar.setTitle("Bromide");
 
@@ -101,7 +102,7 @@ public class MainActivity extends SwifiicActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, hubAddress, Snackbar.LENGTH_LONG)
+                Snackbar.make(view, myId + "@" + hubAddress, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });

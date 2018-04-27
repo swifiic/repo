@@ -282,13 +282,12 @@ public class TrackService extends Service {
 			batteryPct = level / (float)scale;
 			ctx.doSampling();
 
-			// arnavdhamija - just for now, let us force sending packets
-//			if(ctx.shouldCreateLogFile()){
+			if(ctx.shouldCreateLogFile()){
 				String fileName = ctx.saveLogs();
 				if (null != fileName) {
 					handleLogStreamEndAndFileUpload(fileName);
 				}
-//			}
+			}
 
 			last_sample=ctx.getNextPollDelay(batteryPct, isCharging,usbCharge,acCharge,previous);
 			previous=last_sample;

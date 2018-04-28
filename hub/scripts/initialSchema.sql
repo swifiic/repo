@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `AppLedger` (
   `StatusNotes` varchar(64) DEFAULT NULL,
   `AlibiDevDetails` varchar(256) DEFAULT NULL,
   `AuditLogId` bigint(20) DEFAULT NULL,
-  `AuditNotes` bigint(20) DEFAULT NULL,
+  `AuditNotes` varchar(32) DEFAULT NULL,
   PRIMARY KEY (`LogId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 

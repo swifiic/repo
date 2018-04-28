@@ -30,6 +30,8 @@ public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
                 return new StatusFragment();
             case 1:
                 return new AppList();
+            case 2:
+                return new TransactionFragment();
             default:
                 return null;
         }
@@ -37,7 +39,7 @@ public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -47,6 +49,8 @@ public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter {
                 return "Status";
             case 1:
                 return "App List";
+            case 2:
+                return "Transactions";
             default:
                 return null;
         }

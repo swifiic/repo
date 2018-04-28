@@ -43,7 +43,10 @@ import in.swifiic.plat.helper.andi.xml.Action;
 import in.swifiic.plat.helper.andi.AppEndpointContext;
 import in.swifiic.plat.helper.andi.Helper;
 
-public class MainActivity extends SwifiicActivity implements StatusFragment.OnFragmentInteractionListener, AppList.OnFragmentInteractionListener {
+public class MainActivity extends SwifiicActivity
+                          implements StatusFragment.OnFragmentInteractionListener,
+                                     TransactionFragment.OnFragmentInteractionListener,
+                                     AppList.OnFragmentInteractionListener {
 
 
     @SuppressWarnings("unused")
@@ -106,6 +109,19 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
         }
     }
 
+    // revisedTransactionDetails
+    private boolean setTransactionFragment(String creditValue) {
+        Fragment fragment = mSimpleFragmentPagerAdapter.getFragment(2);
+        if (fragment != null) {
+            ((TransactionFragment) fragment).setTransaction(creditValue);
+            Toast.makeText(this, "Setting transaction as " + creditValue, Toast.LENGTH_LONG).show();
+            return true;
+        } else {
+            Log.d("SUTA", "NULL for setTransactionFragment");
+            return false;
+        }
+    }
+
     private boolean setStatusFragment(String creditValue, String lastUpdateTime) {
         Fragment fragment = mSimpleFragmentPagerAdapter.getFragment(0);
         if (fragment != null) {
@@ -160,6 +176,7 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
                                     pref.getString("notifRecievedBySutaAt","N/A"), //time at which android received hub mc
                                     pref.getString("lastDeviceMsg", "N/A"));
 
+                setTransactionFragment(pref.getString("revisedTransactionDetails", "Not Available"));
                 Bundle extras = intent.getExtras();
 
                 Log.d("SUTA", "APPIDS" + extras.getString("appIDs"));
@@ -252,6 +269,8 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
                 tabLayout.setupWithViewPager(viewPager);
                 tabLayout.getTabAt(0);
                 tabLayout.getTabAt(1);
+                tabLayout.getTabAt(2);
+                setTransactionFragment(pref.getString("revisedTransactionDetails", "Not Available"));
                 setStatusFragment(pref.getString("remainingCredit", "Waiting for Hub"),
                         pref.getString("notifSentByHubAt", "N/A"),
                         pref.getString("notifRecievedBySutaAt", "N/A"),
@@ -377,8 +396,13 @@ public class MainActivity extends SwifiicActivity implements StatusFragment.OnFr
 	}
 
     @Override
-    public void onStatusFragmentInteraction(String string) {
+    public void onTransactionFragmentInteraction(String string) {
+         // do nothing for now
+    }
 
+    @Override
+    public void onStatusFragmentInteraction(String string) {
+         // do nothing for now
     }
 
     @Override

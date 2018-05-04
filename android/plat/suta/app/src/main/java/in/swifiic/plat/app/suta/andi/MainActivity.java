@@ -114,7 +114,6 @@ public class MainActivity extends SwifiicActivity
         Fragment fragment = mSimpleFragmentPagerAdapter.getFragment(2);
         if (fragment != null) {
             ((TransactionFragment) fragment).setTransaction(creditValue);
-            Toast.makeText(this, "Setting transaction as " + creditValue, Toast.LENGTH_LONG).show();
             return true;
         } else {
             Log.d("SUTA", "NULL for setTransactionFragment");
